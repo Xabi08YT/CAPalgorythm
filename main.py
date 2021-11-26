@@ -2,7 +2,22 @@ from tkinter import *
 from os import *
 from typing import final
 
-datafile = open('data.txt', 'r')
+logfile = open('lastest-logs.txt', mode='w')
+
+def properexit():
+    close('data.txt')
+    close('output.xls')
+    quit(0)
+
+def showinlog(message):
+    with open(logfile):
+        write(message)
+
+
+try:
+    datafile = open('data.txt', mode='w')
+except Exception:
+    showinlog("Erreur lors de l'ouverture du fichier de données.")
 
 def basicdatainput():
     retry = True
@@ -16,7 +31,7 @@ def basicdatainput():
             essais += 1
         if essais == 3:
             temp = str(input("Voulez-vous réessayer?"))
-            if temp == 'NON':
+            if temp == ('NON' or 'Non' or 'NOn' or 'NoN' or 'nOn'or 'NON'):
                 retry = False
                 return
             
@@ -26,8 +41,3 @@ def basicdatainput():
         datafile = open('data.txt', 'w')
 
     return(nom, niveau)
-
-def properexit():
-    close('data.txt')
-    close('output.xls')
-    quit(0)
