@@ -1,7 +1,8 @@
 from tkinter import *
 from os import *
+from typing import final
 
-
+datafile = open('data.txt', 'r')
 
 def basicdatainput():
     retry = True
@@ -14,15 +15,19 @@ def basicdatainput():
             print("Une erreur est survenue. Veuillez réessayer.")
             essais += 1
         if essais == 3:
-            temp = upper(str(input("Voulez-vous réessayer?")))
+            temp = str(input("Voulez-vous réessayer?"))
             if temp == 'NON':
                 retry = False
                 return
             
     if tuteur == True:
         nom = str(input("Entrez le nom de la personne"))
-        classe = str(input("Entrez le niveau du tuteur."))
-    return(nom, classe)
+        niveau = str(input("Entrez le niveau du tuteur."))
+        datafile = open('data.txt', 'w')
 
-def disponibilites():
-    
+    return(nom, niveau)
+
+def properexit():
+    close('data.txt')
+    close('output.xls')
+    quit(0)
