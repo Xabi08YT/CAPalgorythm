@@ -1,43 +1,65 @@
-from tkinter import *
-from os import *
-from typing import final
+import csv
 
-logfile = open('lastest-logs.txt', mode='w')
 
-def properexit():
-    close('data.txt')
-    close('output.xls')
-    quit(0)
+def properexit(code):
+    showinlog("Exiting with code " + str(code))
+    quit(code)
+
 
 def showinlog(message):
-    with open(logfile):
-        write(message)
+    with open("lastestlogs.txt", mode='a') as log:
+        log.write(message)
+    if "[STDFATAL]" in message:
+        properexit(message)
 
 
-try:
-    datafile = open('data.txt', mode='w')
-except Exception:
-    showinlog("Erreur lors de l'ouverture du fichier de données.")
+def datastoretuteur(name, grade, disponibilites, matiere, contact):
+    data = {'nom': name, 'niveau': grade, 'dispo': disponibilites, 'matiere': matiere, 'contact': contact}
+    try:
+        with open("tuteurs.csv", mode='a', newline='') as TFile:
+            csvdatabase = csv.writer(TFile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+            csvdatabase.writerow([data])
+    except FileNotFoundError:
+        with open("tuteurs.csv", mode='x') as TFile:
+            csvdatabase = csv.writer(TFile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+            csvdatabase.writerow(['Name'] + ['Niveau'] + ['Disponibilités'] + ['Matière'])
+            showinlog("[STDINFO]: File tuteurs.csv couldn't be found. A New file name tuteurs.csv has been created.\n")
+    return
 
-def basicdatainput():
+
+def datacollectiontuteur():
     retry = True
-    essais = 0
-    while retry == True:
+    while retry:
         try:
-            tuteur = bool(input("Veuillez dire si la peronne est un tuteur. Si oui, mettre True en respectant la casse, sinon mettre False en respectant aussi la casse."))
-            retry = False
+            disponibilites = []
+            dispmax = int(input("Entrez le nombre de créneaux disponibles du tuteur:"))
+            nom = str(input("Entrez le nom du tuteur:"))
+            niveau = str(input("Entrez le niveau du tuteur (2nde, 1ere ou Term):"))
+            niveau = niveau.upper()
+            for i in range(dispmax):
+                temp = str(input(
+                    "Entrez une disponibilité sous le format <2 premieres initales du jour><créneau horaire en partant de zéro>"))
+                temp = temp.upper()
+                disponibilites.append(temp)
+            matiere = str(input("Entrez la matière dans lequel le tuteur veux aider:"))
+            matiere = matiere.upper()
+            contact = str(input("Veuillez entrer un moyen de contacter le tuteur."))
+            datastoretuteur(nom, niveau, disponibilites, matiere, contact)
+            return
         except ValueError:
-            print("Une erreur est survenue. Veuillez réessayer.")
-            essais += 1
-        if essais == 3:
-            temp = str(input("Voulez-vous réessayer?"))
-            if temp == ('NON' or 'Non' or 'NOn' or 'NoN' or 'nOn'or 'NON'):
-                retry = False
-                return
-            
-    if tuteur == True:
-        nom = str(input("Entrez le nom de la personne"))
-        niveau = str(input("Entrez le niveau du tuteur."))
-        datafile = open('data.txt', 'w')
+            showinlog("[STDWARN]: User has entered wrong value type. Restarting data collection process...\n")
+            return
 
-    return(nom, niveau)
+
+def relationtuteurtutores():
+    try:
+        with open('tuteurs.csv', mode='r', newline='') as maindatabase:
+            data = csv.reader(maindatabase)
+            for row in data:
+                print("CC".joinrow())
+    except FileNotFoundError:
+        return showinlog("[STDERR]: Please make a tutor database before using this.")
+
+datacollectiontuteur()
+properexit(0)
+##relationtuteurtutores()
