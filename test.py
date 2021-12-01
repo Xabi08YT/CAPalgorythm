@@ -10,27 +10,26 @@ def properexit(code):
 def showinlog(message):
     with open("lastestlogs.txt", mode='a') as log:
         log.write(message)
-    if "[STDFATAL]" in message:
-        properexit(message)
 
 
 def datastoretuteur(name, grade, disponibilites, matiere, contact, dispmax):
-    data = {'nom': name, 'niveau': grade, 'dispo': disponibilites, 'matiere': matiere, 'contact': contact, 'dispmax': dispmax}
     try:
         with open("tuteurs.csv", mode='a', newline='') as TFile:
-            csvdatabase = csv.writer(TFile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            csvdatabase.writerow([data])
+            csvdatabase = csv.DictWriter(TFile, fieldnames=["name", "grade", "freehours", "helping", "contact", "freehoursnumb"])
+            csvdatabase.writeheader()
+            csvdatabase.writerow({"name": name, "grade": grade, "freehours": disponibilites, "helping": matiere, "contact": contact, "freehoursnumb": dispmax})
     except FileNotFoundError:
         with open("tuteurs.csv", mode='x') as TFile:
-            csvdatabase = csv.writer(TFile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            csvdatabase.writerow([data])
+            csvdatabase = csv.DictWriter(TFile, fieldnames=["name", "grade", "freehours", "helping", "contact", "freehoursnumb"])
+            csvdatabase.writeheader()
+            csvdatabase.writerow({"name": name, "grade": grade, "freehours": disponibilites, "helping": matiere, "contact": contact, "freehoursnumb": dispmax})
             showinlog("[STDINFO]: File tuteurs.csv couldn't be found. A New file name tuteurs.csv has been created.\n")
     return
 
 
 def datacollectiontuteur():
     retry = True
-    while retry:
+    while retry == True:
         try:
             disponibilites = []
             dispmax = int(input("Entrez le nombre de créneaux disponibles du tuteur:"))
@@ -48,25 +47,19 @@ def datacollectiontuteur():
             return
         except ValueError:
             showinlog("[STDWARN]: User has entered wrong value type. Restarting data collection process...\n")
-            return
+    return
 
 
 def relationtuteurtutores():
     try:
         with open('tuteurs.csv', mode='r', newline='') as maindatabase:
-            data = csv.reader(maindatabase)
+            data = csv.DictReader(maindatabase)
             for row in data:
-                print(", ".join(row))
+                print(row["name"])
     except FileNotFoundError:
-        return showinlog("[STDERR]: Please make a tutor database before using this.")
+        return showinlog("[STDERR]: Please make a tutor database before using this.\n")
 
 
 datacollectiontuteur()
+relationtuteurtutores()
 properexit(0)
-
-
-##relationtuteurtutores()
-
-IUG = tkinter.Tk()
-
-IUG.mainloop()
