@@ -30,7 +30,7 @@ def datastoretuteur(name, grade, disponibilites, matiere, contact, dispmax):
 
 def datacollectiontuteur():
     retry = True
-    while retry:
+    while retry == True:
         try:
             disponibilites = []
             dispmax = int(input("Entrez le nombre de créneaux disponibles du tuteur:"))
