@@ -1,9 +1,8 @@
-import os
 import tkinter
 from tkinter import ttk
 from tkinter import Radiobutton
 import csv
-import time
+
 
 # initialisation de l'interface graphique
 interface = tkinter.Tk()
@@ -11,54 +10,99 @@ interface.title("Outil de gestion base de donnée CAPS")
 interface.geometry("1440x1080")
 interface.minsize(1080, 720)
 
-lu0 = tkinter.IntVar()
-lu1 = tkinter.IntVar()
-lu2 = tkinter.IntVar()
-lu3 = tkinter.IntVar()
-lu4 = tkinter.IntVar()
-lu5 = tkinter.IntVar()
-lu6 = tkinter.IntVar()
-lu7 = tkinter.IntVar()
-lu8 = tkinter.IntVar()
-lu9 = tkinter.IntVar()
+lu0 = tkinter.StringVar()
+lu0.set(0)
+lu1 = tkinter.StringVar()
+lu1.set(0)
+lu2 = tkinter.StringVar()
+lu2.set(0)
+lu3 = tkinter.StringVar()
+lu3.set(0)
+lu4 = tkinter.StringVar()
+lu4.set(0)
+lu5 = tkinter.StringVar()
+lu5.set(0)
+lu6 = tkinter.StringVar()
+lu6.set(0)
+lu7 = tkinter.StringVar()
+lu7.set(0)
+lu8 = tkinter.StringVar()
+lu8.set(0)
+lu9 = tkinter.StringVar()
+lu9.set(0)
 
-ma0 = tkinter.IntVar()
-ma1 = tkinter.IntVar()
-ma2 = tkinter.IntVar()
-ma3 = tkinter.IntVar()
-ma4 = tkinter.IntVar()
-ma5 = tkinter.IntVar()
-ma6 = tkinter.IntVar()
-ma7 = tkinter.IntVar()
-ma8 = tkinter.IntVar()
-ma9 = tkinter.IntVar()
+ma0 = tkinter.StringVar()
+ma0.set(0)
+ma1 = tkinter.StringVar()
+ma1.set(0)
+ma2 = tkinter.StringVar()
+ma2.set(0)
+ma3 = tkinter.StringVar()
+ma3.set(0)
+ma4 = tkinter.StringVar()
+ma4.set(0)
+ma5 = tkinter.StringVar()
+ma5.set(0)
+ma6 = tkinter.StringVar()
+ma6.set(0)
+ma7 = tkinter.StringVar()
+ma7.set(0)
+ma8 = tkinter.StringVar()
+ma8.set(0)
+ma9 = tkinter.StringVar()
+ma9.set(0)
 
-me0 = tkinter.IntVar()
-me1 = tkinter.IntVar()
-me2 = tkinter.IntVar()
-me3 = tkinter.IntVar()
+me0 = tkinter.StringVar()
+me0.set(0)
+me1 = tkinter.StringVar()
+me1.set(0)
+me2 = tkinter.StringVar()
+me2.set(0)
+me3 = tkinter.StringVar()
+me3.set(0)
 
-je0 = tkinter.IntVar()
-je1 = tkinter.IntVar()
-je2 = tkinter.IntVar()
-je3 = tkinter.IntVar()
-je4 = tkinter.IntVar()
-je5 = tkinter.IntVar()
-je6 = tkinter.IntVar()
-je7 = tkinter.IntVar()
-je8 = tkinter.IntVar()
-je9 = tkinter.IntVar()
+je0 = tkinter.StringVar()
+je0.set(0)
+je1 = tkinter.StringVar()
+je1.set(0)
+je2 = tkinter.StringVar()
+je2.set(0)
+je3 = tkinter.StringVar()
+je3.set(0)
+je4 = tkinter.StringVar()
+je4.set(0)
+je5 = tkinter.StringVar()
+je5.set(0)
+je6 = tkinter.StringVar()
+je6.set(0)
+je7 = tkinter.StringVar()
+je7.set(0)
+je8 = tkinter.StringVar()
+je8.set(0)
+je9 = tkinter.StringVar()
+je9.set(0)
 
-ve0 = tkinter.IntVar()
-ve1 = tkinter.IntVar()
-ve2 = tkinter.IntVar()
-ve3 = tkinter.IntVar()
-ve4 = tkinter.IntVar()
-ve5 = tkinter.IntVar()
-ve6 = tkinter.IntVar()
-ve7 = tkinter.IntVar()
-ve8 = tkinter.IntVar()
-ve9 = tkinter.IntVar()
+ve0 = tkinter.StringVar()
+ve0.set(0)
+ve1 = tkinter.StringVar()
+ve1.set(0)
+ve2 = tkinter.StringVar()
+ve2.set(0)
+ve3 = tkinter.StringVar()
+ve3.set(0)
+ve4 = tkinter.StringVar()
+ve4.set(0)
+ve5 = tkinter.StringVar()
+ve5.set(0)
+ve6 = tkinter.StringVar()
+ve6.set(0)
+ve7 = tkinter.StringVar()
+ve7.set(0)
+ve8 = tkinter.StringVar()
+ve8.set(0)
+ve9 = tkinter.StringVar()
+ve9.set(0)
+
 
 def properexit(code):
     showinlog("Exiting with code " + str(code) + "\n")
@@ -67,64 +111,10 @@ def properexit(code):
 
 def showinlog(message):
     with open("lastestlogs.txt", mode='a') as log:
-        log.write(message)
+        log.write(message+str("\n"))
         log.close()
     if "[STDFATAL]" in message:
         return properexit(message)
-
-
-def reltuteurtutore(nomtutore, niveaututore, dispos, matieredemandee):
-    retry = True
-    while retry:
-        try:
-            with open("tuteurs.csv", mode="r") as Data:
-                database = csv.DictReader(Data, fieldnames=["name", "grade", "freehours", "helping", "contact"])
-                for row in database:
-                    try:
-                        if row["grade"] >= niveaututore:
-                            if row["helping"] == matieredemandee:
-                                dispotuteur = row["freehours"]
-                                for i in range(len(dispos)):
-                                    for j in range(len(dispotuteur)):
-                                        if dispotuteur[j] == dispos[i]:
-                                            MSGbox = tkinter.Tk()
-                                            MSGbox.geometry('100x150')
-                                            label_Msg = ttk.Label(MSGbox, text=["Disponibilité trouvée entre "+nomtutore+" et "+row["name"]+" sur le créneau horaire "+dispotuteur[j]])
-                                            label_Msg.pack()
-                                            ouibtn = ttk.Button(text="Conserver", command=garder(1))
-                                            ouibtn.pack()
-                                            nonbtn = ttk.Button(text='Ne pas conserver', command=garder(0))
-                                            nonbtn.pack()
-                                            MSGbox.pack()
-                                            def garder(n):
-                                                MSGbox.destroy()
-                                                if n == 1:
-                                                    contact = row["contact"]
-                                                    if contact.upper == "NONE" or contact.upper() == "AUCUN" or contact.upper() == " " or contact.upper() == "":
-                                                        return
-                                                    else:
-                                                        MSbox = tkinter.Tk()
-                                                        MSbox.geometry("100x150")
-                                                        LabelCONTACT = ttk.Label(MSbox, text=["Voici un moyen de contacter le tuteur: "+contact])
-                                                        LabelCONTACT.pack()
-                                                        MSbox.pack()
-                                                        time.sleep(30)
-                                                        MSbox.destroy()
-                                                        return
-                                                else:
-                                                    return
-                                            return
-                    except TypeError:
-                        showinlog("[STDERR]: STR can't be compared with INT !")
-        except ValueError:
-            showinlog("[STDWARN]: Mauvais type de valeur entré. Redémarrage du processus de collecte d'information.")
-        except KeyboardInterrupt:
-            showinlog("[STDINFO]: Opération interrompue par l'utilisateur.")
-            retry = False
-        except FileNotFoundError:
-            showinlog("[STDERR]: Aucune base de données trouvée !")
-    return
-
 
 
 def datastoretuteur(name, grade, disponibilites, matiere, contact):
@@ -132,8 +122,7 @@ def datastoretuteur(name, grade, disponibilites, matiere, contact):
         with open("tuteurs.csv", mode='a', newline='') as TFile:
             csvdatabase = csv.DictWriter(TFile, fieldnames=["name", "grade", "freehours", "helping", "contact"])
             csvdatabase.writeheader()
-            csvdatabase.writerow(
-                {"name": name, "grade": grade, "freehours": disponibilites, "helping": matiere, "contact": contact})
+            csvdatabase.writerow({"name": name, "grade": grade, "freehours": disponibilites, "helping": matiere, "contact": contact})
             TFile.close()
     except FileNotFoundError:
         with open("tuteurs.csv", mode='x') as TFile:
@@ -141,22 +130,22 @@ def datastoretuteur(name, grade, disponibilites, matiere, contact):
             csvdatabase.writeheader()
             csvdatabase.writerow(
                 {"name": name, "grade": grade, "freehours": disponibilites, "helping": matiere, "contact": contact})
-            showinlog("[STDINFO]: File tuteurs.csv couldn't be found. A New file name tuteurs.csv has been created.\n")
+            showinlog("[STDINFO]: File tuteurs.csv couldn't be found. A New file name tuteurs.csv has been created.")
             TFile.close()
+    else:
+        showinlog("[STDERR]: Caouldn't write anything on database !")
     return
 
 
 def modessplt(disp):
-    nom = name.get()
+    showinlog("[STDINFO]: Determining mode to use...")
+    nom = name_entry.get()
     niveau = niv.get()
-    matiere = mat.get()
-    contact = cont.get()
+    matiere = mat_list.get()
+    contact = contact_entry.get()
     if modeout == True:
         datastoretuteur(nom, niveau, disp, matiere, contact)
-        return
-    else:
-        reltuteurtutore(nom, niveau, disp, matiere)
-        return
+    return showinlog("[STDINFO]: Done !")
 
 
 def inforegroup(l0, l1, l2, l3, l4, l5, l6, l7, l8, l9, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, mec0, mec1, mec2, mec3,
@@ -281,7 +270,7 @@ contact_entry = tkinter.Entry(BottomFrame, width=30)
 mat_label = tkinter.Label(BottomFrame, text="Sélectionnez la matière de la personne:")
 mat_list = ttk.Combobox(BottomFrame, values=Listematiere, width=30)
 
-#insertion du bouton de validation et de loa progressbar
+# insertion du bouton de validation et de loa progressbar
 progbar = ttk.Progressbar(BottomFrame, mode="indeterminate", length=100)
 
 
@@ -345,7 +334,9 @@ def reset():
 def launch():
     showinlog("[STDINFO]: Executing program...")
     progbar.start()
-    disponibilites = inforegroup(lu0, lu1, lu2, lu3, lu4, lu5, lu6, lu7, lu8, lu9, ma0, ma1, ma2, ma3, ma4, ma5, ma6, ma7, ma8, ma9, me0, me1, me2, me3, je0, je1, je2, je3, je4, je5, je6, je7, je8, je9, ve0, ve1, ve2, ve3, ve4, ve5, ve6, ve7, ve8, ve9)
+    disponibilites = inforegroup(lu0, lu1, lu2, lu3, lu4, lu5, lu6, lu7, lu8, lu9, ma0, ma1, ma2, ma3, ma4, ma5, ma6,
+                                 ma7, ma8, ma9, me0, me1, me2, me3, je0, je1, je2, je3, je4, je5, je6, je7, je8, je9,
+                                 ve0, ve1, ve2, ve3, ve4, ve5, ve6, ve7, ve8, ve9)
     modessplt(disponibilites)
     progbar.stop()
     reset()
@@ -469,5 +460,3 @@ BottomFrame.grid(sticky='s')
 
 # activation de l'IUG
 interface.mainloop()
-
-
