@@ -2,177 +2,119 @@ import tkinter
 from tkinter import ttk
 from tkinter import Radiobutton
 import csv
-
+import datetime
 
 # initialisation de l'interface graphique
 interface = tkinter.Tk()
-interface.title("Outil de gestion base de donnée CAPS")
+interface.title("Interface base de données CAPS")
 interface.geometry("1440x1080")
 interface.minsize(1080, 720)
 
-lu0 = tkinter.StringVar()
+lu0 = tkinter.IntVar()
 lu0.set(0)
-lu1 = tkinter.StringVar()
+lu1 = tkinter.IntVar()
 lu1.set(0)
-lu2 = tkinter.StringVar()
+lu2 = tkinter.IntVar()
 lu2.set(0)
-lu3 = tkinter.StringVar()
+lu3 = tkinter.IntVar()
 lu3.set(0)
-lu4 = tkinter.StringVar()
+lu4 = tkinter.IntVar()
 lu4.set(0)
-lu5 = tkinter.StringVar()
+lu5 = tkinter.IntVar()
 lu5.set(0)
-lu6 = tkinter.StringVar()
+lu6 = tkinter.IntVar()
 lu6.set(0)
-lu7 = tkinter.StringVar()
+lu7 = tkinter.IntVar()
 lu7.set(0)
-lu8 = tkinter.StringVar()
+lu8 = tkinter.IntVar()
 lu8.set(0)
-lu9 = tkinter.StringVar()
+lu9 = tkinter.IntVar()
 lu9.set(0)
 
-ma0 = tkinter.StringVar()
+ma0 = tkinter.IntVar()
 ma0.set(0)
-ma1 = tkinter.StringVar()
+ma1 = tkinter.IntVar()
 ma1.set(0)
-ma2 = tkinter.StringVar()
+ma2 = tkinter.IntVar()
 ma2.set(0)
-ma3 = tkinter.StringVar()
+ma3 = tkinter.IntVar()
 ma3.set(0)
-ma4 = tkinter.StringVar()
+ma4 = tkinter.IntVar()
 ma4.set(0)
-ma5 = tkinter.StringVar()
+ma5 = tkinter.IntVar()
 ma5.set(0)
-ma6 = tkinter.StringVar()
+ma6 = tkinter.IntVar()
 ma6.set(0)
-ma7 = tkinter.StringVar()
+ma7 = tkinter.IntVar()
 ma7.set(0)
-ma8 = tkinter.StringVar()
+ma8 = tkinter.IntVar()
 ma8.set(0)
-ma9 = tkinter.StringVar()
+ma9 = tkinter.IntVar()
 ma9.set(0)
 
-me0 = tkinter.StringVar()
+me0 = tkinter.IntVar()
 me0.set(0)
-me1 = tkinter.StringVar()
+me1 = tkinter.IntVar()
 me1.set(0)
-me2 = tkinter.StringVar()
+me2 = tkinter.IntVar()
 me2.set(0)
-me3 = tkinter.StringVar()
+me3 = tkinter.IntVar()
 me3.set(0)
 
-je0 = tkinter.StringVar()
+je0 = tkinter.IntVar()
 je0.set(0)
-je1 = tkinter.StringVar()
+je1 = tkinter.IntVar()
 je1.set(0)
-je2 = tkinter.StringVar()
+je2 = tkinter.IntVar()
 je2.set(0)
-je3 = tkinter.StringVar()
+je3 = tkinter.IntVar()
 je3.set(0)
-je4 = tkinter.StringVar()
+je4 = tkinter.IntVar()
 je4.set(0)
-je5 = tkinter.StringVar()
+je5 = tkinter.IntVar()
 je5.set(0)
-je6 = tkinter.StringVar()
+je6 = tkinter.IntVar()
 je6.set(0)
-je7 = tkinter.StringVar()
+je7 = tkinter.IntVar()
 je7.set(0)
-je8 = tkinter.StringVar()
+je8 = tkinter.IntVar()
 je8.set(0)
-je9 = tkinter.StringVar()
+je9 = tkinter.IntVar()
 je9.set(0)
 
-ve0 = tkinter.StringVar()
+ve0 = tkinter.IntVar()
 ve0.set(0)
-ve1 = tkinter.StringVar()
+ve1 = tkinter.IntVar()
 ve1.set(0)
-ve2 = tkinter.StringVar()
+ve2 = tkinter.IntVar()
 ve2.set(0)
-ve3 = tkinter.StringVar()
+ve3 = tkinter.IntVar()
 ve3.set(0)
-ve4 = tkinter.StringVar()
+ve4 = tkinter.IntVar()
 ve4.set(0)
-ve5 = tkinter.StringVar()
+ve5 = tkinter.IntVar()
 ve5.set(0)
-ve6 = tkinter.StringVar()
+ve6 = tkinter.IntVar()
 ve6.set(0)
-ve7 = tkinter.StringVar()
+ve7 = tkinter.IntVar()
 ve7.set(0)
-ve8 = tkinter.StringVar()
+ve8 = tkinter.IntVar()
 ve8.set(0)
-ve9 = tkinter.StringVar()
+ve9 = tkinter.IntVar()
 ve9.set(0)
 
-
-def properexit(code):
-    showinlog("Exiting with code " + str(code) + "\n")
-    quit(code)
-
-
-def showinlog(message):
-    with open("lastestlogs.txt", mode='a') as log:
-        log.write(message+str("\n"))
-        log.close()
-    if "[STDFATAL]" in message:
-        return properexit(message)
-
-
-def datastoretuteur(name, grade, disponibilites, matiere, contact):
-    try:
-        with open("tuteurs.csv", mode='a', newline='') as TFile:
-            csvdatabase = csv.DictWriter(TFile, fieldnames=["name", "grade", "freehours", "helping", "contact"])
-            csvdatabase.writeheader()
-            csvdatabase.writerow({"name": name, "grade": grade, "freehours": disponibilites, "helping": matiere, "contact": contact})
-            TFile.close()
-    except FileNotFoundError:
-        with open("tuteurs.csv", mode='x') as TFile:
-            csvdatabase = csv.DictWriter(TFile, fieldnames=["name", "grade", "freehours", "helping", "contact"])
-            csvdatabase.writeheader()
-            csvdatabase.writerow(
-                {"name": name, "grade": grade, "freehours": disponibilites, "helping": matiere, "contact": contact})
-            showinlog("[STDINFO]: File tuteurs.csv couldn't be found. A New file name tuteurs.csv has been created.")
-            TFile.close()
-    else:
-        showinlog("[STDERR]: Caouldn't write anything on database !")
-    return
-
-
-def modessplt(disp):
-    showinlog("[STDINFO]: Determining mode to use...")
-    nom = name_entry.get()
-    niveau = niv.get()
-    matiere = mat_list.get()
-    contact = contact_entry.get()
-    if modeout == True:
-        datastoretuteur(nom, niveau, disp, matiere, contact)
-    return showinlog("[STDINFO]: Done !")
-
-
-def inforegroup(l0, l1, l2, l3, l4, l5, l6, l7, l8, l9, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, mec0, mec1, mec2, mec3,
-                J0, J1, J2, J3, J4, J5, J6, J7, J8, J9, V0, V1, V2, V3, V4, V5, V6, V7, V8, V9):
-    lis = [l0, l1, l2, l3, l4, l5, l6, l7, l8, l9, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, mec0, mec1, mec2, mec3, J0,
-           J1, J2, J3, J4, J5, J6, J7, J8, J9, V0, V1, V2, V3, V4, V5, V6, V7, V8, V9]
-    showinlog("[STDINFO]: Executing inforegroup function...")
-    for k in range(len(lis)):
-        try:
-            if lis[k] == 0:
-                lis.pop(0)
-        except IndexError:
-            showinlog("[STDWARN]: Index out of range !")
-    showinlog("[STDINFO]: Done !")
-    return lis
-
-
 # Initialisation des variables
-modeout = tkinter.BooleanVar()
-modeout.set(False)
+modeout = tkinter.IntVar()
+modeout.set(1)
 name = tkinter.StringVar()
 cont = tkinter.StringVar()
 mat = tkinter.StringVar()
-disp = []
+nivvar = tkinter.IntVar()
+nivvar.set(0)
 Listematiere = ["Mathématiques", "Histoire-Géographie", "Education Morale et Civique", "Francais", "HGGSP", "NSI",
                 "SNT(2nde)", "Physique-Chimie", "SVT", "Enseignement-scientifique", "Allemand", "Espagnol", "Anglais",
                 "SES", "HLP", "Philosophie", "Litt. Anglaise"]
+
 
 # initialisation des frames
 mainframe = ttk.Frame(interface)
@@ -183,72 +125,71 @@ BottomFrame = ttk.Frame(interface)
 label_mode = ttk.Label(mainframe, text="Veuillez choisir le mode de fonctionnement de l'application:")
 
 # Insertions des boutons de radio
-modebtn1 = Radiobutton(mainframe, text="S'enregistrer en tant que tuteur.", variable=modeout, value=True)
-modebtn2 = Radiobutton(mainframe, text="Trouver un tuteur", variable=modeout, value=False)
+modebtn1 = Radiobutton(mainframe, text="S'enregistrer en tant que tuteur.", variable=modeout, value=0)
+modebtn2 = Radiobutton(mainframe, text="Trouver un tuteur", variable=modeout, value=1)
 
 # ajout du deuxième texte
-label_level = ttk.Label(mainframe,
-                        text="Veuillez sélectionner le niveau (0 pour terminale, 1 pour première, 2 pour seconde) de la personne concernée.")
+label_level = ttk.Label(mainframe, text="Veuillez sélectionner le niveau (0 pour terminale, 1 pour première, 2 pour seconde) de la personne concernée.")
 
 # Insertion de la barre permettant de choisir le niveau de la personne concernée
-niv = tkinter.Scale(mainframe, from_=0, to=2, orient='horizontal')
+niv = tkinter.Scale(mainframe, from_=0, to=2, orient='horizontal', variable=nivvar)
 
 # Insertion de la selection des horaires disponibles:
 g_label = tkinter.Label(EDTFrame, text='Cochez les disponibilités de la personne concernée:')
 
 j0_label = tkinter.Label(EDTFrame, text='Lundi')
-LU0 = tkinter.Checkbutton(EDTFrame, onvalue='LU0', variable=lu0)
-LU1 = tkinter.Checkbutton(EDTFrame, onvalue='LU1', variable=lu1)
-LU2 = tkinter.Checkbutton(EDTFrame, onvalue='LU2', variable=lu2)
-LU3 = tkinter.Checkbutton(EDTFrame, onvalue='LU3', variable=lu3)
-LU4 = tkinter.Checkbutton(EDTFrame, onvalue='LU4', variable=lu4)
-LU5 = tkinter.Checkbutton(EDTFrame, onvalue='LU5', variable=lu5)
-LU6 = tkinter.Checkbutton(EDTFrame, onvalue='LU6', variable=lu6)
-LU7 = tkinter.Checkbutton(EDTFrame, onvalue='LU7', variable=lu7)
-LU8 = tkinter.Checkbutton(EDTFrame, onvalue='LU8', variable=lu8)
-LU9 = tkinter.Checkbutton(EDTFrame, onvalue='LU9', variable=lu9)
+LU0 = tkinter.Checkbutton(EDTFrame, variable=lu0)
+LU1 = tkinter.Checkbutton(EDTFrame, variable=lu1)
+LU2 = tkinter.Checkbutton(EDTFrame, variable=lu2)
+LU3 = tkinter.Checkbutton(EDTFrame, variable=lu3)
+LU4 = tkinter.Checkbutton(EDTFrame, variable=lu4)
+LU5 = tkinter.Checkbutton(EDTFrame, variable=lu5)
+LU6 = tkinter.Checkbutton(EDTFrame, variable=lu6)
+LU7 = tkinter.Checkbutton(EDTFrame, variable=lu7)
+LU8 = tkinter.Checkbutton(EDTFrame, variable=lu8)
+LU9 = tkinter.Checkbutton(EDTFrame, variable=lu9)
 
 j1_label = tkinter.Label(EDTFrame, text='Mardi')
-MA0 = tkinter.Checkbutton(EDTFrame, onvalue='MA0', variable=ma0)
-MA1 = tkinter.Checkbutton(EDTFrame, onvalue='MA1', variable=ma1)
-MA2 = tkinter.Checkbutton(EDTFrame, onvalue='MA2', variable=ma2)
-MA3 = tkinter.Checkbutton(EDTFrame, onvalue='MA3', variable=ma3)
-MA4 = tkinter.Checkbutton(EDTFrame, onvalue='MA4', variable=ma4)
-MA5 = tkinter.Checkbutton(EDTFrame, onvalue='MA5', variable=ma5)
-MA6 = tkinter.Checkbutton(EDTFrame, onvalue='MA6', variable=ma6)
-MA7 = tkinter.Checkbutton(EDTFrame, onvalue='MA7', variable=ma7)
-MA8 = tkinter.Checkbutton(EDTFrame, onvalue='MA8', variable=ma8)
-MA9 = tkinter.Checkbutton(EDTFrame, onvalue='MA9', variable=ma9)
+MA0 = tkinter.Checkbutton(EDTFrame, variable=ma0)
+MA1 = tkinter.Checkbutton(EDTFrame, variable=ma1)
+MA2 = tkinter.Checkbutton(EDTFrame, variable=ma2)
+MA3 = tkinter.Checkbutton(EDTFrame, variable=ma3)
+MA4 = tkinter.Checkbutton(EDTFrame, variable=ma4)
+MA5 = tkinter.Checkbutton(EDTFrame, variable=ma5)
+MA6 = tkinter.Checkbutton(EDTFrame, variable=ma6)
+MA7 = tkinter.Checkbutton(EDTFrame, variable=ma7)
+MA8 = tkinter.Checkbutton(EDTFrame, variable=ma8)
+MA9 = tkinter.Checkbutton(EDTFrame, variable=ma9)
 
 j2_label = tkinter.Label(EDTFrame, text='Mercredi')
-ME0 = tkinter.Checkbutton(EDTFrame, onvalue='ME0', variable=me0)
-ME1 = tkinter.Checkbutton(EDTFrame, onvalue='ME1', variable=me1)
-ME2 = tkinter.Checkbutton(EDTFrame, onvalue='ME2', variable=me2)
-ME3 = tkinter.Checkbutton(EDTFrame, onvalue='ME3', variable=me3)
+ME0 = tkinter.Checkbutton(EDTFrame, variable=me0)
+ME1 = tkinter.Checkbutton(EDTFrame, variable=me1)
+ME2 = tkinter.Checkbutton(EDTFrame, variable=me2)
+ME3 = tkinter.Checkbutton(EDTFrame, variable=me3)
 
 j3_label = tkinter.Label(EDTFrame, text='Jeudi')
-JE0 = tkinter.Checkbutton(EDTFrame, onvalue='JE0', variable=je0)
-JE1 = tkinter.Checkbutton(EDTFrame, onvalue='JE1', variable=je1)
-JE2 = tkinter.Checkbutton(EDTFrame, onvalue='JE2', variable=je2)
-JE3 = tkinter.Checkbutton(EDTFrame, onvalue='JE3', variable=je3)
-JE4 = tkinter.Checkbutton(EDTFrame, onvalue='JE4', variable=je4)
-JE5 = tkinter.Checkbutton(EDTFrame, onvalue='JE5', variable=je5)
-JE6 = tkinter.Checkbutton(EDTFrame, onvalue='JE6', variable=je6)
-JE7 = tkinter.Checkbutton(EDTFrame, onvalue='JE7', variable=je7)
-JE8 = tkinter.Checkbutton(EDTFrame, onvalue='JE8', variable=je8)
-JE9 = tkinter.Checkbutton(EDTFrame, onvalue='JE9', variable=je9)
+JE0 = tkinter.Checkbutton(EDTFrame, variable=je0)
+JE1 = tkinter.Checkbutton(EDTFrame, variable=je1)
+JE2 = tkinter.Checkbutton(EDTFrame, variable=je2)
+JE3 = tkinter.Checkbutton(EDTFrame, variable=je3)
+JE4 = tkinter.Checkbutton(EDTFrame, variable=je4)
+JE5 = tkinter.Checkbutton(EDTFrame, variable=je5)
+JE6 = tkinter.Checkbutton(EDTFrame, variable=je6)
+JE7 = tkinter.Checkbutton(EDTFrame, variable=je7)
+JE8 = tkinter.Checkbutton(EDTFrame, variable=je8)
+JE9 = tkinter.Checkbutton(EDTFrame,  variable=je9)
 
 j4_label = tkinter.Label(EDTFrame, text='Vendredi')
-VE0 = tkinter.Checkbutton(EDTFrame, onvalue='VE0', variable=ve0)
-VE1 = tkinter.Checkbutton(EDTFrame, onvalue='VE1', variable=ve1)
-VE2 = tkinter.Checkbutton(EDTFrame, onvalue='VE2', variable=ve2)
-VE3 = tkinter.Checkbutton(EDTFrame, onvalue='VE3', variable=ve3)
-VE4 = tkinter.Checkbutton(EDTFrame, onvalue='VE4', variable=ve4)
-VE5 = tkinter.Checkbutton(EDTFrame, onvalue='VE5', variable=ve5)
-VE6 = tkinter.Checkbutton(EDTFrame, onvalue='VE6', variable=ve6)
-VE7 = tkinter.Checkbutton(EDTFrame, onvalue='VE7', variable=ve7)
-VE8 = tkinter.Checkbutton(EDTFrame, onvalue='VE8', variable=ve8)
-VE9 = tkinter.Checkbutton(EDTFrame, onvalue='VE9', variable=ve9)
+VE0 = tkinter.Checkbutton(EDTFrame, variable=ve0)
+VE1 = tkinter.Checkbutton(EDTFrame, variable=ve1)
+VE2 = tkinter.Checkbutton(EDTFrame, variable=ve2)
+VE3 = tkinter.Checkbutton(EDTFrame, variable=ve3)
+VE4 = tkinter.Checkbutton(EDTFrame, variable=ve4)
+VE5 = tkinter.Checkbutton(EDTFrame, variable=ve5)
+VE6 = tkinter.Checkbutton(EDTFrame, variable=ve6)
+VE7 = tkinter.Checkbutton(EDTFrame, variable=ve7)
+VE8 = tkinter.Checkbutton(EDTFrame, variable=ve8)
+VE9 = tkinter.Checkbutton(EDTFrame, variable=ve9)
 
 h0 = tkinter.Label(EDTFrame, text='8h10-8h05')
 h1 = tkinter.Label(EDTFrame, text='9h05-10h')
@@ -264,86 +205,15 @@ pause = tkinter.Label(EDTFrame, text=" ")
 
 # insertion des champs de saisie et du menu déroulant des matières
 name_label = tkinter.Label(BottomFrame, text="Entrez le nom et le prénom de la personne:")
-name_entry = tkinter.Entry(BottomFrame, width=30)
+name_entry = tkinter.Entry(BottomFrame, width=30, textvariable=name)
 contact_label = tkinter.Label(BottomFrame, text="Entrez un moyen de contacter la personne:")
-contact_entry = tkinter.Entry(BottomFrame, width=30)
+contact_entry = tkinter.Entry(BottomFrame, width=30, textvariable=cont)
 mat_label = tkinter.Label(BottomFrame, text="Sélectionnez la matière de la personne:")
-mat_list = ttk.Combobox(BottomFrame, values=Listematiere, width=30)
+mat_list = ttk.Combobox(BottomFrame, values=Listematiere, width=30, textvariable=mat)
 
 # insertion du bouton de validation et de loa progressbar
 progbar = ttk.Progressbar(BottomFrame, mode="indeterminate", length=100)
 
-
-def reset():
-    showinlog("[STDINFO]: Reseting users choices...")
-    LU0.deselect()
-    LU1.deselect()
-    LU2.deselect()
-    LU3.deselect()
-    LU4.deselect()
-    LU5.deselect()
-    LU6.deselect()
-    LU7.deselect()
-    LU8.deselect()
-    LU9.deselect()
-
-    MA0.deselect()
-    MA1.deselect()
-    MA2.deselect()
-    MA3.deselect()
-    MA4.deselect()
-    MA5.deselect()
-    MA6.deselect()
-    MA7.deselect()
-    MA8.deselect()
-    MA9.deselect()
-
-    ME0.deselect()
-    ME1.deselect()
-    ME2.deselect()
-    ME3.deselect()
-
-    JE0.deselect()
-    JE1.deselect()
-    JE2.deselect()
-    JE3.deselect()
-    JE4.deselect()
-    JE5.deselect()
-    JE6.deselect()
-    JE7.deselect()
-    JE8.deselect()
-    JE9.deselect()
-
-    VE0.deselect()
-    VE1.deselect()
-    VE2.deselect()
-    VE3.deselect()
-    VE4.deselect()
-    VE5.deselect()
-    VE6.deselect()
-    VE7.deselect()
-    VE8.deselect()
-    VE9.deselect()
-    name_entry.delete(0, "end")
-    contact_entry.delete(0, "end")
-    niv.set(0)
-    mat_list.delete(0, "end")
-    return showinlog("[STDINFO]: Done !")
-
-
-def launch():
-    showinlog("[STDINFO]: Executing program...")
-    progbar.start()
-    disponibilites = inforegroup(lu0, lu1, lu2, lu3, lu4, lu5, lu6, lu7, lu8, lu9, ma0, ma1, ma2, ma3, ma4, ma5, ma6,
-                                 ma7, ma8, ma9, me0, me1, me2, me3, je0, je1, je2, je3, je4, je5, je6, je7, je8, je9,
-                                 ve0, ve1, ve2, ve3, ve4, ve5, ve6, ve7, ve8, ve9)
-    modessplt(disponibilites)
-    progbar.stop()
-    reset()
-    showinlog("[STDINFO]: Done !")
-
-
-validation = ttk.Button(BottomFrame, text="Valider", command=launch())
 # Mise en page
 label_blank = tkinter.Label(mainframe, text="        ")
 label_blank1 = tkinter.Label(mainframe, text="        ")
@@ -440,6 +310,195 @@ VE9.grid(column=5, columnspan=1, row=12)
 label_blank4.grid(column=0, row=15)
 label_blank5.grid(column=0, row=16)
 
+
+def properexit(code):
+    showinlog("Exiting with code " + str(code) + "\n")
+    quit(code)
+
+
+def showinlog(message):
+    with open("lastestlogs.txt", mode='a') as log:
+        log.write(str(datetime.time())+message+str("\n"))
+        log.close()
+    if "[STDFATAL]" in message:
+        return properexit(message)
+
+
+def datastoretuteur(name, grade, disponibilites, matiere, contact):
+    showinlog("[STDINFO]: Trying to write in the Database...")
+    try:
+        with open("tuteurs.csv", mode='a', newline='') as TFile:
+            csvdatabase = csv.DictWriter(TFile, fieldnames=["name", "grade", "freehours", "helping", "contact"])
+            csvdatabase.writerow({"name": name, "grade": grade, "freehours": disponibilites, "helping": matiere, "contact": contact})
+            TFile.close()
+        showinlog("[STDINFO] Successfully done !")
+    except FileNotFoundError:
+        with open("tuteurs.csv", mode='x') as TFile:
+            csvdatabase = csv.DictWriter(TFile, fieldnames=["name", "grade", "freehours", "helping", "contact"])
+            csvdatabase.writeheader()
+            csvdatabase.writerow(
+                {"name": name, "grade": grade, "freehours": disponibilites, "helping": matiere, "contact": contact})
+            TFile.close()
+        showinlog("[STDINFO]: File tuteurs.csv couldn't be found. A New file name tuteurs.csv has been created.")
+    else:
+        showinlog("[STDERR]: Couldn't write anything on database !")
+    return
+
+
+def reltutoretuteur(nom, niveau, disp, matiere):
+    with open('tuteut.csv', newline='', mode='r') as TFile:
+        for row in TFile:
+            datastored = csv.DictReader(fieldnames=["name", "grade", "freehours", "helping", "contact"])
+            datastored.reader()
+            if matiere == row["helping"]:
+                if row["grade"] >= niveau:
+                    for dispos in range(len(row["freehours"])):
+                        displist = row["freehours"]
+                        for disponibilites in  range(len(disp)):
+                            if displist[dispos] == disp[disponibilites]:
+                                MSGbox = tkinter.Toplevel()
+                                interface.wait_window(MSGbox)
+                                MSGbox.geometry('150x300')
+                                MSGbox.grab_set()
+                                nomtuteur = row["name"]
+                                labelinfo = ttk.Label(MSGbox, text=["Une disponibilité a été trouvée entre "+str(nomtuteur)+" et "+str(nom)+"\n sur le créneau horaire "+str(disp[disponibilites])+"."])
+                                labelquestion = ttk.Label(MSGbox, text="Voulez-vous conserver cette relatien entre ce tuteur et ce tutoré?")
+                                labelinfo.pack()
+                                labelquestion.pack()
+                                ouibtn = ttk.Button(MSGbox, text="Oui")
+                                nonbtn = ttk.Button(MSGbox, text="Non")
+                                ouibtn.pack()
+                                nonbtn.pack()
+
+
+def inforegroup(l0, l1, l2, l3, l4, l5, l6, l7, l8, l9, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, mec0, mec1, mec2, mec3,
+                J0, J1, J2, J3, J4, J5, J6, J7, J8, J9, V0, V1, V2, V3, V4, V5, V6, V7, V8, V9):
+    lis = [l0, l1, l2, l3, l4, l5, l6, l7, l8, l9, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, mec0, mec1, mec2, mec3, J0,
+           J1, J2, J3, J4, J5, J6, J7, J8, J9, V0, V1, V2, V3, V4, V5, V6, V7, V8, V9]
+    showinlog("[STDINFO]: Executing inforegroup function...")
+    print(lis)
+    disponibs = []
+    for k in range(len(lis)):
+        try:
+            for i in range(10):
+                if lis[i] == 1:
+                    disponibs.append('LU'+str(i))
+                else:
+                    pass
+            for j in range(10, 20):
+                if lis[j] == 1:
+                    disponibs.append('MA'+str(j))
+                else:
+                    pass
+            for l in range(20, 24):
+                if lis[l] == 1:
+                    disponibs.append('ME'+str(l))
+                else:
+                    pass
+            for m in range(24, 34):
+                if lis[m] == 1:
+                    disponibs.append('JE'+str(m))
+                else:
+                    pass
+            for n in range(34, 44):
+                if lis[n] == 1:
+                    disponibs.append('ME'+str(n))
+                else:
+                    pass
+        except IndexError:
+            showinlog("[STDWARN]: Index out of range !")
+    showinlog("[STDINFO]: Done !")
+    return disponibs
+
+
+def modessplt(disp):
+    showinlog("[STDINFO]: Determining mode to use...")
+    print(disp)
+    nom = str(name.get())
+    print(nom)
+    niveau = int(niv.get())
+    print(niveau)
+    matiere = str(mat_list.get())
+    print(matiere)
+    contact = str(contact_entry.get())
+    print(contact)
+    if modeout == 1:
+        return
+    elif modeout == 2:
+        return
+    else:
+        datastoretuteur(nom, niveau, disp, matiere, contact)
+    return showinlog("[STDINFO]: Done !")
+
+
+def reset():
+    showinlog("[STDINFO]: Reseting users choices...")
+    lu0.set(0)
+    lu1.set(0)
+    lu3.set(0)
+    lu4.set(0)
+    lu5.set(0)
+    lu6.set(0)
+    lu7.set(0)
+    lu8.set(0)
+    lu9.set(0)
+
+    ma0.set(0)
+    ma1.set(0)
+    ma2.set(0)
+    ma3.set(0)
+    ma4.set(0)
+    ma5.set(0)
+    ma6.set(0)
+    ma7.set(0)
+    ma8.set(0)
+    ma9.set(0)
+
+    me0.set(0)
+    me1.set(0)
+    me2.set(0)
+    me3.set(0)
+
+    je0.set(0)
+    je1.set(0)
+    je2.set(0)
+    je3.set(0)
+    je4.set(0)
+    je5.set(0)
+    je6.set(0)
+    je7.set(0)
+    je8.set(0)
+    je9.set(0)
+
+    ve0.set(0)
+    ve1.set(0)
+    ve2.set(0)
+    ve3.set(0)
+    ve4.set(0)
+    ve5.set(0)
+    ve6.set(0)
+    ve7.set(0)
+    ve8.set(0)
+    ve9.set(0)
+    name_entry.delete(0, "end")
+    contact_entry.delete(0, "end")
+    niv.set(0)
+    mat_list.delete(0, "end")
+    return showinlog("[STDINFO]: Done !")
+
+
+def launch():
+    showinlog("[STDINFO]: Executing program...")
+    progbar.start()
+    disponibilites = inforegroup(lu0, lu1, lu2, lu3, lu4, lu5, lu6, lu7, lu8, lu9, ma0, ma1, ma2, ma3, ma4, ma5, ma6,
+                                 ma7, ma8, ma9, me0, me1, me2, me3, je0, je1, je2, je3, je4, je5, je6, je7, je8, je9,
+                                 ve0, ve1, ve2, ve3, ve4, ve5, ve6, ve7, ve8, ve9)
+    modessplt(disponibilites)
+    progbar.stop()
+    reset()
+    showinlog("[STDINFO]: Done !")
+
+
 name_label.grid(sticky='sw', column=0, row=3)
 name_entry.grid(sticky='sw', column=0, row=4)
 label_blank6.grid(sticky='sw', column=1, row=3)
@@ -449,9 +508,13 @@ label_blank7.grid(sticky='sw', column=3, row=3)
 mat_label.grid(sticky='sw', column=4, row=3)
 mat_list.grid(sticky='sw', column=4, row=4)
 label_blank8.grid(sticky='sw', column=5, row=3)
-validation.grid(sticky='sw', column=6, row=4)
+validation = ttk.Button(BottomFrame, text="Valider", command=launch())
 label_blank9.grid(sticky='sw', column=7, row=4)
 progbar.grid(sticky='se', column=8, row=4)
+
+
+#Initialisation des derniers composants
+validation.grid(sticky='sw', column=6, row=4)
 
 # activation des frames:
 mainframe.grid(sticky='n')
