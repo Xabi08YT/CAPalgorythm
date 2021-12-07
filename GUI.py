@@ -346,7 +346,7 @@ def datastoretuteur(name, grade, disponibilites, matiere, contact):
 
 
 def reltutoretuteur(nom, niveau, disp, matiere):
-    with open('tuteut.csv', newline='', mode='r') as TFile:
+    with open('tuteurs.csv', newline='', mode='r') as TFile:
         for row in TFile:
             datastored = csv.DictReader(fieldnames=["name", "grade", "freehours", "helping", "contact"])
             datastored.reader()
@@ -378,35 +378,24 @@ def inforegroup(l0, l1, l2, l3, l4, l5, l6, l7, l8, l9, M0, M1, M2, M3, M4, M5, 
     showinlog("[STDINFO]: Executing inforegroup function...")
     print(lis)
     disponibs = []
-    for k in range(len(lis)):
-        try:
-            for i in range(10):
-                if lis[i] == 1:
-                    disponibs.append('LU'+str(i))
-                else:
-                    pass
-            for j in range(10, 20):
-                if lis[j] == 1:
-                    disponibs.append('MA'+str(j))
-                else:
-                    pass
-            for l in range(20, 24):
-                if lis[l] == 1:
-                    disponibs.append('ME'+str(l))
-                else:
-                    pass
-            for m in range(24, 34):
-                if lis[m] == 1:
-                    disponibs.append('JE'+str(m))
-                else:
-                    pass
-            for n in range(34, 44):
-                if lis[n] == 1:
-                    disponibs.append('ME'+str(n))
-                else:
-                    pass
-        except IndexError:
-            showinlog("[STDWARN]: Index out of range !")
+    try:
+        for i in range(10):
+            if lis[i] == 1:
+                disponibs.append('LU'+str(i))
+        for j in range(10, 20):
+            if lis[j] == 1:
+                disponibs.append('MA'+str(j-10))
+        for l in range(20, 24):
+            if lis[l] == 1:
+                disponibs.append('ME'+str(l-20))
+        for m in range(24, 34):
+            if lis[m] == 1:
+                disponibs.append('JE'+str(m-24))
+        for n in range(34, 44):
+            if lis[n] == 1:
+                disponibs.append('VE'+str(n-34))
+    except IndexError:
+        showinlog("[STDWARN]: Index out of range !")
     showinlog("[STDINFO]: Done !")
     return disponibs
 
@@ -422,11 +411,13 @@ def modessplt(disp):
     print(matiere)
     contact = str(contact_entry.get())
     print(contact)
-    if modeout == 1:
-        return
-    elif modeout == 2:
-        return
+    if modeout.get() == 1:
+        showinlog("[STDINFO] Initialising reading mode...")
+        reltutoretuteur(nom, niveau, disp, matiere)
+    elif modeout.get() == 2:
+        showinlog("[STDINFO] Initialising deleting mode...")
     else:
+        showinlog("[STDINFO] Initialising writing mode...")
         datastoretuteur(nom, niveau, disp, matiere, contact)
     return showinlog("[STDINFO]: Done !")
 
@@ -488,11 +479,16 @@ def reset():
 
 
 def launch():
+    if str(name_entry.get()) == '' or str(mat_list.get()) == '':
+        errbox = tkinter.Toplevel()
+        errbox.title("Erreur")
+        errlabel = ttk.Label(errbox, text="Erreur: un ou plusieurs champs n'ont pas été remplis.")
+        errbtn = ttk.Button(errbox, text="OK")
     showinlog("[STDINFO]: Executing program...")
     progbar.start()
-    disponibilites = inforegroup(lu0, lu1, lu2, lu3, lu4, lu5, lu6, lu7, lu8, lu9, ma0, ma1, ma2, ma3, ma4, ma5, ma6,
-                                 ma7, ma8, ma9, me0, me1, me2, me3, je0, je1, je2, je3, je4, je5, je6, je7, je8, je9,
-                                 ve0, ve1, ve2, ve3, ve4, ve5, ve6, ve7, ve8, ve9)
+    disponibilites = inforegroup(lu0.get(), lu1.get(), lu2.get(), lu3.get(), lu4.get(), lu5.get(), lu6.get(), lu7.get(), lu8.get(), lu9.get(), ma0.get(), ma1.get(), ma2.get(), ma3.get(), ma4.get(), ma5.get(), ma6.get(),
+                                 ma7.get(), ma8.get(), ma9.get(), me0.get(), me1.get(), me2.get(), me3.get(), je0.get(), je1.get(), je2.get(), je3.get(), je4.get(), je5.get(), je6.get(), je7.get(), je8.get(), je9.get(),
+                                 ve0.get(), ve1.get(), ve2.get(), ve3.get(), ve4.get(), ve5.get(), ve6.get(), ve7.get(), ve8.get(), ve9.get())
     modessplt(disponibilites)
     progbar.stop()
     reset()
@@ -508,7 +504,7 @@ label_blank7.grid(sticky='sw', column=3, row=3)
 mat_label.grid(sticky='sw', column=4, row=3)
 mat_list.grid(sticky='sw', column=4, row=4)
 label_blank8.grid(sticky='sw', column=5, row=3)
-validation = ttk.Button(BottomFrame, text="Valider", command=launch())
+validation = ttk.Button(BottomFrame, text="Valider", command=launch)
 label_blank9.grid(sticky='sw', column=7, row=4)
 progbar.grid(sticky='se', column=8, row=4)
 
