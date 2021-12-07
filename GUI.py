@@ -206,7 +206,7 @@ pause = tkinter.Label(EDTFrame, text=" ")
 # insertion des champs de saisie et du menu déroulant des matières
 name_label = tkinter.Label(BottomFrame, text="Entrez le nom et le prénom de la personne:")
 name_entry = tkinter.Entry(BottomFrame, width=30, textvariable=name)
-contact_label = tkinter.Label(BottomFrame, text="Entrez un moyen de contacter la personne:")
+contact_label = tkinter.Label(BottomFrame, text="Entrez un moyen de contacter la personne: (factultatif)")
 contact_entry = tkinter.Entry(BottomFrame, width=30, textvariable=cont)
 mat_label = tkinter.Label(BottomFrame, text="Sélectionnez la matière de la personne:")
 mat_list = ttk.Combobox(BottomFrame, values=Listematiere, width=30, textvariable=mat)
@@ -324,6 +324,32 @@ def showinlog(message):
         return properexit(message)
 
 
+def popupmaker(title, message, type, textbtnA=None, textbtnB=None):
+    errbox = tkinter.Toplevel()
+    errbox.title(str(title))
+    errlabel = ttk.Label(errbox, text=str(message))
+    errlabel.pack()
+    def OK():
+        errbox.destroy()
+    if type == 1:
+        errbtn = ttk.Button(errbox, text="OK", command=OK)
+        errbtn.pack()
+    elif type==2:
+        def sender(object):
+            return object
+        btn1 = ttk.Button(errbox, text="Oui", command=sender(True))
+        btn2 = ttk.Button(errbox, text='Non', command=sender(False))
+        btn1.pack()
+        btn2.pack()
+    elif type == 99:
+        def output(outobject):
+            return(outobject)
+        custombtn1 = ttk.Button(errbox, text=textbtnA, command=output(1))
+        custombtn2 = ttk.Button(errbox, text=textbtnB, command=output(0))
+        custombtn1.pack()
+        custombtn2.pack()
+
+
 def datastoretuteur(name, grade, disponibilites, matiere, contact):
     showinlog("[STDINFO]: Trying to write in the Database...")
     try:
@@ -347,28 +373,39 @@ def datastoretuteur(name, grade, disponibilites, matiere, contact):
 
 def reltutoretuteur(nom, niveau, disp, matiere):
     with open('tuteurs.csv', newline='', mode='r') as TFile:
-        for row in TFile:
-            datastored = csv.DictReader(fieldnames=["name", "grade", "freehours", "helping", "contact"])
-            datastored.reader()
+        datastored = csv.DictReader(TFile, fieldnames=["name", "grade", "freehours", "helping", "contact"])
+        for row in datastored:
+            temp = row["freehours"]
+            for char in len(temp)/5:
+
             if matiere == row["helping"]:
-                if row["grade"] >= niveau:
-                    for dispos in range(len(row["freehours"])):
-                        displist = row["freehours"]
-                        for disponibilites in  range(len(disp)):
-                            if displist[dispos] == disp[disponibilites]:
-                                MSGbox = tkinter.Toplevel()
-                                interface.wait_window(MSGbox)
-                                MSGbox.geometry('150x300')
-                                MSGbox.grab_set()
+                print("Matière OK")
+                if int(row["grade"]) <= niveau:
+                    print("Classe OK")
+                    displist =row["freehours"]
+                    print(displist)
+                    print(disp)
+                    for a in range(len(displist)):
+                        for b in range(len(disp)):
+                            print(displist[a], disp[b])
+                            if displist[a] == disp[b]:
                                 nomtuteur = row["name"]
-                                labelinfo = ttk.Label(MSGbox, text=["Une disponibilité a été trouvée entre "+str(nomtuteur)+" et "+str(nom)+"\n sur le créneau horaire "+str(disp[disponibilites])+"."])
-                                labelquestion = ttk.Label(MSGbox, text="Voulez-vous conserver cette relatien entre ce tuteur et ce tutoré?")
-                                labelinfo.pack()
-                                labelquestion.pack()
-                                ouibtn = ttk.Button(MSGbox, text="Oui")
-                                nonbtn = ttk.Button(MSGbox, text="Non")
-                                ouibtn.pack()
-                                nonbtn.pack()
+                                msg = "Une disponibilité a été troivée entre "+str(nomtuteur)+" et "+str(nom)+" \n sur le créneau horaire "+str(disp[disponibilites])+".\n Voulez vous conserver cette disponibilité?"
+                                conserver = popupmaker("Disponibilité trouvée", msg, 2)
+                                if conserver == True:
+                                    contact=row["contact"]
+                                    if contact.upper() != 'AUCUN' and contact.upper() != 'NONE' and contact.upper() != ' ' and contact.upper != '':
+                                        info = "Voici un moyen de contacter le tuteur: "+str(contact)
+                                        popupmaker("Information", str(info), 1)
+                                        TFile.close()
+                                        return
+                                    else:
+                                        res = popupmaker("Attention", "Aucun moyen de contacter le tuteur n'est entré dans la base de données.", 99, "Modifier", "OK")
+                                        return res
+                                        TFile.close()
+        TFile.close()
+    return popupmaker("Information", "Aucune relation possible trouvée.", 1)
+
 
 
 def inforegroup(l0, l1, l2, l3, l4, l5, l6, l7, l8, l9, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, mec0, mec1, mec2, mec3,
@@ -478,17 +515,21 @@ def reset():
     return showinlog("[STDINFO]: Done !")
 
 
+
+
+
 def launch():
     if str(name_entry.get()) == '' or str(mat_list.get()) == '':
-        errbox = tkinter.Toplevel()
-        errbox.title("Erreur")
-        errlabel = ttk.Label(errbox, text="Erreur: un ou plusieurs champs n'ont pas été remplis.")
-        errbtn = ttk.Button(errbox, text="OK")
+        showinlog("[STDWARN]: Missing data to start other processes !")
+        return popupmaker('Erreur de saisie', "Erreur: Une ou plusieurs entrée textuelle obligatoires sont vides.", 1)
     showinlog("[STDINFO]: Executing program...")
     progbar.start()
     disponibilites = inforegroup(lu0.get(), lu1.get(), lu2.get(), lu3.get(), lu4.get(), lu5.get(), lu6.get(), lu7.get(), lu8.get(), lu9.get(), ma0.get(), ma1.get(), ma2.get(), ma3.get(), ma4.get(), ma5.get(), ma6.get(),
                                  ma7.get(), ma8.get(), ma9.get(), me0.get(), me1.get(), me2.get(), me3.get(), je0.get(), je1.get(), je2.get(), je3.get(), je4.get(), je5.get(), je6.get(), je7.get(), je8.get(), je9.get(),
                                  ve0.get(), ve1.get(), ve2.get(), ve3.get(), ve4.get(), ve5.get(), ve6.get(), ve7.get(), ve8.get(), ve9.get())
+    if len(disponibilites)==0:
+        showinlog("[STDWARN]: Missing data to start other processes !")
+        return popupmaker('Erreur de saisie', "Erreur: Aucun créneau horaire de disponibilité saisi.", 1)
     modessplt(disponibilites)
     progbar.stop()
     reset()
