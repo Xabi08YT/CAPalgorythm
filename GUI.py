@@ -1,3 +1,4 @@
+import time
 import tkinter
 from tkinter import ttk
 from tkinter import Radiobutton
@@ -191,7 +192,7 @@ VE7 = tkinter.Checkbutton(EDTFrame, variable=ve7)
 VE8 = tkinter.Checkbutton(EDTFrame, variable=ve8)
 VE9 = tkinter.Checkbutton(EDTFrame, variable=ve9)
 
-h0 = tkinter.Label(EDTFrame, text='8h10-8h05')
+h0 = tkinter.Label(EDTFrame, text='8h10-9h05')
 h1 = tkinter.Label(EDTFrame, text='9h05-10h')
 h2 = tkinter.Label(EDTFrame, text='10h15-11h10')
 h3 = tkinter.Label(EDTFrame, text='11h10-12h05')
@@ -331,14 +332,19 @@ def popupmaker(title, message, type, textbtnA=None, textbtnB=None):
     errlabel.pack()
     def OK():
         errbox.destroy()
+        return
     if type == 1:
         errbtn = ttk.Button(errbox, text="OK", command=OK)
         errbtn.pack()
     elif type==2:
-        def sender(object):
-            return object
-        btn1 = ttk.Button(errbox, text="Oui", command=sender(True))
-        btn2 = ttk.Button(errbox, text='Non', command=sender(False))
+        def senderF():
+            errbox.destroy()
+            return False
+        def senderT():
+            errbox.destroy()
+            return True
+        btn1 = ttk.Button(errbox, text="Oui", command=senderT)
+        btn2 = ttk.Button(errbox, text='Non', command=senderF)
         btn1.pack()
         btn2.pack()
     elif type == 99:
@@ -371,18 +377,27 @@ def datastoretuteur(name, grade, disponibilites, matiere, contact):
     return
 
 
+def datareformat(datarow,):
+    n = 2
+    datagroup = []
+    while n<len(datarow):
+        temp = datarow[n:n+3]
+        print(temp)
+        datagroup.append(temp)
+        n+=3
+    print("datagroup",datagroup)
+    return datagroup
+
+
 def reltutoretuteur(nom, niveau, disp, matiere):
     with open('tuteurs.csv', newline='', mode='r') as TFile:
         datastored = csv.DictReader(TFile, fieldnames=["name", "grade", "freehours", "helping", "contact"])
         for row in datastored:
-            temp = row["freehours"]
-            for char in len(temp)/5:
-
             if matiere == row["helping"]:
                 print("Matière OK")
                 if int(row["grade"]) <= niveau:
                     print("Classe OK")
-                    displist =row["freehours"]
+                    displist = datareformat(row["freehours"])
                     print(displist)
                     print(disp)
                     for a in range(len(displist)):
@@ -390,10 +405,12 @@ def reltutoretuteur(nom, niveau, disp, matiere):
                             print(displist[a], disp[b])
                             if displist[a] == disp[b]:
                                 nomtuteur = row["name"]
-                                msg = "Une disponibilité a été troivée entre "+str(nomtuteur)+" et "+str(nom)+" \n sur le créneau horaire "+str(disp[disponibilites])+".\n Voulez vous conserver cette disponibilité?"
-                                conserver = popupmaker("Disponibilité trouvée", msg, 2)
+                                msg = "Une disponibilité a été troivée entre "+str(nomtuteur)+" et "+str(nom)+" \n sur le créneau horaire "+str(disptrouvee)+".\n Voulez vous conserver cette disponibilité?"
+                                msbox = tkinter.Toplevel()
+                                msbox.title("Info: Relation trouvée")
+                                mslabel = ttk.label(msbox, text=msg)
                                 if conserver == True:
-                                    contact=row["contact"]
+                                    contact = row["contact"]
                                     if contact.upper() != 'AUCUN' and contact.upper() != 'NONE' and contact.upper() != ' ' and contact.upper != '':
                                         info = "Voici un moyen de contacter le tuteur: "+str(contact)
                                         popupmaker("Information", str(info), 1)
@@ -401,11 +418,10 @@ def reltutoretuteur(nom, niveau, disp, matiere):
                                         return
                                     else:
                                         res = popupmaker("Attention", "Aucun moyen de contacter le tuteur n'est entré dans la base de données.", 99, "Modifier", "OK")
-                                        return res
                                         TFile.close()
+                                        return res
         TFile.close()
     return popupmaker("Information", "Aucune relation possible trouvée.", 1)
-
 
 
 def inforegroup(l0, l1, l2, l3, l4, l5, l6, l7, l8, l9, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, mec0, mec1, mec2, mec3,
@@ -515,21 +531,20 @@ def reset():
     return showinlog("[STDINFO]: Done !")
 
 
-
-
-
 def launch():
+    progbar.start()
     if str(name_entry.get()) == '' or str(mat_list.get()) == '':
         showinlog("[STDWARN]: Missing data to start other processes !")
-        return popupmaker('Erreur de saisie', "Erreur: Une ou plusieurs entrée textuelle obligatoires sont vides.", 1)
+        popupmaker('Erreur de saisie', "Erreur: Une ou plusieurs entrée textuelle obligatoires sont vides.", 1)
+        return progbar.stop()
     showinlog("[STDINFO]: Executing program...")
-    progbar.start()
     disponibilites = inforegroup(lu0.get(), lu1.get(), lu2.get(), lu3.get(), lu4.get(), lu5.get(), lu6.get(), lu7.get(), lu8.get(), lu9.get(), ma0.get(), ma1.get(), ma2.get(), ma3.get(), ma4.get(), ma5.get(), ma6.get(),
                                  ma7.get(), ma8.get(), ma9.get(), me0.get(), me1.get(), me2.get(), me3.get(), je0.get(), je1.get(), je2.get(), je3.get(), je4.get(), je5.get(), je6.get(), je7.get(), je8.get(), je9.get(),
                                  ve0.get(), ve1.get(), ve2.get(), ve3.get(), ve4.get(), ve5.get(), ve6.get(), ve7.get(), ve8.get(), ve9.get())
-    if len(disponibilites)==0:
+    if len(disponibilites) == 0:
         showinlog("[STDWARN]: Missing data to start other processes !")
-        return popupmaker('Erreur de saisie', "Erreur: Aucun créneau horaire de disponibilité saisi.", 1)
+        popupmaker('Erreur de saisie', "Erreur: Aucun créneau horaire de disponibilité saisi.", 1)
+        return progbar.stop()
     modessplt(disponibilites)
     progbar.stop()
     reset()
