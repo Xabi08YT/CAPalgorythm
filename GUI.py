@@ -1,9 +1,9 @@
-import time
-import tkinter
-from tkinter import ttk
-from tkinter import Radiobutton
 import csv
 import datetime
+import tkinter
+from tkinter import Radiobutton
+from tkinter import ttk
+from os import makedirs
 
 # initialisation de l'interface graphique
 interface = tkinter.Tk()
@@ -217,122 +217,8 @@ mat_list = ttk.Combobox(BottomFrame, values=Listematiere, width=30, textvariable
 
 # Insertions des boutons de radio
 
-
-def controlstateEn():
-    LU0.config(state='normal')
-    LU1.config(state='normal')
-    LU2.config(state='normal')
-    LU3.config(state='normal')
-    LU4.config(state='normal')
-    LU5.config(state='normal')
-    LU6.config(state='normal')
-    LU7.config(state='normal')
-    LU8.config(state='normal')
-    LU9.config(state='normal')
-
-    MA0.config(state='normal')
-    MA1.config(state='normal')
-    MA2.config(state='normal')
-    MA3.config(state='normal')
-    MA4.config(state='normal')
-    MA5.config(state='normal')
-    MA6.config(state='normal')
-    MA7.config(state='normal')
-    MA8.config(state='normal')
-    MA9.config(state='normal')
-
-    ME0.config(state='normal')
-    ME1.config(state='normal')
-    ME2.config(state='normal')
-    ME3.config(state='normal')
-
-    JE0.config(state='normal')
-    JE1.config(state='normal')
-    JE2.config(state='normal')
-    JE3.config(state='normal')
-    JE4.config(state='normal')
-    JE5.config(state='normal')
-    JE6.config(state='normal')
-    JE7.config(state='normal')
-    JE8.config(state='normal')
-    JE9.config(state='normal')
-
-    VE0.config(state='normal')
-    VE1.config(state='normal')
-    VE2.config(state='normal')
-    VE3.config(state='normal')
-    VE4.config(state='normal')
-    VE5.config(state='normal')
-    VE6.config(state='normal')
-    VE7.config(state='normal')
-    VE8.config(state='normal')
-    VE9.config(state='normal')
-
-    mat_list.config(state='normal')
-    contact_entry.config(state='normal')
-    niv.config(state='normal')
-    return
-
-
-def controlstateDis():
-    LU0.config(state='disabled')
-    LU1.config(state='disabled')
-    LU2.config(state='disabled')
-    LU3.config(state='disabled')
-    LU4.config(state='disabled')
-    LU5.config(state='disabled')
-    LU6.config(state='disabled')
-    LU7.config(state='disabled')
-    LU8.config(state='disabled')
-    LU9.config(state='disabled')
-
-    MA0.config(state='disabled')
-    MA1.config(state='disabled')
-    MA2.config(state='disabled')
-    MA3.config(state='disabled')
-    MA4.config(state='disabled')
-    MA5.config(state='disabled')
-    MA6.config(state='disabled')
-    MA7.config(state='disabled')
-    MA8.config(state='disabled')
-    MA9.config(state='disabled')
-
-    ME0.config(state='disabled')
-    ME1.config(state='disabled')
-    ME2.config(state='disabled')
-    ME3.config(state='disabled')
-
-    JE0.config(state='disabled')
-    JE1.config(state='disabled')
-    JE2.config(state='disabled')
-    JE3.config(state='disabled')
-    JE4.config(state='disabled')
-    JE5.config(state='disabled')
-    JE6.config(state='disabled')
-    JE7.config(state='disabled')
-    JE8.config(state='disabled')
-    JE9.config(state='disabled')
-
-    VE0.config(state='disabled')
-    VE1.config(state='disabled')
-    VE2.config(state='disabled')
-    VE3.config(state='disabled')
-    VE4.config(state='disabled')
-    VE5.config(state='disabled')
-    VE6.config(state='disabled')
-    VE7.config(state='disabled')
-    VE8.config(state='disabled')
-    VE9.config(state='disabled')
-
-    mat_list.config(state='disabled')
-    contact_entry.config(state='disabled')
-    niv.config(state='disabled')
-    return
-
-
-modebtn1 = Radiobutton(mainframe, text="S'enregistrer en tant que tuteur.", variable=modeout, value=0, command=controlstateEn)
-modebtn2 = Radiobutton(mainframe, text="Trouver un tuteur", variable=modeout, value=1, command=controlstateEn)
-modebtn3 = Radiobutton(mainframe, text="Se supprimer", variable=modeout, value=2, command=controlstateDis)
+modebtn1 = Radiobutton(mainframe, text="S'enregistrer en tant que tuteur.", variable=modeout, value=0)
+modebtn2 = Radiobutton(mainframe, text="Trouver un tuteur", variable=modeout, value=1)
 
 # insertion du bouton de validation et de loa progressbar
 progbar = ttk.Progressbar(BottomFrame, mode="indeterminate", length=100)
@@ -352,7 +238,6 @@ label_blank9 = tkinter.Label(BottomFrame, text="            ")
 label_mode.grid(column=0, columnspan=3, row=0)
 modebtn1.grid(column=0, columnspan=1, row=1, sticky='w')
 modebtn2.grid(column=0, columnspan=1, row=2, sticky='w')
-modebtn3.grid(column=0, columnspan=1, row=3, sticky='w')
 
 label_blank.grid(column=4, row=0, columnspan=1)
 label_blank1.grid(column=5, row=0, columnspan=1)
@@ -441,7 +326,7 @@ def properexit(code):
 
 
 def showinlog(message):
-    with open("lastestlogs.txt", mode='a') as log:
+    with open("lastestlogs.txt", mode='a', ) as log:
         log.write(str(datetime.time())+message+str("\n"))
         log.close()
     if "[STDFATAL]" in message:
@@ -488,7 +373,8 @@ def datastoretuteur(name, grade, disponibilites, matiere, contact):
             TFile.close()
         showinlog("[STDINFO] Successfully done !")
     except FileNotFoundError:
-        with open("tuteurs.csv", mode='x') as TFile:
+        makedirs("tuteurs.csv")
+        with open("tuteurs.csv", mode='a') as TFile:
             csvdatabase = csv.DictWriter(TFile, fieldnames=["name", "grade", "freehours", "helping", "contact"])
             csvdatabase.writeheader()
             csvdatabase.writerow(
@@ -513,142 +399,140 @@ def datareformat(datarow,):
 
 
 def reltutoretuteur(nom, niveau, disp, matiere):
-    with open('tuteurs.csv', newline='', mode='r') as TFile:
-        datastored = csv.DictReader(TFile, fieldnames=["name", "grade", "freehours", "helping", "contact"])
-        for row in datastored:
-            if matiere == row["helping"]:
-                print("Matière OK")
-                if int(row["grade"]) <= niveau:
-                    print("Classe OK")
-                    displist = datareformat(row["freehours"])
-                    print(displist)
-                    print(disp)
-                    for a in range(len(displist)):
-                        for b in range(len(disp)):
-                            print(displist[a], disp[b])
-                            if displist[a] == disp[b]:
-                                nomtuteur = row["name"]
-                                if 'LU' in disp[b]:
-                                    if disp[b] == 'LU0':
-                                        tempdisp = 'Lundi de 8h10 à 9h05'
-                                    elif disp[b] == 'LU1':
-                                        tempdisp = 'Lundi de 9h05 à 10h'
-                                    elif disp[b] == 'LU2':
-                                        tempdisp = 'Lundi de 10h15 à 11h10'
-                                    elif disp[b] == 'LU3':
-                                        tempdisp = 'Lundi de 11h10 à 12h05'
-                                    elif disp[b] == 'LU4':
-                                        tempdisp = 'Lundi de 12h05 à 13h'
-                                    elif disp[b] == 'LU5':
-                                        tempdisp = 'Lundi de 13h à 13h55'
-                                    elif disp[b] == 'LU6':
-                                        tempdisp = 'Lundi de 13h55 à 14h50'
-                                    elif disp[b] == 'LU7':
-                                        tempdisp = 'Lundi de 15h05 à 16h00'
-                                    elif disp[b] == 'LU8':
-                                        tempdisp = 'Lundi de 16h00 à 17h00'
-                                    elif disp[b] == 'LU9':
-                                        tempdisp = 'Lundi de 17h00 à 17h55'
-                                elif 'MA' in disp[b]:
-                                    if disp[b] == 'MA0':
-                                        tempdisp = 'Mardi de 8h10 à 9h05'
-                                    elif disp[b] == 'MA1':
-                                        tempdisp = 'Mardi de 9h05 à 10h'
-                                    elif disp[b] == 'MA2':
-                                        tempdisp = 'Mardi de 10h15 à 11h10'
-                                    elif disp[b] == 'MA3':
-                                        tempdisp = 'Mardi de 11h10 à 12h05'
-                                    elif disp[b] == 'MA4':
-                                        tempdisp = 'Mardi de 12h05 à 13h'
-                                    elif disp[b] == 'MA5':
-                                        tempdisp = 'Mardi de 13h à 13h55'
-                                    elif disp[b] == 'MA6':
-                                        tempdisp = 'Mardi de 13h55 à 14h50'
-                                    elif disp[b] == 'MA7':
-                                        tempdisp = 'Mardi de 15h05 à 16h00'
-                                    elif disp[b] == 'MA8':
-                                        tempdisp = 'Mardi de 16h00 à 17h00'
-                                    elif disp[b] == 'MA9':
-                                        tempdisp = 'Mardi de 17h00 à 17h55'
-                                elif 'ME' in disp[b]:
-                                    if disp[b] == 'ME0':
-                                        tempdisp = 'Mercredi de 8h10 à 9h05'
-                                    elif disp[b] == 'ME1':
-                                        tempdisp = 'Mercredi de 9h05 à 10h'
-                                    elif disp[b] == 'ME2':
-                                        tempdisp = 'Mercredi de 10h15 à 11h10'
-                                    elif disp[b] == 'ME3':
-                                        tempdisp = 'Mercredi de 11h10 à 12h05'
-                                if 'JE' in disp[b]:
-                                    if disp[b] == 'JE0':
-                                        tempdisp = 'Jeudi de 8h10 à 9h05'
-                                    elif disp[b] == 'Je1':
-                                        tempdisp = 'Jeudi de 9h05 à 10h'
-                                    elif disp[b] == 'JE2':
-                                        tempdisp = 'Jeudi de 10h15 à 11h10'
-                                    elif disp[b] == 'JE3':
-                                        tempdisp = 'Jeudi de 11h10 à 12h05'
-                                    elif disp[b] == 'JE4':
-                                        tempdisp = 'Jeudi de 12h05 à 13h'
-                                    elif disp[b] == 'JE5':
-                                        tempdisp = 'Jeudi de 13h à 13h55'
-                                    elif disp[b] == 'JE6':
-                                        tempdisp = 'Jeudi de 13h55 à 14h50'
-                                    elif disp[b] == 'JE7':
-                                        tempdisp = 'Jeudi de 15h05 à 16h00'
-                                    elif disp[b] == 'JE8':
-                                        tempdisp = 'Jeudi de 16h00 à 17h00'
-                                    elif disp[b] == 'JE9':
-                                        tempdisp = 'Jeudi de 17h00 à 17h55'
-                                elif 'VE' in disp[b]:
-                                    if disp[b] == 'VE0':
-                                        tempdisp = 'Vendredi de 8h10 à 9h05'
-                                    elif disp[b] == 'VE1':
-                                        tempdisp = 'Vendredi de 9h05 à 10h'
-                                    elif disp[b] == 'VE2':
-                                        tempdisp = 'Vendredi de 10h15 à 11h10'
-                                    elif disp[b] == 'VE3':
-                                        tempdisp = 'Vendredi de 11h10 à 12h05'
-                                    elif disp[b] == 'VE4':
-                                        tempdisp = 'Vendredi de 12h05 à 13h'
-                                    elif disp[b] == 'VE5':
-                                        tempdisp = 'Vendredi de 13h à 13h55'
-                                    elif disp[b] == 'VE6':
-                                        tempdisp = 'Vendredi de 13h55 à 14h50'
-                                    elif disp[b] == 'VE7':
-                                        tempdisp = 'Vendredi de 15h05 à 16h00'
-                                    elif disp[b] == 'VE8':
-                                        tempdisp = 'Vendredi de 16h00 à 17h00'
-                                    elif disp[b] == 'VE9':
-                                        tempdisp = 'Vendredi de 17h00 à 17h55'
-                                msg = "Une disponibilité a été trouvée entre "+str(nomtuteur)+" et "+str(nom)+" \n sur le créneau horaire du "+str(tempdisp)+".\n Voulez vous conserver cette disponibilité?"
-                                msbox = tkinter.Toplevel()
-                                msbox.title("Info: Relation trouvée")
-                                mslabel = ttk.Label(msbox, text=msg)
-                                mslabel.pack()
-                                def conserv():
-                                    msbox.destroy()
-                                    contact = row["contact"]
-                                    if contact.upper() != 'AUCUN' and contact.upper() != 'NONE' and contact.upper() != ' ' and contact.upper != '':
-                                        info = "Voici un moyen de contacter le tuteur: " + str(contact)
-                                        popupmaker("Information", str(info), 1)
-                                        TFile.close()
-                                        return
-                                    else:
-                                        popupmaker("Attention",
-                                                         "Aucun moyen de contacter le tuteur n'est entré dans la base de données.",
-                                                         99, "Modifier", "OK")
-                                        TFile.close()
-                                        return
-                                def lose():
-                                    return msbox.destroy()
-                                msbutton = ttk.Button(msbox, text="Oui", command=conserv)
-                                msbutton2 = ttk.Button(msbox, text="Non", command=lose)
-                                msbutton.pack()
-                                msbutton2.pack()
+    try:
+        with open('tuteurs.csv', mode='r') as TFile:
+            datastored = csv.DictReader(TFile, fieldnames=["name", "grade", "freehours", "helping", "contact"])
+            for row in datastored:
+                if matiere == row["helping"]:
+                    print("Matière OK")
+                    if int(row["grade"]) <= niveau:
+                        print("Classe OK")
+                        displist = datareformat(row["freehours"])
+                        print(displist)
+                        print(disp)
+                        for a in range(len(displist)):
+                            for b in range(len(disp)):
+                                print(displist[a], disp[b])
+                                if displist[a] == disp[b]:
+                                    nomtuteur = row["name"]
+                                    if 'LU' in disp[b]:
+                                        if disp[b] == 'LU0':
+                                            tempdisp = 'Lundi de 8h10 à 9h05'
+                                        elif disp[b] == 'LU1':
+                                            tempdisp = 'Lundi de 9h05 à 10h'
+                                        elif disp[b] == 'LU2':
+                                            tempdisp = 'Lundi de 10h15 à 11h10'
+                                        elif disp[b] == 'LU3':
+                                            tempdisp = 'Lundi de 11h10 à 12h05'
+                                        elif disp[b] == 'LU4':
+                                            tempdisp = 'Lundi de 12h05 à 13h'
+                                        elif disp[b] == 'LU5':
+                                            tempdisp = 'Lundi de 13h à 13h55'
+                                        elif disp[b] == 'LU6':
+                                            tempdisp = 'Lundi de 13h55 à 14h50'
+                                        elif disp[b] == 'LU7':
+                                            tempdisp = 'Lundi de 15h05 à 16h00'
+                                        elif disp[b] == 'LU8':
+                                            tempdisp = 'Lundi de 16h00 à 17h00'
+                                        elif disp[b] == 'LU9':
+                                            tempdisp = 'Lundi de 17h00 à 17h55'
+                                    elif 'MA' in disp[b]:
+                                        if disp[b] == 'MA0':
+                                            tempdisp = 'Mardi de 8h10 à 9h05'
+                                        elif disp[b] == 'MA1':
+                                            tempdisp = 'Mardi de 9h05 à 10h'
+                                        elif disp[b] == 'MA2':
+                                            tempdisp = 'Mardi de 10h15 à 11h10'
+                                        elif disp[b] == 'MA3':
+                                            tempdisp = 'Mardi de 11h10 à 12h05'
+                                        elif disp[b] == 'MA4':
+                                            tempdisp = 'Mardi de 12h05 à 13h'
+                                        elif disp[b] == 'MA5':
+                                            tempdisp = 'Mardi de 13h à 13h55'
+                                        elif disp[b] == 'MA6':
+                                            tempdisp = 'Mardi de 13h55 à 14h50'
+                                        elif disp[b] == 'MA7':
+                                            tempdisp = 'Mardi de 15h05 à 16h00'
+                                        elif disp[b] == 'MA8':
+                                            tempdisp = 'Mardi de 16h00 à 17h00'
+                                        elif disp[b] == 'MA9':
+                                            tempdisp = 'Mardi de 17h00 à 17h55'
+                                    elif 'ME' in disp[b]:
+                                        if disp[b] == 'ME0':
+                                            tempdisp = 'Mercredi de 8h10 à 9h05'
+                                        elif disp[b] == 'ME1':
+                                            tempdisp = 'Mercredi de 9h05 à 10h'
+                                        elif disp[b] == 'ME2':
+                                            tempdisp = 'Mercredi de 10h15 à 11h10'
+                                        elif disp[b] == 'ME3':
+                                            tempdisp = 'Mercredi de 11h10 à 12h05'
+                                    if 'JE' in disp[b]:
+                                        if disp[b] == 'JE0':
+                                            tempdisp = 'Jeudi de 8h10 à 9h05'
+                                        elif disp[b] == 'Je1':
+                                            tempdisp = 'Jeudi de 9h05 à 10h'
+                                        elif disp[b] == 'JE2':
+                                            tempdisp = 'Jeudi de 10h15 à 11h10'
+                                        elif disp[b] == 'JE3':
+                                            tempdisp = 'Jeudi de 11h10 à 12h05'
+                                        elif disp[b] == 'JE4':
+                                            tempdisp = 'Jeudi de 12h05 à 13h'
+                                        elif disp[b] == 'JE5':
+                                            tempdisp = 'Jeudi de 13h à 13h55'
+                                        elif disp[b] == 'JE6':
+                                            tempdisp = 'Jeudi de 13h55 à 14h50'
+                                        elif disp[b] == 'JE7':
+                                            tempdisp = 'Jeudi de 15h05 à 16h00'
+                                        elif disp[b] == 'JE8':
+                                            tempdisp = 'Jeudi de 16h00 à 17h00'
+                                        elif disp[b] == 'JE9':
+                                            tempdisp = 'Jeudi de 17h00 à 17h55'
+                                    elif 'VE' in disp[b]:
+                                        if disp[b] == 'VE0':
+                                            tempdisp = 'Vendredi de 8h10 à 9h05'
+                                        elif disp[b] == 'VE1':
+                                            tempdisp = 'Vendredi de 9h05 à 10h'
+                                        elif disp[b] == 'VE2':
+                                            tempdisp = 'Vendredi de 10h15 à 11h10'
+                                        elif disp[b] == 'VE3':
+                                            tempdisp = 'Vendredi de 11h10 à 12h05'
+                                        elif disp[b] == 'VE4':
+                                            tempdisp = 'Vendredi de 12h05 à 13h'
+                                        elif disp[b] == 'VE5':
+                                            tempdisp = 'Vendredi de 13h à 13h55'
+                                        elif disp[b] == 'VE6':
+                                            tempdisp = 'Vendredi de 13h55 à 14h50'
+                                        elif disp[b] == 'VE7':
+                                            tempdisp = 'Vendredi de 15h05 à 16h00'
+                                        elif disp[b] == 'VE8':
+                                            tempdisp = 'Vendredi de 16h00 à 17h00'
+                                        elif disp[b] == 'VE9':
+                                            tempdisp = 'Vendredi de 17h00 à 17h55'
+                                    msg = "Une disponibilité a été trouvée entre "+str(nomtuteur)+" et "+str(nom)+" \n sur le créneau horaire du "+str(tempdisp)+".\n Voulez vous conserver cette disponibilité?"
+                                    msbox = tkinter.Toplevel()
+                                    msbox.title("Info: Relation trouvée")
+                                    mslabel = ttk.Label(msbox, text=msg)
+                                    mslabel.pack()
+                                    def conserv():
+                                        msbox.destroy()
+                                        contact = row["contact"]
+                                        if contact.upper() != 'AUCUN' and contact.upper() != 'NONE' and contact.upper() != ' ' and contact.upper != '':
+                                            info = "Voici un moyen de contacter le tuteur: " + str(contact)
+                                            popupmaker("Information", str(info), 1)
+                                            TFile.close()
+                                            return
+                                    def lose():
+                                        return msbox.destroy()
+                                    msbutton = ttk.Button(msbox, text="Oui", command=conserv)
+                                    msbutton2 = ttk.Button(msbox, text="Non", command=lose)
+                                    msbutton.pack()
+                                    msbutton2.pack()
 
-        TFile.close()
-    return popupmaker("Information", "Aucune relation possible trouvée.", 1)
+            TFile.close()
+            return popupmaker("Information", "Aucune relation possible trouvée.", 1)
+    except FileNotFoundError:
+        return popupmaker("Erreur du systeme de fichier:","La base de donnée n'a pu être trouvée. Veuillez d'abord entrer des tuteurs.",1)
+
 
 
 def inforegroup(l0, l1, l2, l3, l4, l5, l6, l7, l8, l9, M0, M1, M2, M3, M4, M5, M6, M7, M8, M9, mec0, mec1, mec2, mec3,
@@ -693,8 +577,6 @@ def modessplt(disp):
     if modeout.get() == 1:
         showinlog("[STDINFO] Initialising reading mode...")
         reltutoretuteur(nom, niveau, disp, matiere)
-    elif modeout.get() == 2:
-        showinlog("[STDINFO] Initialising deleting mode...")
     else:
         showinlog("[STDINFO] Initialising writing mode...")
         datastoretuteur(nom, niveau, disp, matiere, contact)
@@ -759,7 +641,7 @@ def reset():
 
 def launch():
     progbar.start()
-    if str(name_entry.get()) == '' or str(mat_list.get()) == '':
+    if str(name_entry.get()) == '' or str(mat_list.get()) == '' and modeout.get() != 2:
         showinlog("[STDWARN]: Missing data to start other processes !")
         popupmaker('Erreur de saisie', "Erreur: Une ou plusieurs entrée textuelle obligatoires sont vides.", 1)
         return progbar.stop()
@@ -767,7 +649,7 @@ def launch():
     disponibilites = inforegroup(lu0.get(), lu1.get(), lu2.get(), lu3.get(), lu4.get(), lu5.get(), lu6.get(), lu7.get(), lu8.get(), lu9.get(), ma0.get(), ma1.get(), ma2.get(), ma3.get(), ma4.get(), ma5.get(), ma6.get(),
                                  ma7.get(), ma8.get(), ma9.get(), me0.get(), me1.get(), me2.get(), me3.get(), je0.get(), je1.get(), je2.get(), je3.get(), je4.get(), je5.get(), je6.get(), je7.get(), je8.get(), je9.get(),
                                  ve0.get(), ve1.get(), ve2.get(), ve3.get(), ve4.get(), ve5.get(), ve6.get(), ve7.get(), ve8.get(), ve9.get())
-    if len(disponibilites) == 0:
+    if len(disponibilites) == 0 and modeout.get() != 2:
         showinlog("[STDWARN]: Missing data to start other processes !")
         popupmaker('Erreur de saisie', "Erreur: Aucun créneau horaire de disponibilité saisi.", 1)
         return progbar.stop()
