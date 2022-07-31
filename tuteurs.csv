@@ -1,5 +1,0 @@
-|{'nom': 'Tutu', 'niveau': 'Term', 'dispo': ['ME3'], 'matiere': 'maths', 'contact': 'contact@exemple.com'}|
-|{'nom': 'Jean-Michel', 'niveau': '2nde', 'dispo': ['ME0', 'ME1'], 'matiere': 'francais', 'contact': 'jm@exmple.exemple'}|
-|{'nom': 'Mohammed', 'niveau': '1ere', 'dispo': ['JE0', 'JE6', 'VE7'], 'matiere': 'HISTOIRE', 'contact': 'none'}|
-|{'nom': 'Dédé', 'niveau': 'Term', 'dispo': ['ME0'], 'matiere': 'MATHS', 'contact': 'none'}|
-|{'nom': 'LOL', 'niveau': 'Term', 'dispo': [], 'matiere': 'HGGSP', 'contact': 'aucun'}|
