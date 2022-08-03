@@ -488,6 +488,10 @@ interface = tkinter.Tk()
 interface.title("Interface base de données CAPS")
 interface.geometry("1500x720")
 interface.minsize(1500, 720)
+try:
+    interface.iconphoto(True, tkinter.PhotoImage(file='logo.png'))
+except Exception:
+    pass
 
 enableLogs = tkinter.BooleanVar()
 enableFeedback = tkinter.BooleanVar()
