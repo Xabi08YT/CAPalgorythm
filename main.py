@@ -212,6 +212,32 @@ def regroupInfos():
     return disponibs
 
 
+##Fonction de recherche de tuteurs dans la DB
+def rechercheTuteur(nom, pren, niveau, matiere, sansMSGBox = False):
+    global tuteursDB
+    for i in range(len(tuteursDB)):
+        if nom == tuteursDB.loc[i,"nom"].strip() and pren == tuteursDB.loc[i,"prenom"].stip() and niveau == tuteursDB.loc[i, "niveau"] and matiere == tuteursDB.loc["matiere"]:
+            if not(sansMSGBox):
+                newmsgbox("Information","Un tuteur correspondant à ces critères à été trouvé.", 1)
+            return True, i
+    if not(sansMSGBox):
+        newmsgbox("Information","Aucun tuteur correspondant à ces critères à été trouvé.", 1)
+    return False, None
+
+
+##Fonction de modification des informations concernant un tuteur
+def modifInfos(nom, pren, niveau, matiere, dispos, contact):
+    supprimerTuteur(nom, pren, matiere)
+    ajouterTuteur(nom, pren, niveau, dispos, matiere, contact)
+    actualiserDB()
+    return
+
+
+##Fonction qui relie une commande avec une autre en completant ses arguments
+def afficherAvertModif():
+    newmsgbox("Avertissement","En activant le mode de modification d'information, vous ne pourrez modifier le nom\n et le prenom de la personne ni même la matière dans laquelle elle souhaite aider.\n Pour y parvenir, veuillez supprimer cette personne de la base de données puis la ré-enregistrer.", 1)
+
+
 ##Fonction d'actualisation des bases de données
 def actualiserDB():
     global tuteursDB, relDB, feedback
@@ -251,8 +277,6 @@ def actualiserConfig():
 
 ##Fonction de modification de la configuration
 def modifConfig(logsOpt,feedbackOpt):
-    print(logsOpt, feedbackOpt)
-    states = {"True": True, "False": False}
     os.remove(path="config.csv")
     printInLogs("Modification de la configuration suivant les choix de l'utilisateur...",0, True)
     with open(file="config.csv",mode="a+",newline="") as temp:
@@ -384,27 +408,24 @@ def supprimerTuteur(nom, prn, matiere):
 
 ##Fonction permettant de déterminer le mode de fonctionnement
 def modessplt(disp):
-    printInLogs("Determining mode to use...", 0)
+    printInLogs("Détermination du mode de fonctionnement...", 0)
     nom = str(name.get())
-    print(nom)
     pren = str(prenom.get())
-    print(pren)
     niveau = int(niv.get())
-    print(niveau)
-    print(disp)
     matiere = str(mat_list.get())
-    print(matiere)
     contact = str(contact_entry.get())
-    print(contact)
     if modeout.get() == 1:
         printInLogs("Initialisation du mode lecture...", 0)
         trouverTuteur(nom,pren, niveau, matiere, disp)
     elif modeout.get() == 0:
         printInLogs("Initialisation du mode d'écriture...", 0)
         ajouterTuteur(nom, pren, niveau, disp, matiere, contact)
-    else:
+    elif modeout.get() == 2:
         printInLogs("Initialisation du mode de suppression...", 0)
         supprimerTuteur(nom, pren, matiere)
+    else:
+        printInLogs("Modification des informations du tuteur...")
+        modifInfos(nom, pren, niveau, matiere, disp, contact)
     return printInLogs("Opération terminée.", 0)
 
 
@@ -708,6 +729,7 @@ resetConfigBtn = Button(OptnFrame, text="Rétablir la configuration par défaut"
 modebtn1 = Radiobutton(TopFrame, text="S'enregistrer en tant que tuteur.", variable=modeout, value=0)
 modebtn2 = Radiobutton(TopFrame, text="Trouver un tuteur", variable=modeout, value=1)
 modebtn3 = Radiobutton(TopFrame, text="Supprimer un tuteur", variable=modeout, value=2)
+modebtn4 = Radiobutton(TopFrame, text="Modifier les informations d'un tuteur", variable=modeout, value=3, command=afficherAvertModif)
 
 # insertion du bouton de validation et de la progressbar
 progbar = ttk.Progressbar(BottomFrame, mode="indeterminate", length=100)
@@ -732,6 +754,7 @@ label_mode.grid(column=0, columnspan=1, row=0, sticky='e')
 modebtn1.grid(column=0, columnspan=1, row=1, sticky='w')
 modebtn2.grid(column=0, columnspan=1, row=2, sticky='w')
 modebtn3.grid(column=0, columnspan=1, row=3, sticky='w')
+modebtn4.grid(column=0, columnspan=1, row=4, sticky='w')
 
 label_blank.grid(column=4, row=0, columnspan=1)
 label_blank1.grid(column=5, row=0, columnspan=1)
