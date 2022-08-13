@@ -12,6 +12,7 @@ def trouverMAJ():
         with open(file="server-version.txt", mode="r") as versionServer:
             derniereversion = versionServer.read()
             if derniereversion == versioninstallee:
+                versionServer.close()
                 remove(path='server-version.txt')
                 quit()
             else:
@@ -23,6 +24,7 @@ def trouverMAJ():
                     version.close()
                     remove("logo.png")
                 wget.download("https://jrucvl.github.io/CAPalgorythm/logo.png", 'logo.png')
+            versionServer.close()
     remove(path='server-version.txt')
     quit()
 
