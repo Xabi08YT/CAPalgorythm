@@ -423,9 +423,12 @@ def modessplt(disp):
     elif modeout.get() == 2:
         printInLogs("Initialisation du mode de suppression...", 0)
         supprimerTuteur(nom, pren, matiere)
-    else:
-        printInLogs("Modification des informations du tuteur...")
+    elif modeout.get() == 3:
+        printInLogs("Modification des informations du tuteur...", 0)
         modifInfos(nom, pren, niveau, matiere, disp, contact)
+    else:
+        printInLogs("Recherche d'un tuteur précis dans la base de données...",0)
+        rechercheTuteur(nom, pren, niveau, matiere)
     return printInLogs("Opération terminée.", 0)
 
 
@@ -493,7 +496,7 @@ def reset():
 def Valider():
     progbar.start()
     dispos = regroupInfos()
-    if str(name_entry.get()) == '' or str(prenom_entry.get()) == '' or str(mat_list.get()) == '' or len(dispos) == 0 and modeout.get() != 2:
+    if str(name_entry.get()) == '' or str(prenom_entry.get()) == '' or str(mat_list.get()) == '' or len(dispos) == 0 and (modeout.get() != 2 or modeout.get() != 4):
         printInLogs("Données manquantes pour le lancement de processus...",1)
         newmsgbox('Erreur de saisie', "Erreur: Une ou plusieurs entrée textuelle obligatoires sont vides.", 1)
         return progbar.stop()
@@ -730,6 +733,7 @@ modebtn1 = Radiobutton(TopFrame, text="S'enregistrer en tant que tuteur.", varia
 modebtn2 = Radiobutton(TopFrame, text="Trouver un tuteur", variable=modeout, value=1)
 modebtn3 = Radiobutton(TopFrame, text="Supprimer un tuteur", variable=modeout, value=2)
 modebtn4 = Radiobutton(TopFrame, text="Modifier les informations d'un tuteur", variable=modeout, value=3, command=afficherAvertModif)
+modebtn5 = Radiobutton(TopFrame, text="Rechercher un tuteur en particulier", variable=modeout, value=4)
 
 # insertion du bouton de validation et de la progressbar
 progbar = ttk.Progressbar(BottomFrame, mode="indeterminate", length=100)
@@ -755,6 +759,7 @@ modebtn1.grid(column=0, columnspan=1, row=1, sticky='w')
 modebtn2.grid(column=0, columnspan=1, row=2, sticky='w')
 modebtn3.grid(column=0, columnspan=1, row=3, sticky='w')
 modebtn4.grid(column=0, columnspan=1, row=4, sticky='w')
+modebtn5.grid(column=0, columnspan=1, row=5, sticky='w')
 
 label_blank.grid(column=4, row=0, columnspan=1)
 label_blank1.grid(column=5, row=0, columnspan=1)
