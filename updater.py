@@ -9,7 +9,7 @@ def trouverMAJ():
     with open(file="version.txt",mode='r') as versionActuelle:
         versioninstallee = versionActuelle.read()
         wget.download('https://jrucvl.github.io/CAPalgorythm/version.txt', 'server-version.txt')
-        with open(file="version.txt", mode="r") as versionServer:
+        with open(file="server-version.txt", mode="r") as versionServer:
             derniereversion = versionServer.read()
             if derniereversion == versioninstallee:
                 remove(path='server-version.txt')
