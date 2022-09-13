@@ -72,8 +72,6 @@ def trouverMAJ():
                 wget.download("https://jrucvl.github.io/CAPalgorythm/updater.py", "newupdater.py")
                 serverupdaterver.close()
             localupdaterver.close()
-    try:
-        execv("finishupdate.bat")
     print("\nCleaning up....")
     """Suppression des fichiers temporaires necessaires aux mises a jour"""
     remove(path = str(filepath)+'server-libs.txt')
@@ -83,6 +81,10 @@ def trouverMAJ():
         pass
     remove(path=str(filepath)+'server-version.txt')
     remove(path=str(filepath)+'updaterserverversion.txt')
+    try:
+        execv("finishupdate.bat")
+    except FileNotFoundError:
+        pass
     """Fin du programme de mise a jour """
     print("Update done.")
     quit()
