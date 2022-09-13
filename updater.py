@@ -1,5 +1,5 @@
 import wget
-from os import remove, getcwd, execv, rename
+from os import remove, getcwd, system, rename
 from pandas import *
 
 filepath = getcwd()+"\\Update\\"
@@ -35,10 +35,10 @@ def trouverMAJ():
             else:
                 with open(file = 'updatelibs.txt', mode = 'a+') as updatecommand:
                     for i in range(len(serverlibs)):
-                        updatecommand.writeline("/PythonEnv/App/Python/Scripts/pip.exe install "+str(servlibs[i]))
+                        updatecommand.writelines("/PythonEnv/App/Python/Scripts/pip.exe install "+str(servlibs[i]))
                     updatecommand.close()
                 rename("updatelibs.txt", "updatelibs.bat")
-                execv(path = "updatecommand.bat")
+                system("updatecommand.bat")
                 with open(file = str(filepath)+'libs.txt', mode = 'w') as libversion:
                     libversion.writelines(serverlibs)
                     libversion.close()
@@ -55,16 +55,16 @@ def trouverMAJ():
                 pass
             else:
                 with open(file = 'finishupdate.txt', mode = 'a+') as command:
-                    command.writeline("@echo off")
-                    command.writeline("echo The program need to be restarted to complete the update. Please wait...")
-                    command.writeline("timeout /t 1")
-                    command.writeline("del updater.py")
-                    command.writeline("rename newupdater.py, updater.py")
-                    command.writeline("start 'Executer CAPS.bat")
-                    command.writeline("del finishupdate.bat")
+                    command.writelines("@echo off\n")
+                    command.writelines("echo The program need to be restarted to complete the update. Please wait...\n")
+                    command.writelines("timeout /t 1\n")
+                    command.writelines("del updater.py")
+                    command.writelines("rename newupdater.py, updater.py\n")
+                    command.writelines("start 'Executer CAPS.bat\n")
+                    command.writelines("del finishupdate.bat")
                     command.close()
                 with open(file = str(filepath)+"updaterversion.txt", mode = 'w') as uver:
-                    uver.writeline(serveruversion)
+                    uver.writelines(serveruversion)
                     uver.close()
                 wget.download("https://jrucvl.github.io/CAPalgorythm/updater.py", "newupdater.py")
                 serverupdaterver.close()
@@ -79,10 +79,8 @@ def trouverMAJ():
         pass
     remove(path=str(filepath)+'server-version.txt')
     remove(path=str(filepath)+'updaterserverversion.txt')
-    try:
-        execv("finishupdate.bat")
-    except FileNotFoundError:
-        pass
+    if updatingUpdater:
+        system("finishupdate.bat")
     """Fin du programme de mise a jour """
     print("Update done.")
     quit()
