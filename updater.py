@@ -1,5 +1,5 @@
 import wget
-from os import remove, getcwd, execv
+from os import remove, getcwd, execv, rename
 from pandas import *
 
 filepath = getcwd()+"\\Update\\"
@@ -33,12 +33,11 @@ def trouverMAJ():
             if liblistlocal == serverlibs:
                 pass
             else:
-                with open(file = 'updatelibs.bat', mode = 'x') as batfile:
-                    batfile.close()
-                with open(file = 'updatelibs.bat', mode = 'b') as updatecommand:
+                with open(file = 'updatelibs.txt', mode = 'a+') as updatecommand:
                     for i in range(len(serverlibs)):
                         updatecommand.writeline("/PythonEnv/App/Python/Scripts/pip.exe install "+str(servlibs[i]))
                     updatecommand.close()
+                rename("updatelibs.txt", "updatelibs.bat")
                 execv(path = "updatecommand.bat")
                 with open(file = str(filepath)+'libs.txt', mode = 'w') as libversion:
                     libversion.writelines(serverlibs)
@@ -55,9 +54,7 @@ def trouverMAJ():
             if serveruversion == uversion:
                 pass
             else:
-                with open(file = 'finishupdate.bat', mode = 'x') as batfile:
-                    batfile.close()
-                with open(file = 'finishupdate.bat', mode = 'b') as command:
+                with open(file = 'finishupdate.txt', mode = 'a+') as command:
                     command.writeline("@echo off")
                     command.writeline("echo The program need to be restarted to complete the update. Please wait...")
                     command.writeline("timeout /t 1")
@@ -71,6 +68,7 @@ def trouverMAJ():
                     uver.close()
                 wget.download("https://jrucvl.github.io/CAPalgorythm/updater.py", "newupdater.py")
                 serverupdaterver.close()
+                rename('finishupdate.txt','finishupdate.bat')
             localupdaterver.close()
     print("\nCleaning up....")
     """Suppression des fichiers temporaires necessaires aux mises a jour"""
@@ -83,6 +81,7 @@ def trouverMAJ():
     remove(path=str(filepath)+'updaterserverversion.txt')
     try:
         execv("finishupdate.bat")
+        print("Test")
     except FileNotFoundError:
         pass
     """Fin du programme de mise a jour """
