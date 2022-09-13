@@ -51,7 +51,7 @@ def trouverMAJ():
         uversion = localupdaterver.readline()
         wget.download("https://jrucvl.github.io/CAPalgorythm/updaterversion.txt", str(filepath)+"updaterserverversion.txt")
         with open(file = str(filepath)+"updaterserverversion.txt", mode = 'r') as serverupdaterver:
-            serveruversion = updaterserverversion.readline()
+            serveruversion = serverupdaterver.readline()
             if serveruversion == uversion:
                 pass
             else:
