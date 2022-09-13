@@ -60,7 +60,7 @@ def trouverMAJ():
                     command.writelines("timeout /t 1\n")
                     command.writelines("del updater.py")
                     command.writelines("rename newupdater.py, updater.py\n")
-                    command.writelines("start 'Executer CAPS.bat\n")
+                    command.writelines("start 'ExecuterCAPS.bat\n")
                     command.writelines("del finishupdate.bat")
                     command.close()
                 with open(file = str(filepath)+"updaterversion.txt", mode = 'w') as uver:
