@@ -81,7 +81,6 @@ def trouverMAJ():
     remove(path=str(filepath)+'updaterserverversion.txt')
     try:
         execv("finishupdate.bat")
-        print("Test")
     except FileNotFoundError:
         pass
     """Fin du programme de mise a jour """
