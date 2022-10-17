@@ -35,7 +35,7 @@ def trouverMAJ():
             else:
                 with open(file = 'updatelibs.txt', mode = 'a+') as updatecommand:
                     for i in range(len(serverlibs)):
-                        updatecommand.writelines("/PythonEnv/App/Python/Scripts/pip.exe install "+str(servlibs[i]))
+                        updatecommand.writelines("/PythonEnv/App/Python/python.exe -m pip install"+str(servlibs[i]))
                     updatecommand.close()
                 rename("updatelibs.txt", "updatelibs.bat")
                 system("updatecommand.bat")
