@@ -83,7 +83,7 @@ def init():
                         tempw.writeheader()
                         temp.close()
                     printInLogs("Impossible de charger la Base de Données tuteurs.csv vu que le fichier est introuvable. Ce fichier à été ajouté au répertoire courant.", 1)
-            """if not(isDB2loaded):    
+            """if not(isDB2loaded):
                 try:
                     relDB = pandas.read_csv("relations.csv")
                     printInLogs("La Base de Données relations.csv à été chargée avec succès.", 0)
@@ -94,7 +94,7 @@ def init():
                         tempw.writeheader()
                         temp.close()
                     printInLogs("Impossible de charger la Base de Données relations.csv vu que le fichier est introuvable. Ce fichier à été ajouté au répertoire courant.", 1)
-            if not(isDB3loaded):    
+            if not(isDB3loaded):
                 try:
                     feedback = pandas.read_csv("feedback.csv")
                     printInLogs("La Base de Données feedback.csv à été chargée avec succès.", 0)
@@ -182,11 +182,24 @@ def resetDB():
     nobutton.grid(column = 4, row = 1)
     return
 
+"""
+def refreshDatabase():
+    try:
+        relDB = pandas.read_csv("relations.csv")
+    except FileNotFoundError:
+        printInLogs("La base de dponnées correspondante est inexistante.", 1,True)
+        with open(file="relations.csv", mode = 'x') as temp:
+            temp = csv.DictWriter(temp, fieldnames = ["prenomtutore","nomtutore","prenomtuteur","nomtuteur","creneau"])
+            temp.writeheader()
+            temp.close()
+    return"""
+
+
 
 ##Fonction qui regroupe les informations obtenues
 def regroupInfos():
-    lis = [lu0.get(),lu1.get(),lu2.get(),lu3.get(), lu4.get(), lu5.get(), lu6.get(), lu7.get(), ma0.get(),ma1.get(),ma2.get(),ma3.get(),ma4.get(),ma5.get(),ma6.get(),ma7.get(),me0.get(),me1.get(),me2.get(),me3.get(),
-        je0.get(),je1.get(),je2.get(),je3.get(),je4.get(),je5.get(),je6.get(),je7.get(),ve0.get(),ve1.get(),ve2.get(),ve3.get(),ve4.get(),ve5.get(),ve6.get(),ve7.get()]
+    lis = [lu0.get(),lu1.get(),lu2.get(),lu3.get(), lu4.get(), lu5.get(), lu6.get(), lu7.get(),lu8.get(),lu9.get(), ma0.get(),ma1.get(),ma2.get(),ma3.get(),ma4.get(),ma5.get(),ma6.get(),ma7.get(),ma8.get(),ma9.get(),me0.get(),me1.get(),me2.get(),me3.get(),
+        je0.get(),je1.get(),je2.get(),je3.get(),je4.get(),je5.get(),je6.get(),je7.get(),je8.get(),je9.get(),ve0.get(),ve1.get(),ve2.get(),ve3.get(),ve4.get(),ve5.get(),ve6.get(),ve7.get(),ve8.get(),ve9.get()]
     printInLogs("Creation d'une table contenant les disponibilites...", 0)
     print(lis)
     disponibs = []
@@ -222,8 +235,8 @@ def actualiserDB():
     except FileNotFoundError:
         global isDB1loaded, isDB2loaded, isDB3loaded
         isDB1loaded = False
-        isDB2loaded = False
-        isDB3loaded = False
+        ##isDB2loaded = False
+        ##isDB3loaded = False
         init()
     return
 
@@ -252,7 +265,6 @@ def actualiserConfig():
 ##Fonction de modification de la configuration
 def modifConfig(logsOpt,feedbackOpt):
     print(logsOpt, feedbackOpt)
-    states = {"True": True, "False": False}
     os.remove(path="config.csv")
     printInLogs("Modification de la configuration suivant les choix de l'utilisateur...",0, True)
     with open(file="config.csv",mode="a+",newline="") as temp:
@@ -316,7 +328,7 @@ def ajouterTuteur(nom, pnm, niveau, dispos, matiere, contact):
         database.close()
     actualiserDB()
     return
-        
+
 
 ##Fonction permettant de trouver les tuteurs
 def trouverTuteur(nom, prn, niveau, matiere, dispos):
@@ -379,7 +391,7 @@ def supprimerTuteur(nom, prn, matiere):
         temp.close()
     actualiserDB()
     return
-            
+
 
 
 ##Fonction permettant de déterminer le mode de fonctionnement
