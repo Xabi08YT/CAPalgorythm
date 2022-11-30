@@ -83,7 +83,7 @@ def init():
                         tempw.writeheader()
                         temp.close()
                     printInLogs("Impossible de charger la Base de Données tuteurs.csv vu que le fichier est introuvable. Ce fichier à été ajouté au répertoire courant.", 1)
-            """if not(isDB2loaded):    
+            """if not(isDB2loaded):
                 try:
                     relDB = pandas.read_csv("relations.csv")
                     printInLogs("La Base de Données relations.csv à été chargée avec succès.", 0)
@@ -94,7 +94,7 @@ def init():
                         tempw.writeheader()
                         temp.close()
                     printInLogs("Impossible de charger la Base de Données relations.csv vu que le fichier est introuvable. Ce fichier à été ajouté au répertoire courant.", 1)
-            if not(isDB3loaded):    
+            if not(isDB3loaded):
                 try:
                     feedback = pandas.read_csv("feedback.csv")
                     printInLogs("La Base de Données feedback.csv à été chargée avec succès.", 0)
@@ -182,11 +182,24 @@ def resetDB():
     nobutton.grid(column = 4, row = 1)
     return
 
+"""
+def refreshDatabase():
+    try:
+        relDB = pandas.read_csv("relations.csv")
+    except FileNotFoundError:
+        printInLogs("La base de dponnées correspondante est inexistante.", 1,True)
+        with open(file="relations.csv", mode = 'x') as temp:
+            temp = csv.DictWriter(temp, fieldnames = ["prenomtutore","nomtutore","prenomtuteur","nomtuteur","creneau"])
+            temp.writeheader()
+            temp.close()
+    return"""
+
+
 
 ##Fonction qui regroupe les informations obtenues
 def regroupInfos():
-    lis = [lu0.get(),lu1.get(),lu2.get(),lu3.get(), lu4.get(), lu5.get(), lu6.get(), lu7.get(), ma0.get(),ma1.get(),ma2.get(),ma3.get(),ma4.get(),ma5.get(),ma6.get(),ma7.get(),me0.get(),me1.get(),me2.get(),me3.get(),
-        je0.get(),je1.get(),je2.get(),je3.get(),je4.get(),je5.get(),je6.get(),je7.get(),ve0.get(),ve1.get(),ve2.get(),ve3.get(),ve4.get(),ve5.get(),ve6.get(),ve7.get()]
+    lis = [lu0.get(),lu1.get(),lu2.get(),lu3.get(), lu4.get(), lu5.get(), lu6.get(), lu7.get(),lu8.get(),lu9.get(), ma0.get(),ma1.get(),ma2.get(),ma3.get(),ma4.get(),ma5.get(),ma6.get(),ma7.get(),ma8.get(),ma9.get(),me0.get(),me1.get(),me2.get(),me3.get(),
+        je0.get(),je1.get(),je2.get(),je3.get(),je4.get(),je5.get(),je6.get(),je7.get(),je8.get(),je9.get(),ve0.get(),ve1.get(),ve2.get(),ve3.get(),ve4.get(),ve5.get(),ve6.get(),ve7.get(),ve8.get(),ve9.get()]
     printInLogs("Creation d'une table contenant les disponibilites...", 0)
     print(lis)
     disponibs = []
@@ -212,32 +225,6 @@ def regroupInfos():
     return disponibs
 
 
-##Fonction de recherche de tuteurs dans la DB
-def rechercheTuteur(nom, pren, niveau, matiere, sansMSGBox = False):
-    global tuteursDB
-    for i in range(len(tuteursDB)):
-        if nom == tuteursDB.loc[i,"nom"].strip() and pren == tuteursDB.loc[i,"prenom"].stip() and niveau == tuteursDB.loc[i, "niveau"] and matiere == tuteursDB.loc["matiere"]:
-            if not(sansMSGBox):
-                newmsgbox("Information","Un tuteur correspondant à ces critères à été trouvé.", 1)
-            return True, i
-    if not(sansMSGBox):
-        newmsgbox("Information","Aucun tuteur correspondant à ces critères à été trouvé.", 1)
-    return False, None
-
-
-##Fonction de modification des informations concernant un tuteur
-def modifInfos(nom, pren, niveau, matiere, dispos, contact):
-    supprimerTuteur(nom, pren, matiere)
-    ajouterTuteur(nom, pren, niveau, dispos, matiere, contact)
-    actualiserDB()
-    return
-
-
-##Fonction qui relie une commande avec une autre en completant ses arguments
-def afficherAvertModif():
-    newmsgbox("Avertissement","En activant le mode de modification d'information, vous ne pourrez modifier le nom\n et le prenom de la personne ni même la matière dans laquelle elle souhaite aider.\n Pour y parvenir, veuillez supprimer cette personne de la base de données puis la ré-enregistrer.", 1)
-
-
 ##Fonction d'actualisation des bases de données
 def actualiserDB():
     global tuteursDB, relDB, feedback
@@ -248,8 +235,8 @@ def actualiserDB():
     except FileNotFoundError:
         global isDB1loaded, isDB2loaded, isDB3loaded
         isDB1loaded = False
-        isDB2loaded = False
-        isDB3loaded = False
+        ##isDB2loaded = False
+        ##isDB3loaded = False
         init()
     return
 
@@ -277,6 +264,7 @@ def actualiserConfig():
 
 ##Fonction de modification de la configuration
 def modifConfig(logsOpt,feedbackOpt):
+    print(logsOpt, feedbackOpt)
     os.remove(path="config.csv")
     printInLogs("Modification de la configuration suivant les choix de l'utilisateur...",0, True)
     with open(file="config.csv",mode="a+",newline="") as temp:
@@ -340,7 +328,7 @@ def ajouterTuteur(nom, pnm, niveau, dispos, matiere, contact):
         database.close()
     actualiserDB()
     return
-        
+
 
 ##Fonction permettant de trouver les tuteurs
 def trouverTuteur(nom, prn, niveau, matiere, dispos):
@@ -403,32 +391,32 @@ def supprimerTuteur(nom, prn, matiere):
         temp.close()
     actualiserDB()
     return
-            
+
 
 
 ##Fonction permettant de déterminer le mode de fonctionnement
 def modessplt(disp):
-    printInLogs("Détermination du mode de fonctionnement...", 0)
+    printInLogs("Determining mode to use...", 0)
     nom = str(name.get())
+    print(nom)
     pren = str(prenom.get())
+    print(pren)
     niveau = int(niv.get())
+    print(niveau)
+    print(disp)
     matiere = str(mat_list.get())
+    print(matiere)
     contact = str(contact_entry.get())
+    print(contact)
     if modeout.get() == 1:
         printInLogs("Initialisation du mode lecture...", 0)
         trouverTuteur(nom,pren, niveau, matiere, disp)
     elif modeout.get() == 0:
         printInLogs("Initialisation du mode d'écriture...", 0)
         ajouterTuteur(nom, pren, niveau, disp, matiere, contact)
-    elif modeout.get() == 2:
+    else:
         printInLogs("Initialisation du mode de suppression...", 0)
         supprimerTuteur(nom, pren, matiere)
-    elif modeout.get() == 3:
-        printInLogs("Modification des informations du tuteur...", 0)
-        modifInfos(nom, pren, niveau, matiere, disp, contact)
-    else:
-        printInLogs("Recherche d'un tuteur précis dans la base de données...",0)
-        rechercheTuteur(nom, pren, niveau, matiere)
     return printInLogs("Opération terminée.", 0)
 
 
@@ -496,7 +484,7 @@ def reset():
 def Valider():
     progbar.start()
     dispos = regroupInfos()
-    if str(name_entry.get()) == '' or str(prenom_entry.get()) == '' or str(mat_list.get()) == '' or len(dispos) == 0 and (modeout.get() != 2 or modeout.get() != 4):
+    if str(name_entry.get()) == '' or str(prenom_entry.get()) == '' or str(mat_list.get()) == '' or len(dispos) == 0 and modeout.get() != 2:
         printInLogs("Données manquantes pour le lancement de processus...",1)
         newmsgbox('Erreur de saisie', "Erreur: Une ou plusieurs entrée textuelle obligatoires sont vides.", 1)
         return progbar.stop()
@@ -732,8 +720,6 @@ resetConfigBtn = Button(OptnFrame, text="Rétablir la configuration par défaut"
 modebtn1 = Radiobutton(TopFrame, text="S'enregistrer en tant que tuteur.", variable=modeout, value=0)
 modebtn2 = Radiobutton(TopFrame, text="Trouver un tuteur", variable=modeout, value=1)
 modebtn3 = Radiobutton(TopFrame, text="Supprimer un tuteur", variable=modeout, value=2)
-modebtn4 = Radiobutton(TopFrame, text="Modifier les informations d'un tuteur", variable=modeout, value=3, command=afficherAvertModif)
-modebtn5 = Radiobutton(TopFrame, text="Rechercher un tuteur en particulier", variable=modeout, value=4)
 
 # insertion du bouton de validation et de la progressbar
 progbar = ttk.Progressbar(BottomFrame, mode="indeterminate", length=100)
@@ -758,8 +744,6 @@ label_mode.grid(column=0, columnspan=1, row=0, sticky='e')
 modebtn1.grid(column=0, columnspan=1, row=1, sticky='w')
 modebtn2.grid(column=0, columnspan=1, row=2, sticky='w')
 modebtn3.grid(column=0, columnspan=1, row=3, sticky='w')
-modebtn4.grid(column=0, columnspan=1, row=4, sticky='w')
-modebtn5.grid(column=0, columnspan=1, row=5, sticky='w')
 
 label_blank.grid(column=4, row=0, columnspan=1)
 label_blank1.grid(column=5, row=0, columnspan=1)
