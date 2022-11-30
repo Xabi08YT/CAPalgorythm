@@ -1,8 +1,10 @@
 import wget
 from os import remove, getcwd, system, rename
 from pandas import *
+import time
 
 filepath = getcwd()+"\\Update\\"
+updatingUpdater = False
 
 ##Fonction de verification de la version installée et de recherche de mises à jour
 def trouverMAJ():
@@ -11,8 +13,10 @@ def trouverMAJ():
     with open(file=str(filepath)+"version.txt",mode='r') as versionActuelle:
         versioninstallee = versionActuelle.read()
         wget.download('https://jrucvl.github.io/CAPalgorythm/version.txt', str(filepath)+'server-version.txt')
-        with open(file=str(filepath)+"version.txt", mode="r") as versionServer:
+        with open(file=str(filepath)+"server-version.txt", mode="r") as versionServer:
             derniereversion = versionServer.read()
+            print(derniereversion == versioninstallee)
+            time.sleep(30)
             if derniereversion == versioninstallee:
                 pass
             else:
@@ -35,7 +39,7 @@ def trouverMAJ():
             else:
                 with open(file = 'updatelibs.txt', mode = 'a+') as updatecommand:
                     for i in range(len(serverlibs)):
-                        updatecommand.writelines("/PythonEnv/App/Python/python.exe -m pip install"+str(servlibs[i]))
+                        updatecommand.writelines("/PythonEnv/App/Python/python.exe -m pip install"+str(serverlibs[i]))
                     updatecommand.close()
                 rename("updatelibs.txt", "updatelibs.bat")
                 system("updatecommand.bat")
@@ -69,6 +73,8 @@ def trouverMAJ():
                 wget.download("https://jrucvl.github.io/CAPalgorythm/updater.py", "newupdater.py")
                 serverupdaterver.close()
                 rename('finishupdate.txt','finishupdate.bat')
+                global updatingUpdater
+                updatingUpdater = True
             localupdaterver.close()
     print("\nCleaning up....")
     """Suppression des fichiers temporaires necessaires aux mises a jour"""
@@ -84,4 +90,5 @@ def trouverMAJ():
     """Fin du programme de mise a jour """
     print("Update done.")
     quit()
+
 trouverMAJ()
