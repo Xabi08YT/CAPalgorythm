@@ -3,6 +3,7 @@ import os
 import tkinter
 from tkinter import Button, Checkbutton, Frame, Radiobutton
 from tkinter import messagebox
+from tkinter import filedialog
 import tkinter.ttk as ttk
 from datetime import *
 import csv
@@ -182,24 +183,11 @@ def resetDB():
     nobutton.grid(column = 4, row = 1)
     return
 
-"""
-def refreshDatabase():
-    try:
-        relDB = pandas.read_csv("relations.csv")
-    except FileNotFoundError:
-        printInLogs("La base de dponnées correspondante est inexistante.", 1,True)
-        with open(file="relations.csv", mode = 'x') as temp:
-            temp = csv.DictWriter(temp, fieldnames = ["prenomtutore","nomtutore","prenomtuteur","nomtuteur","creneau"])
-            temp.writeheader()
-            temp.close()
-    return"""
-
-
 
 ##Fonction qui regroupe les informations obtenues
 def regroupInfos():
     lis = [lu0.get(),lu1.get(),lu2.get(),lu3.get(), lu4.get(), lu5.get(), lu6.get(), lu7.get(),lu8.get(),lu9.get(), ma0.get(),ma1.get(),ma2.get(),ma3.get(),ma4.get(),ma5.get(),ma6.get(),ma7.get(),ma8.get(),ma9.get(),me0.get(),me1.get(),me2.get(),me3.get(),
-        je0.get(),je1.get(),je2.get(),je3.get(),je4.get(),je5.get(),je6.get(),je7.get(),je8.get(),je9.get(),ve0.get(),ve1.get(),ve2.get(),ve3.get(),ve4.get(),ve5.get(),ve6.get(),ve7.get(),ve8.get(),ve9.get()]
+        je0.get(),je1.get(),je2.get(),je3.get(),je4.get(),je5.get(),je6.get(),je7.get(),je8.get(),je9.get(),ve0.get(),ve1.get(),ve2.get(),ve3.get(),ve4.get(),ve5.get(),ve6.get(),ve7.get(), ve8.get(), ve9.get()]
     printInLogs("Creation d'une table contenant les disponibilites...", 0)
     print(lis)
     disponibs = []
@@ -235,8 +223,8 @@ def actualiserDB():
     except FileNotFoundError:
         global isDB1loaded, isDB2loaded, isDB3loaded
         isDB1loaded = False
-        ##isDB2loaded = False
-        ##isDB3loaded = False
+        isDB2loaded = False
+        isDB3loaded = False
         init()
     return
 
@@ -322,9 +310,13 @@ def configDefaut():
 
 ##Fonction d'ajout de tuteurs dans la base de données
 def ajouterTuteur(nom, pnm, niveau, dispos, matiere, contact):
+    newRow = {'nom': nom, 'prenom': pnm,'niveau': niveau, 'disponibilites': dispos,'matiere': matiere, 'contact': contact}
+    if estDansBase(newRow):
+        newmsgbox("Erreur","Ces informations ont déjà été entrées dans la base de données",1)
+        return
     with open(file = "tuteurs.csv", mode = 'a+',newline="") as database:
         windb = csv.DictWriter(database, ['nom', 'prenom','niveau','disponibilites','matiere','contact'])
-        windb.writerow({'nom': nom, 'prenom': pnm,'niveau': niveau, 'disponibilites': dispos,'matiere': matiere, 'contact': contact})
+        windb.writerow(newRow)
         database.close()
     actualiserDB()
     return
@@ -371,15 +363,23 @@ def trouverTuteur(nom, prn, niveau, matiere, dispos):
 
 ##Fonction permettant de supprimer un tuteur de la base de données
 def supprimerTuteur(nom, prn, matiere):
+    print("suppression...") 
     global tuteursDB
     ligneASupprimer = None
-    for i in range(len(tuteursDB)-1):
+    print(len(tuteursDB))
+    if len(tuteursDB) == 0:
+        return newmsgbox("Erreur de base de donnees", "Erreur: Impossible de supprimer une information d'une base de données vide",1)
+    print("debug1")
+    for i in range(len(tuteursDB)):
+        print(i)
         nomt = tuteursDB.loc[i, "nom"]
         prenomt = tuteursDB.loc[i, "prenom"]
         matieret = tuteursDB.loc[i, "matiere"]
-        if nomt.strip() == nom or prenomt.strip() == prn or matieret.strip() == matiere:
+        print(nomt.strip() == nom and prenomt.strip() == prn and matieret.strip() == matiere)
+        if nomt.strip() == nom and prenomt.strip() == prn and matieret.strip() == matiere:
             ligneASupprimer = i
             break
+    print("debug2")
     tuteursDBTemp = tuteursDB.copy()
     os.remove(path = "tuteurs.csv")
     with open(file="tuteurs.csv", mode="a+",newline="") as temp:
@@ -392,6 +392,43 @@ def supprimerTuteur(nom, prn, matiere):
     actualiserDB()
     return
 
+
+def FusionnerDB():
+    target = filedialog.askopenfilename(initialdir =  "/",title = "Select file",filetypes = (("CSV", "*.csv "),("all files", "*.*")))
+    if target == "":
+        return newmsgbox("Erreur", "Erreur: Aucun fichier selectionné",1)
+    targetread = pandas.read_csv(file = target)
+    with open(file="tuteurs.csv") as mainDB:
+        writer = csv.DictWriter(mainDB, fieldnames = ['nom', 'prenom','niveau','disponibilites','matiere','contact'])
+        for rows in targetread:
+            if estDansBase(rows):
+                pass
+            else:
+                pass
+    return
+
+
+#Vérification contre les conflits
+def estDansBase(row):
+    global tuteursDB
+    print(tuteursDB)
+    if len(tuteursDB) == 0:
+        return False
+    for r in range(len(tuteursDB)):
+        nomr = tuteursDB.loc[r, "nom"]
+        prenomr = tuteursDB.loc[r, "prenom"]
+        niveaur = tuteursDB.loc[r, "niveau"]
+        disposr = tuteursDB.loc[r, "disponibilites"]
+        print(row["disponibilites"],disposr)
+        matierer = tuteursDB.loc[r, "matiere"]
+        print(row["nom"].strip() == nomr.strip())
+        print(row["prenom"] == prenomr.strip())
+        print(row["niveau"] == niveaur)
+        print(row["matiere"] == matierer.strip())
+        print(row["nom"].strip() == nomr.strip() and row["prenom"] == prenomr.strip() and row["niveau"] == niveaur and row["matiere"] == matierer.strip())
+        if row["nom"].strip() == nomr.strip() and row["prenom"] == prenomr.strip() and row["niveau"] == niveaur and row["matiere"] == matierer.strip():
+            return True
+    return False
 
 
 ##Fonction permettant de déterminer le mode de fonctionnement
@@ -715,6 +752,7 @@ mat_list = ttk.Combobox(BottomFrame, values=Listematiere, width=30, textvariable
 resetDBBTN = Button(OptnFrame, text="Réinitialiser les bases de données" , command=resetDB)
 optnBTN = Button(OptnFrame, text="Options du logiciel", command=afficherConfigMenu)
 resetConfigBtn = Button(OptnFrame, text="Rétablir la configuration par défaut", command=configDefaut)
+fusionDBBtn = Button(OptnFrame,text="Fusionner des base de données", command=FusionnerDB)
 
 # Insertions des boutons de radio
 modebtn1 = Radiobutton(TopFrame, text="S'enregistrer en tant que tuteur.", variable=modeout, value=0)
@@ -846,6 +884,7 @@ progbar.grid(sticky='se', column=10, row=4)
 resetDBBTN.grid(sticky='s', column=2, row=4)
 optnBTN.grid(sticky='s', column=2, row=5)
 resetConfigBtn.grid(sticky='s', column=2, row=6)
+fusionDBBtn.grid(sticky='s',column=2,row=7)
 
 
 #Initialisation des derniers composants
@@ -858,8 +897,8 @@ EDTFrame.grid(sticky ='n', column=0, columnspan=6, row=4, rowspan=12)
 BottomFrame.grid(sticky ='s')
 OptnFrame.grid(column = 10, row = 0)
 
-##Appel de l'init du programme
+#Appel de l'init du programme
 init()
 
-##Lancement de l'IUG
+#Lancement de l'IUG
 interface.mainloop()
