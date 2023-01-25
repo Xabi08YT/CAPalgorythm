@@ -7,6 +7,7 @@ from tkinter import filedialog
 import tkinter.ttk as ttk
 from datetime import *
 import csv
+import unidecode
 
 
 newLogs = False
@@ -308,6 +309,16 @@ def configDefaut():
     return
 
 
+##Fonction qui retire les caractères spéciaux afin d'éviter la création du crash loop
+def unicode_serialize(*, kargs:list):
+    j = 0
+    for i in kargs:
+        if i is str:
+            string_sortie = unidecode.unidecode(i)
+            kargs[j] = string_sortie
+    return kargs
+
+
 ##Fonction d'ajout de tuteurs dans la base de données
 def ajouterTuteur(nom, pnm, niveau, dispos, matiere, contact):
     newRow = {'nom': nom, 'prenom': pnm,'niveau': niveau, 'disponibilites': dispos,'matiere': matiere, 'contact': contact}
@@ -445,15 +456,16 @@ def modessplt(disp):
     print(matiere)
     contact = str(contact_entry.get())
     print(contact)
+    serialized = unicode_serialize([nom,pren,contact])
     if modeout.get() == 1:
         printInLogs("Initialisation du mode lecture...", 0)
-        trouverTuteur(nom,pren, niveau, matiere, disp)
+        trouverTuteur(serialized[0],serialized[1], niveau, matiere, disp)
     elif modeout.get() == 0:
         printInLogs("Initialisation du mode d'écriture...", 0)
-        ajouterTuteur(nom, pren, niveau, disp, matiere, contact)
+        ajouterTuteur(serialized[0], serialized[1], niveau, disp, matiere, serialized[2])
     else:
         printInLogs("Initialisation du mode de suppression...", 0)
-        supprimerTuteur(nom, pren, matiere)
+        supprimerTuteur(serialized[0], serialized[1], matiere)
     return printInLogs("Opération terminée.", 0)
 
 
