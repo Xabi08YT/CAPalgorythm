@@ -310,12 +310,13 @@ def configDefaut():
 
 
 ##Fonction qui retire les caractères spéciaux afin d'éviter la création du crash loop
-def unicode_serialize(*, kargs:list):
-    j = 0
-    for i in kargs:
-        if i is str:
-            string_sortie = unidecode.unidecode(i)
-            kargs[j] = string_sortie
+def unicode_serialize(kargs:list):
+    for i in range(len(kargs)):
+        print(kargs[i])
+        string_sortie = unidecode.unidecode(kargs[i])
+        print(string_sortie)
+        kargs[i] = string_sortie
+    print(kargs)
     return kargs
 
 
