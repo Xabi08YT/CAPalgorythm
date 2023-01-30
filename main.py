@@ -361,7 +361,7 @@ def trouverTuteur(nom, prn, niveau, matiere, dispos):
                         return
                     msgbox = tkinter.Toplevel()
                     msgbox.title("Relation trouvée.")
-                    msg = "Un tuteur à été trouvé pour "+str(nom)+" "+str(prn)+" sur le créneau du "+str(creneaux[dispos[i]])+". Il s'agit de "+str(tuteursDB.loc[i,"nom"])+" "+str(tuteursDB.loc[i,"prenom"])+"."
+                    msg = "Un tuteur à été trouvé pour "+str(nom)+" "+str(prn)+" sur le créneau du "+str(creneaux[dispos[j]])+". Il s'agit de "+str(tuteursDB.loc[i,"nom"])+" "+str(tuteursDB.loc[i,"prenom"])+"."
                     msglabel = tkinter.Label(msgbox, text = msg+"\n Souhaitez-vous continuer la recherche?")
                     continuerbtn = tkinter.Button(msgbox, text = "OK", command=continuerRecherche)
                     msglabel.grid(column= 0, row=0, columnspan=6)
