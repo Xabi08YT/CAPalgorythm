@@ -12,7 +12,7 @@ import unidecode
 
 newLogs = False
 isDB1loaded = False
-isDB2loaded = True
+isDB2loaded = False
 isDB3loaded = True
 isConfigLoaded = False
 
@@ -40,7 +40,7 @@ def init():
     global tuteursDB,relDB, feedback, config, isConfigLoaded, isDB1loaded, isDB2loaded, isDB3loaded, newLogs
     for i in range(2):
         if isConfigLoaded == False:
-            config = {"enableLogs": True, "enableFeedback": False}
+            config = {"enableLogs": True, "enableFeedback": False, "enableRelDB": False}
             if newLogs == False:
                 try:
                     os.remove("lastestlog.txt")
@@ -56,6 +56,7 @@ def init():
                         printInLogs("Configuration chargée. Construction et application de la configuration lue...", 0)
                         config["enableLogs"] = cfg.loc[0,"state"]
                         config["enableFeedback"] = cfg.loc[1,"state"]
+                        config["enableRelDB"] = cfg.loc[2,"state"]
                         printInLogs("Table de configuration Construite et Appliquée.", 0, True)
                         break
                     except FileNotFoundError:
@@ -64,6 +65,7 @@ def init():
                             writetemplate.writeheader()
                             writetemplate.writerow({"properties": "enableLogs", "state": True})
                             writetemplate.writerow({"properties": "enableFeedback", "state": False})
+                            writetemplate.writerow({"properties": "RelDB", "state": False})
                             temp.close()
                         printInLogs("Impossible de charger la configuration à cause d'un fichier inexistant. Création d'une configuration vierge...", 1)
                 except KeyError:
@@ -85,7 +87,7 @@ def init():
                         tempw.writeheader()
                         temp.close()
                     printInLogs("Impossible de charger la Base de Données tuteurs.csv vu que le fichier est introuvable. Ce fichier à été ajouté au répertoire courant.", 1)
-            """if not(isDB2loaded):
+            if not(isDB2loaded) and config["enableRelDB"]:
                 try:
                     relDB = pandas.read_csv("relations.csv")
                     printInLogs("La Base de Données relations.csv à été chargée avec succès.", 0)
@@ -96,7 +98,7 @@ def init():
                         tempw.writeheader()
                         temp.close()
                     printInLogs("Impossible de charger la Base de Données relations.csv vu que le fichier est introuvable. Ce fichier à été ajouté au répertoire courant.", 1)
-            if not(isDB3loaded):
+            """if not(isDB3loaded):
                 try:
                     feedback = pandas.read_csv("feedback.csv")
                     printInLogs("La Base de Données feedback.csv à été chargée avec succès.", 0)
@@ -661,7 +663,7 @@ mat = tkinter.StringVar()
 nivvar = tkinter.IntVar()
 nivvar.set(0)
 Listematiere = ["Mathematiques", "Histoire-Geographie", "Education Morale et Civique", "Francais", "HGGSP", "NSI/SNT", "Physique Spe", "SVT Spe", "Enseignement-scientifique SVT","Enseignement scientifique Physique", "Allemand", "Espagnol", "Anglais","SES", "HLP",
-"Philosophie", "Litt. Anglaise"]
+"Philosophie", "Litt. Anglaise", "Musique"]
 
 
 # initialisation des frames
