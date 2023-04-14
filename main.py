@@ -8,6 +8,7 @@ import tkinter.ttk as ttk
 from datetime import *
 import csv
 import unidecode
+from CoreProxy import *
 
 
 newLogs = False
@@ -18,18 +19,8 @@ isConfigLoaded = False
 
 ##Fonction d'Ecriture d'informations de debuggage
 def printInLogs(objet, categorie, forceshowing = False):
-    if config["enableLogs"] == True or forceshowing == True:
-        with open(file="lastestlog.txt", mode="a+") as logs:
-            if categorie == 0:
-                logs.writelines(str(datetime.now())+"/[INFO] : "+str(objet)+"\n")
-            elif categorie == 1:
-                logs.writelines(str(datetime.now())+"/[WARN] : "+str(objet)+"\n")
-            elif categorie == 2:
-                logs.writelines(str(datetime.now())+"/[ERR] : "+str(objet)+"\n")
-            elif categorie == 3:
-                logs.writelines(str(datetime.now())+"/[FATAL] : "+str(objet)+"\n")
-            logs.close()
-        return
+    CoreLibs.utils.printInLogs(objet, categorie, forceshowing = False)
+    return
 
 
 
@@ -38,86 +29,9 @@ def printInLogs(objet, categorie, forceshowing = False):
 ################################################################################################################################
 def init():
     global tuteursDB,relDB, feedback, config, isConfigLoaded, isDB1loaded, isDB2loaded, isDB3loaded, newLogs
-    for i in range(2):
-        if isConfigLoaded == False:
-            config = {"enableLogs": True, "enableFeedback": False, "enableRelDB": False}
-            if newLogs == False:
-                try:
-                    os.remove("lastestlog.txt")
-                except FileNotFoundError:
-                    pass
-                newLogs = True
-            printInLogs("Début de l'initialisation du programme...", 0)
-            printInLogs("Chargement de la configuration...",0)
-            for i in range(3):
-                try:
-                    try:
-                        cfg = pandas.read_csv("config.csv")
-                        printInLogs("Configuration chargée. Construction et application de la configuration lue...", 0)
-                        config["enableLogs"] = cfg.loc[0,"state"]
-                        config["enableFeedback"] = cfg.loc[1,"state"]
-                        config["enableRelDB"] = cfg.loc[2,"state"]
-                        printInLogs("Table de configuration Construite et Appliquée.", 0, True)
-                        break
-                    except FileNotFoundError:
-                        with open(file="config.csv",mode="a+",newline="") as temp:
-                            writetemplate = csv.DictWriter(temp, fieldnames = ["properties","state"])
-                            writetemplate.writeheader()
-                            writetemplate.writerow({"properties": "enableLogs", "state": True})
-                            writetemplate.writerow({"properties": "enableFeedback", "state": False})
-                            writetemplate.writerow({"properties": "RelDB", "state": False})
-                            temp.close()
-                        printInLogs("Impossible de charger la configuration à cause d'un fichier inexistant. Création d'une configuration vierge...", 1)
-                except KeyError:
-                    printInLogs("Impossible d'appliquer la configuration. Utilisation de la configuration par défaut...", 2)
-                    break
-            if i==3:
-                printInLogs("Impossible de charger la configuration. Utilisation de la configuration par défaut...", 2)
-            isConfigLoaded = True
-        printInLogs("Chargement des fichiers en cours...", 0)
-        for i in range(3):
-            if not(isDB1loaded):
-                try:
-                    tuteursDB = pandas.read_csv("tuteurs.csv")
-                    printInLogs("La Base de Données tuteurs.csv à été chargée avec succès.", 0)
-                    isDB1loaded = True
-                except FileNotFoundError:
-                    with open(file="tuteurs.csv", mode="a+",newline="") as temp:
-                        tempw = csv.DictWriter(temp, fieldnames = ['nom', 'prenom','niveau','disponibilites','matiere','contact'])
-                        tempw.writeheader()
-                        temp.close()
-                    printInLogs("Impossible de charger la Base de Données tuteurs.csv vu que le fichier est introuvable. Ce fichier à été ajouté au répertoire courant.", 1)
-            if not(isDB2loaded) and config["enableRelDB"]:
-                try:
-                    relDB = pandas.read_csv("relations.csv")
-                    printInLogs("La Base de Données relations.csv à été chargée avec succès.", 0)
-                    isDB2loaded = True
-                except FileNotFoundError:
-                    with open(file="relations.csv", mode="a+",newline="") as temp:
-                        tempw = csv.DictWriter(temp, fieldnames = ["prenomtutore","nomtutore","prenomtuteur","nomtuteur","creneau"])
-                        tempw.writeheader()
-                        temp.close()
-                    printInLogs("Impossible de charger la Base de Données relations.csv vu que le fichier est introuvable. Ce fichier à été ajouté au répertoire courant.", 1)
-            """if not(isDB3loaded):
-                try:
-                    feedback = pandas.read_csv("feedback.csv")
-                    printInLogs("La Base de Données feedback.csv à été chargée avec succès.", 0)
-                    isDB3loaded = True
-                except FileNotFoundError:
-                    with open(file="feedback.csv", mode="a+",newline="") as temp:
-                        tempw = csv.DictWriter(temp, fieldnames = ["prenomtutore","nomtutore","prenomtuteur","nomtuteur","avistutore","avistuteur","typeavis"])
-                        tempw.writeheader()
-                        temp.close()"""
-            if isDB1loaded and isDB2loaded and isDB3loaded:
-                break
-        if i == 3:
-            printInLogs("Initialisation s'est terminée à cause d'une erreur: Echec du chargement des fichiers. Le programme va maintenant s'arrêter.", 3)
-            quit()
-        printInLogs("Chargement des fichiers terminé.",0)
-        printInLogs("Initialisation du programme terminée avec succès. Démarrage...",0)
-        break
+    CoreLibs.utils.init()
+    tuteursDB,relDB, feedback, config, isConfigLoaded, isDB1loaded, isDB2loaded, isDB3loaded, newLogs = CoreLibs.utils.getVars()
     return
-##---------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 ##Fonction de création de msgbox
@@ -154,22 +68,14 @@ def newmsgbox(title, message, type, textbtnA=None, textbtnB=None):
 ##Fonction de réinitialisation des bases de donnees
 def resetDB():
     global isDB1loaded; isDB2loaded, isDB3loaded
-    printInLogs("Début de la réinitialisation de la base de données", 0)
+    printInLogs("Requesting User...", 0)
     msgbox = tkinter.Toplevel()
     msgbox.title("Avertissement")
     msg = ttk.Label(msgbox, text = "Toutes les bases de données seront réinitialisées. Cette action est irréversible. Souhaitez-vous continuer ?")
     def YES():
-        global isDB1loaded, isDB2loaded, isDB3loaded
-        isDB1loaded = False
-        #isDB2loaded = False
-        #isDB3loaded = False
         msgbox.destroy()
-        os.remove(path = 'tuteurs.csv')
-        """try:
-            os.remove(path = 'feedback.csv')
-        except FileNotFoundError:
-            pass
-        os.remove(path = 'relations.csv')"""
+        printInLogs("Début de la réinitialisation des bases de données...")
+        CoreLibs.basicDBCtrl.resetDB()
         printInLogs("Bases de données supprimées avec succès. Début d'une nouvelle initialisation...",0)
         init()
         newmsgbox("Information","Bases de données réinitialisées avec succès.", 1)
@@ -219,61 +125,31 @@ def regroupInfos():
 ##Fonction d'actualisation des bases de données
 def actualiserDB():
     global tuteursDB, relDB, feedback
-    try:
-        tuteursDB = pandas.read_csv("tuteurs.csv")
-        relDB = pandas.read_csv("relations.csv")
-        feedback = pandas.read_csv("feedback.csv")
-    except FileNotFoundError:
-        global isDB1loaded, isDB2loaded, isDB3loaded
-        isDB1loaded = False
-        isDB2loaded = False
-        isDB3loaded = False
-        init()
+    tuteursDB, relDB, feedback = CoreLibs.utils.actualiserDB()
     return
 
 
 ##Fonction d'actualisation de la configuration
 def actualiserConfig():
     global config
-    printInLogs("Actualisation de la configuration...",0, True)
-    try:
-        cfg = pandas.read_csv("config.csv")
-        printInLogs("Configuration chargée. Construction et application de la configuration lue...", 0)
-        config["enableLogs"] = cfg.loc[0,"state"]
-        config["enableFeedback"] = cfg.loc[1,"state"]
-        printInLogs("Table de configuration Construite et Appliquée.", 0, True)
-    except FileNotFoundError:
-        with open(file="config.csv",mode="a+",newline="") as temp:
-            writetemplate = csv.DictWriter(temp, fieldnames = ["properties","state"])
-            writetemplate.writeheader()
-            writetemplate.writerow({"properties": "enableLogs", "state": True})
-            writetemplate.writerow({"properties": "enableFeedback", "state": False})
-            temp.close()
-        printInLogs("Impossible de charger la configuration à cause d'un fichier inexistant. Création d'une configuration vierge...", 1)
+    config = CoreLibs.utils.actualiserConfig()
     return
 
 
 ##Fonction de modification de la configuration
-def modifConfig(logsOpt,feedbackOpt):
-    print(logsOpt, feedbackOpt)
-    os.remove(path="config.csv")
+def modifConfig(logsOpt,feedbackOpt, RelDB):
     printInLogs("Modification de la configuration suivant les choix de l'utilisateur...",0, True)
-    with open(file="config.csv",mode="a+",newline="") as temp:
-            writetemplate = csv.DictWriter(temp, fieldnames = ["properties","state"])
-            writetemplate.writeheader()
-            writetemplate.writerow({"properties": "enableLogs", "state": logsOpt})
-            writetemplate.writerow({"properties": "enableFeedback", "state": feedbackOpt})
-            temp.close()
-    actualiserConfig()
+    global config
+    config = actualiserConfig()
     return
 
 
 ##Fonction permettant l'appel du menu de configuration
 def afficherConfigMenu():
-    global config, enableFeedback, enableLogs
+    global config, enableFeedback, enableLogs, enableRelDB
     def appliquer():
         optMenu.destroy()
-        modifConfig(enableLogs.get(), enableFeedback.get())
+        modifConfig(enableLogs.get(), enableFeedback.get(),enableRelDB.get())
         return
     def annuler():
         optMenu.destroy()
@@ -285,20 +161,25 @@ def afficherConfigMenu():
     blanklabel = tkinter.Label(optFrame,text="              ")
     enableLogs.set(str(config["enableLogs"]))
     enableFeedback.set(str(config["enableFeedback"]))
+    enableRelDB.set(str(config["enableRelDB"]))
     logOptnLabel = tkinter.Label(optFrame,text="Activer les journaux de débuggage:")
     feedbackOptnLabel = tkinter.Label(optFrame,text="Activer la base de données contenant les avis concernant\n les relations effectuées (non géré pour le moment):")
+    relationOptnLabel = tkinter.Label(optFrame,text="Activer le gestionnaire de relations entre tuteurs et tutorés (WIP)")
     enableLogsCheck = Checkbutton(optFrame,onvalue=True,offvalue=False,variable=enableLogs)
     enableFeedbackCheck = Checkbutton(optFrame,onvalue=True,offvalue=False,variable=enableFeedback)
+    enableRelDBCheck = Checkbutton(optFrame,onvalue=True,offvalue=False,variable=enableRelDB)
     logOptnLabel.grid(column=0, row=1, columnspan=3)
     feedbackOptnLabel.grid(column=0, row=2, columnspan= 5,sticky="w")
+    relationOptnLabel.grid(column=0, row=3,columnspan=5,sticky='w')
     enableLogsCheck.grid(column=6, row = 1)
     enableFeedbackCheck.grid(column=6, row = 2)
+    enableRelDBCheck.grid(column=6, row = 3)
     blanklabel.grid(column=5,row = 1)
     optLabel.grid(column = 0, columnspan = 7, row=0)
     optAppliquerBtn = Button(optFrame, text = "Appliquer", command=appliquer)
     optAnnulerBtn = Button(optFrame, text="Annuler", command=annuler)
-    optAppliquerBtn.grid(column = 5, row = 3)
-    optAnnulerBtn.grid(column = 6, row= 3)
+    optAppliquerBtn.grid(column = 5, row = 4)
+    optAnnulerBtn.grid(column = 6, row= 4)
     optFrame.grid(column=0, row=0)
     return
 
@@ -312,14 +193,9 @@ def configDefaut():
 
 
 ##Fonction qui retire les caractères spéciaux afin d'éviter la création du crash loop
-def unicode_serialize(kargs:list):
-    for i in range(len(kargs)):
-        print(kargs[i])
-        string_sortie = unidecode.unidecode(kargs[i])
-        print(string_sortie)
-        kargs[i] = string_sortie
-    print(kargs)
-    return kargs
+def unicode_serialize(texts:list):
+    texts = CoreLibs.utils.unicode_serialize(texts)
+    return texts
 
 
 ##Fonction d'ajout de tuteurs dans la base de données
@@ -336,113 +212,37 @@ def ajouterTuteur(nom, pnm, niveau, dispos, matiere, contact):
     return
 
 
-##Fonction permettant de trouver les tuteurs
+##Fonction qui permet de trouver un tuteur
 def trouverTuteur(nom, prn, niveau, matiere, dispos):
-    nbRelations = 0
-    relationsTrouves = []
-    creneaux = {"LU0": "Lundi de 8h à 9h","LU1": "Lundi de 9h à 10h","LU2": "Lundi de 10h à 11h","LU3": "Lundi de 11h à 12h","LU4": "Lundi de 12h à 13h","LU5": "Lundi de 13h à 14h","LU6": "Lundi de 14h à 15h","LU7": "Lundi de 15h à 16h","LU8": "Lundi de 16h à 17h","LU9":"Lundi de 17h à 18h",
-                "MA0": "Mardi de 8h à 9h","MA1": "Mardi de 9h à 10h","MA2": "Mardi de 10h à 11h","MA3": "Mardi de 11h à 12h","MA4": "Mardi de 12h à 13h","MA5": "Mardi de 13h à 14h","MA6": "Mardi de 14h à 15h","MA7": "Mardi de 15h à 16h","MA8": "Mardi de 16h à 17h","MA9":"Mardi de 17h à 18h",
-                "ME0": "Mercredi de 8h à 9h","ME1": "Mercredi de 9h à 10h","ME2": "Mercredi de 10h à 11h","ME3": "Mercredi de 11h à 12h",
-                "JE0": "Jeudi de 8h à 9h","JE1": "Jeudi de 9h à 10h","JE2": "Jeudi de 10h à 11h","JE3": "Jeudi de 11h à 12h","JE4": "Jeudi de 12h à 13h","JE5": "Jeudi de 13h à 14h","JE6": "Jeudi de 14h à 15h","JE7": "Jeudi de 15h à 16h","JE8": "Jeudi de 16h à 17h","JE9":"Jeudi de 17h à 18h",
-                "VE0": "Vendredi de 8h à 9h","VE1": "Vendredi de 9h à 10h","VE2": "Vendredi de 10h à 11h","VE3": "Vendredi de 11h à 12h","VE4": "Vendredi de 12h à 13h","VE5": "Vendredi de 13h à 14h","VE6": "Vendredi de 14h à 15h","VE7": "Vendredi de 15h à 16h","VE8": "Vendredi de 16h à 17h","VE9":"Vendredi de 17h à 18h",}
-    global tuteursDB
-    for i in range(len(tuteursDB)):
-        matieret = str(tuteursDB.loc[i,"matiere"])
-        niveaut = tuteursDB.loc[i,"niveau"]
-        matieret = matieret.strip()
-        print(matieret)
-        print(niveaut)
-        print(eval("matieret == matiere"))
-        if matieret.strip() == matiere.strip() and niveaut <= niveau or (matiere == "Enseignement-scientifique SVT" and matieret == "SVT Spe") or (matiere == "Enseignement scientifique Physique" and matieret == "Physique Spe"):
-            dispost = tuteursDB.loc[i,"disponibilites"]
-            print(dispost)
-            for j in range(len(dispos)):
-                if dispos[j] in dispost:
-                    def continuerRecherche():
-                        msgbox.destroy()
-                        return
-                    msgbox = tkinter.Toplevel()
-                    msgbox.title("Relation trouvée.")
-                    msg = "Un tuteur à été trouvé pour "+str(nom)+" "+str(prn)+" sur le créneau du "+str(creneaux[dispos[j]])+". Il s'agit de "+str(tuteursDB.loc[i,"nom"])+" "+str(tuteursDB.loc[i,"prenom"])+"."
-                    msglabel = tkinter.Label(msgbox, text = msg+"\n Souhaitez-vous continuer la recherche?")
-                    continuerbtn = tkinter.Button(msgbox, text = "OK", command=continuerRecherche)
-                    msglabel.grid(column= 0, row=0, columnspan=6)
-                    continuerbtn.grid(column = 4, row = 1)
-                    relationsTrouves.append(msg)
-                nbRelations += 1
-    if nbRelations == 0:
-        newmsgbox("Information","Aucune relation n'a été trouvée.", 1)
+    msgout, rels, treatmentType = CoreLibs.tuteurs.trouverTuteur(nom, prn, niveau, matiere, dispos)
+    if treatmentType == None:
+        newmsgbox(msgout[0], msgout[1], msgout[2])
     return
 
 
 ##Fonction permettant de supprimer un tuteur de la base de données
 def supprimerTuteur(nom, prn, matiere):
     print("suppression...") 
-    global tuteursDB
-    ligneASupprimer = None
-    print(len(tuteursDB))
-    if len(tuteursDB) == 0:
-        return newmsgbox("Erreur de base de donnees", "Erreur: Impossible de supprimer une information d'une base de données vide",1)
-    print("debug1")
-    for i in range(len(tuteursDB)):
-        print(i)
-        nomt = tuteursDB.loc[i, "nom"]
-        prenomt = tuteursDB.loc[i, "prenom"]
-        matieret = tuteursDB.loc[i, "matiere"]
-        print(nomt.strip() == nom and prenomt.strip() == prn and matieret.strip() == matiere)
-        if nomt.strip() == nom and prenomt.strip() == prn and matieret.strip() == matiere:
-            ligneASupprimer = i
-            break
-    print("debug2")
-    tuteursDBTemp = tuteursDB.copy()
-    os.remove(path = "tuteurs.csv")
-    with open(file="tuteurs.csv", mode="a+",newline="") as temp:
-        tempw = csv.DictWriter(temp, fieldnames = ['nom', 'prenom','niveau','disponibilites','matiere','contact'])
-        tempw.writeheader()
-        for j in range(len(tuteursDBTemp)):
-            if j != ligneASupprimer:
-                tempw.writerow({"nom": str(tuteursDBTemp.loc[j,"nom"]).strip(), "prenom": str(tuteursDBTemp.loc[j,"prenom"]).strip(), "niveau": tuteursDBTemp.loc[j,"niveau"], "disponibilites": tuteursDBTemp.loc[j,"disponibilites"], "matiere": str(tuteursDBTemp.loc[j,"matiere"]).strip(), "contact": str(tuteursDBTemp.loc[j,"contact"]).strip()})
-        temp.close()
+    out = CoreLibs.tuteurs.supprimerTuteur(nom, prn, matiere)
+    if out is not None:
+        newmsgbox(out[0],out[1],out[2])
     actualiserDB()
     return
 
 
 def FusionnerDB():
     target = filedialog.askopenfilename(initialdir =  "/",title = "Select file",filetypes = (("CSV", "*.csv "),("all files", "*.*")))
-    if target == "":
-        return newmsgbox("Erreur", "Erreur: Aucun fichier selectionné",1)
-    targetread = pandas.read_csv(file = target)
-    with open(file="tuteurs.csv") as mainDB:
-        writer = csv.DictWriter(mainDB, fieldnames = ['nom', 'prenom','niveau','disponibilites','matiere','contact'])
-        for rows in targetread:
-            if estDansBase(rows):
-                pass
-            else:
-                pass
+    out = CoreLibs.tuteurs.FusionnerDB(target)
+    if out is not None:
+        newmsgbox(out)
     return
 
 
 #Vérification contre les conflits
 def estDansBase(row):
     global tuteursDB
-    print(tuteursDB)
-    if len(tuteursDB) == 0:
-        return False
-    for r in range(len(tuteursDB)):
-        nomr = tuteursDB.loc[r, "nom"]
-        prenomr = tuteursDB.loc[r, "prenom"]
-        niveaur = tuteursDB.loc[r, "niveau"]
-        disposr = tuteursDB.loc[r, "disponibilites"]
-        print(row["disponibilites"],disposr)
-        matierer = tuteursDB.loc[r, "matiere"]
-        print(row["nom"].strip() == nomr.strip())
-        print(row["prenom"] == prenomr.strip())
-        print(row["niveau"] == niveaur)
-        print(row["matiere"] == matierer.strip())
-        print(row["nom"].strip() == nomr.strip() and row["prenom"] == prenomr.strip() and row["niveau"] == niveaur and row["matiere"] == matierer.strip())
-        if row["nom"].strip() == nomr.strip() and row["prenom"] == prenomr.strip() and row["niveau"] == niveaur and row["matiere"] == matierer.strip():
-            return True
-    return False
+    estDansDB = CoreLibs.tuteurs.estDansBase(tuteursDB, row)
+    return estDansDB
 
 
 ##Fonction permettant de déterminer le mode de fonctionnement
@@ -559,6 +359,7 @@ except Exception:
 
 enableLogs = tkinter.BooleanVar()
 enableFeedback = tkinter.BooleanVar()
+enableRelDB = tkinter.BooleanVar()
 
 lu0 = tkinter.IntVar()
 lu0.set(0)
@@ -662,12 +463,13 @@ cont = tkinter.StringVar()
 mat = tkinter.StringVar()
 nivvar = tkinter.IntVar()
 nivvar.set(0)
-Listematiere = ["Mathematiques", "Histoire-Geographie", "Education Morale et Civique", "Francais", "HGGSP", "NSI/SNT", "Physique Spe", "SVT Spe", "Enseignement-scientifique SVT","Enseignement scientifique Physique", "Allemand", "Espagnol", "Anglais","SES", "HLP",
-"Philosophie", "Litt. Anglaise", "Musique"]
+Listematiere = ["Allemand" ,"Histoire-Geographie", "Education Morale et Civique", "Espagnol",  "HGGSP", "Enseignement-scientifique SVT","Enseignement scientifique Physique","Francais", "Anglais","SES", "HLP",
+"Philosophie", "Litt. Anglaise", "Mathematiques" ,"Mathématiques tronc-commun (TC)","Musique","NSI/SNT", "Physique Spe", "SVT Spe"]
 
 
 # initialisation des frames
 mainframe = ttk.Frame(interface)
+menuframe = ttk.Frame(interface)
 TopFrame = ttk.Frame(interface)
 EDTFrame = ttk.Frame(interface)
 BottomFrame = ttk.Frame(interface)
@@ -768,6 +570,9 @@ resetDBBTN = Button(OptnFrame, text="Réinitialiser les bases de données" , com
 optnBTN = Button(OptnFrame, text="Options du logiciel", command=afficherConfigMenu)
 resetConfigBtn = Button(OptnFrame, text="Rétablir la configuration par défaut", command=configDefaut)
 fusionDBBtn = Button(OptnFrame,text="Fusionner des base de données", command=FusionnerDB)
+
+# Menus d'options
+fileMenu = ""
 
 # Insertions des boutons de radio
 modebtn1 = Radiobutton(TopFrame, text="S'enregistrer en tant que tuteur.", variable=modeout, value=0)

@@ -11,4 +11,4 @@ Fonctionnailtés présentes:<br>
 
 Installation:</br>
 Il vous suffit d'extraire le ZIP dans un dossier et c'est parti ! Double-cliquez sur Executer CAPS.bat ou .exe suivant votre version de windows.</br>
-Support des systèmes UNIX (MacOS, Linux) non prévu pour le moment.
+Support de MacOS non prévu pour le moment.
