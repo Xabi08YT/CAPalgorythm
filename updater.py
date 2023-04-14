@@ -1,5 +1,5 @@
 import wget
-from os import remove, getcwd, system, rename
+from os import remove, getcwd, system, rename, rmdir, path, listdir
 from pandas import *
 import time
 import zipfile
@@ -18,17 +18,37 @@ def trouverMAJ():
         with open(file=str(filepath)+"server-version.txt", mode="r") as versionServer:
             derniereversion = versionServer.read()
             print(derniereversion == versioninstallee)
-            time.sleep(30)
             if derniereversion == versioninstallee:
                 pass
             else:
-                remove(path = 'main.py')
+                try:
+                    remove(path = 'main.py')
+                except FileNotFoundError:
+                    pass
+                try:
+                    remove(path='CoreProxy.py')
+                except FileNotFoundError:
+                    pass
+                try:
+                    for f in listdir('fr-Xabi08-CAPAlgorythmCore'):
+                        if f != "__pycache__":
+                            remove(path.join('fr-Xabi08-CAPAlgorythmCore', f))
+                        else:
+                            for g in listdir('fr-Xabi08-CAPAlgorythmCore/__pycache__'):
+                                remove(path.join('fr-Xabi08-CAPAlgorythmCore/__pycache__', g))
+                            rmdir('fr-Xabi08-CAPAlgorythmCore/__pycache__')
+                except FileNotFoundError:
+                    pass
+                try:
+                    rmdir(path = 'fr-Xabi08-CAPAlgorythmCore')
+                except FileNotFoundError:
+                    pass
                 wget.download("https://jrucvl.github.io/CAPalgorythm/main.py",'main.py')
                 wget.download("https://jrucvl.github.io/CAPalgorythm/CoreProxy.py",'CoreProxy.py')
                 wget.download("https://jrucvl.github.io/CAPalgorythm/fr-Xabi08-CAPAlgorythmCore.zip",'fr-Xabi08-CAPAlgorythmCore.zip')
-                remove('fr-Xabi08-CAPAlgorythmCore')
-                with zipfile.ZipFile(getcwd()+"/fr-Xabi08-CAPAlgorythmCore.zip", 'r') as zip:
-                    zip.extractall(getcwd)
+                zipPath = str(getcwd())+"/fr-Xabi08-CAPAlgorythmCore.zip"
+                with zipfile.ZipFile(zipPath, 'r') as zip:
+                    zip.extractall(getcwd())
                 with open(file=str(filepath)+'version.txt', mode = "w") as version:
                     version.writelines(derniereversion)
                     version.close()
