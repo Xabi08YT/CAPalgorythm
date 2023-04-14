@@ -2,6 +2,8 @@ import wget
 from os import remove, getcwd, system, rename
 from pandas import *
 import time
+import zipfile
+
 
 filepath = getcwd()+"\\Update\\"
 updatingUpdater = False
@@ -22,6 +24,11 @@ def trouverMAJ():
             else:
                 remove(path = 'main.py')
                 wget.download("https://jrucvl.github.io/CAPalgorythm/main.py",'main.py')
+                wget.download("https://jrucvl.github.io/CAPalgorythm/CoreProxy.py",'CoreProxy.py')
+                wget.download("https://jrucvl.github.io/CAPalgorythm/fr-Xabi08-CAPAlgorythmCore.zip",'fr-Xabi08-CAPAlgorythmCore.zip')
+                remove('fr-Xabi08-CAPAlgorythmCore')
+                with zipfile.ZipFile(getcwd()+"/fr-Xabi08-CAPAlgorythmCore.zip", 'r') as zip:
+                    zip.extractall(getcwd)
                 with open(file=str(filepath)+'version.txt', mode = "w") as version:
                     version.writelines(derniereversion)
                     version.close()
@@ -37,15 +44,8 @@ def trouverMAJ():
             if liblistlocal == serverlibs:
                 pass
             else:
-                with open(file = 'updatelibs.txt', mode = 'a+') as updatecommand:
-                    for i in range(len(serverlibs)):
-                        updatecommand.writelines("/PythonEnv/App/Python/python.exe -m pip install"+str(serverlibs[i]))
-                    updatecommand.close()
-                rename("updatelibs.txt", "updatelibs.bat")
-                system("updatecommand.bat")
-                with open(file = str(filepath)+'libs.txt', mode = 'w') as libversion:
-                    libversion.writelines(serverlibs)
-                    libversion.close()
+                cmd = str(getcwd()+"/PythonEnv/App/Python/python.exe -m pip install "+filepath+'server-libs.txt')
+                system(cmd)
             serverliblist.close()
         liblist.close()
     print("\nChecking updater version....")
