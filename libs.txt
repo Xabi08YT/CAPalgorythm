@@ -1,5 +1,0 @@
-pandas
-wget
-tkinter
-unidecode
-zipfile
