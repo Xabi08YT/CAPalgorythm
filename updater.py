@@ -1,7 +1,6 @@
 import wget
 from os import remove, getcwd, system, rename, rmdir, path, listdir
 from pandas import *
-import time
 import zipfile
 
 
@@ -24,18 +23,15 @@ def trouverMAJ():
         pass
     else:
         for e in listdir(getcwd()):
-            if e == 'fr-Xabi08-CAPAlgorythmCore':
-                for f in listdir('fr-Xabi08-CAPAlgorythmCore'):
+            if e == 'fr-Xabi08-CAPAlgorythmCore' or e == 'Update':
+                for f in listdir(e):
                     if f != "__pycache__":
-                        remove(path.join('fr-Xabi08-CAPAlgorythmCore', f))
+                        remove(path.join(e, f))
                     else:
-                        for g in listdir('fr-Xabi08-CAPAlgorythmCore/__pycache__'):
-                            remove(path.join('fr-Xabi08-CAPAlgorythmCore/__pycache__', g))
-                        rmdir('fr-Xabi08-CAPAlgorythmCore/__pycache__')
-            elif e == 'Update':
-                for f in listdir('Update'):
-                    remove(path.join('Update', f))
-                remove('Update')
+                        for g in listdir(path.join(e, f)):
+                            remove(path.join(e,f, g))
+                        rmdir(path.join(e, f))
+                rmdir(e)
             elif e in ignoredFiles:
                 pass
             else:
@@ -48,10 +44,10 @@ def trouverMAJ():
         zipPath = str(getcwd())+"/software.zip"
         with zipfile.ZipFile(zipPath, 'r') as zip:
             zip.extractall(getcwd())
-        system("PythonEnv/App/Python/python.exe -m pip install -r {0}/libs.txt")
-        system("finishupdate.bat")
+        system("PythonEnv\App\Python\python.exe -m pip install -r {0}".format(path.join(getcwd(),"Update/libs.txt")))
+        rename(src="newupdater.py",dst="updater.py")
     print("\nCleaning up...")
-    remove(path=str(filepath)+'server-version.txt')
+    remove("software.zip")
     """Fin du programme de mise a jour """
     print("Update done.")
     quit()
