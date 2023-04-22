@@ -69,7 +69,7 @@ def FusionnerDB(target):
     if target == "":
         return ("Erreur", "Erreur: Aucun fichier selectionné",1)
     targetread = pandas.read_csv(file = target)
-    with open(file="tuteurs.csv") as mainDB:
+    with open(file="relations.csv") as mainDB:
         writer = csv.DictWriter(mainDB, fieldnames = ['id', 'Tuteur','Tutore','matiere','horaire'])
         for row in range(len(targetread)):
             if row["id"] in idList:
