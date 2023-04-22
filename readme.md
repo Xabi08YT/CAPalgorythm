@@ -7,8 +7,10 @@ Fonctionnailtés présentes:<br>
 -Un système de mise a jour automatique complet<br>
 -Des bases de données en CSV<br>
 -Des options d'activation/ désactivation de fonctionnalités<br>
--Un micro-environnement python Optimisé pour le logiciel permettant de l'utiliser sur une clé USB</br></br>
+-Un micro-environnement python Optimisé pour le logiciel permettant de l'utiliser sur une clé USB</br>
+-Une gestion automatisée des relations avec management possible pour l'utilisateur.</br></br>
 
 Installation:</br>
 Il vous suffit d'extraire le ZIP dans un dossier et c'est parti ! Double-cliquez sur Executer CAPS.bat ou .exe suivant votre version de windows.</br>
-Support de MacOS non prévu pour le moment.
+
+Les supports MacOS et Linux sont prévus dans les version ultérieures.
