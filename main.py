@@ -319,6 +319,7 @@ def selectItem(a):
     selectedRelID = principalView.item(curItem)
     if selectedRelID["values"] == '':
         newmsgbox("Information","Votre selection n'a pas été prise en compte. Veuillez re-sélectioner l'élément.", 1)
+        rmBTN["state"] = "disabled"
         return
     selectedRelID = selectedRelID["values"][0]
     if selectedRelID == "Aucune Donnée.":
