@@ -292,14 +292,23 @@ def FusionnerDBRelations():
 
 
 #Fonction qui affiche les relations existantes
-def refreshRel():
+def refreshRelPrint():
     for child in principalView.get_children():
         principalView.delete(child)
     if len(relDB) == 0:
         principalView.insert('', 'end', text="1", values=("Aucune Donnée.","Aucune Donnée.","Aucune Donnée.","Aucune Donnée.","Aucune Donnée.","Aucune Donnée.","Aucune Donnée."))
         return
-    for i in range(2,len(relDB)+1):=
-        principalView.insert('', 'end', text=str(i), values=(relDB.loc[i,"relID"],relDB.loc[i,"tuteur"]["nom"], relDB.loc[i,"tuteur"]["prenom"],relDB.loc[i,"tutore"]["nom"],relDB.loc[i,"Tutore"]["prenom"],relDB.loc[i,"matiere"], CoreLibs.utils.creneaux[relDB.loc[i,"horaire"]]))
+    for i in range(len(relDB)):
+        tuteurInfos = relDB.loc[i,"tuteur"].split(",")
+        tutoreInfos = relDB.loc[i,"tutore"].split(",")
+        for j in range(2):
+            tuteurInfos[j] = tuteurInfos[j].replace("'","")
+            tuteurInfos[j] = tuteurInfos[j].replace("(","")
+            tuteurInfos[j] = tuteurInfos[j].replace(")","")
+            tutoreInfos[j] = tutoreInfos[j].replace("'","")
+            tutoreInfos[j] = tutoreInfos[j].replace("(","")
+            tutoreInfos[j] = tutoreInfos[j].replace(")","")
+        principalView.insert('', 'end', text=str(i), values=(relDB.loc[i,"id"],tuteurInfos[0], tuteurInfos[1],tutoreInfos[0],tutoreInfos[1],relDB.loc[i,"matiere"], CoreLibs.utils.creneaux[relDB.loc[i,"horaire"]]))
     return
 
 
@@ -324,6 +333,8 @@ def delRel():
     out = CoreLibs.relations.rmRel(selectedRelID)
     if out != None:
         newmsgbox("Information",out,1)
+    actualiserDB()
+    refreshRelPrint()
     return
 
 
@@ -832,7 +843,7 @@ BottomFrame.grid(sticky ='s')
 treeViewFrame = ttk.Frame(relMainframe)
 
 #Affichage de la liste des relations
-refreshBTN = ttk.Button(relMainframe, text="Rafraîchir la liste des relations", command=refreshRel)
+refreshBTN = ttk.Button(relMainframe, text="Rafraîchir la liste des relations", command=refreshRelPrint)
 scrollbar = ttk.Scrollbar(treeViewFrame)
 rmBTN = ttk.Button(relMainframe, text="Supprimer la relation", command=delRel)
 principalView = ttk.Treeview(treeViewFrame, column=("c1","c2","c3", "c4", "c5", "c6", "c7"), show='headings', height=25, yscrollcommand=scrollbar.set)

@@ -25,8 +25,9 @@ def rmRel(id):
         if id == row["id"]:
             index = i
     _rels = DB.copy()
+    print(index)
     remove("relations.csv")
-    with open(file="tuteurs.csv", mode="a+",newline="") as temp:
+    with open(file="relations.csv", mode="a+",newline="") as temp:
         tempw = csv.DictWriter(temp, fieldnames = ["id","tuteur","tutore","matiere","horaire"])
         tempw.writeheader()
         for j in range(len(_rels)):
