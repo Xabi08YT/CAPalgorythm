@@ -29,7 +29,7 @@ def createDB(name:str,fieldnames:list, dataToWrite:list = []):
 
 
 def editConfig(logsOpt,feedbackOpt,RelDB):
-    print(logsOpt, feedbackOpt)
+    print(logsOpt, feedbackOpt, RelDB)
     os.remove(path="config.csv")
     createDB("config.csv",["properties","state"], [{"properties": "enableLogs", "state": logsOpt},{"properties": "enableFeedback", "state": feedbackOpt},{"properties": "enableFeedback", "state": RelDB}])
     return

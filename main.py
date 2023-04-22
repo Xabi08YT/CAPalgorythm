@@ -1,13 +1,9 @@
-import pandas
 import os
 import tkinter
 from tkinter import Button, Checkbutton, Frame, Radiobutton
-from tkinter import messagebox
 from tkinter import filedialog
 import tkinter.ttk as ttk
 from datetime import *
-import csv
-import unidecode
 from CoreProxy import *
 
 
@@ -16,6 +12,9 @@ isDB1loaded = False
 isDB2loaded = False
 isDB3loaded = True
 isConfigLoaded = False
+selectedRelID = None
+creneaux = CoreLibs.utils.creneaux
+
 
 ##Fonction d'Ecriture d'informations de debuggage
 def printInLogs(objet, categorie, forceshowing = False):
@@ -140,6 +139,7 @@ def actualiserConfig():
 def modifConfig(logsOpt,feedbackOpt, RelDB):
     printInLogs("Modification de la configuration suivant les choix de l'utilisateur...",0, True)
     global config
+    CoreLibs.basicDBCtrl.editConfig(logsOpt,feedbackOpt, RelDB)
     config = actualiserConfig()
     return
 
@@ -204,10 +204,7 @@ def ajouterTuteur(nom, pnm, niveau, dispos, matiere, contact):
     if estDansBase(newRow):
         newmsgbox("Erreur","Ces informations ont déjà été entrées dans la base de données",1)
         return
-    with open(file = "tuteurs.csv", mode = 'a+',newline="") as database:
-        windb = csv.DictWriter(database, ['nom', 'prenom','niveau','disponibilites','matiere','contact'])
-        windb.writerow(newRow)
-        database.close()
+    CoreLibs.tuteurs.ajouter(newRow)
     actualiserDB()
     return
 
@@ -217,6 +214,54 @@ def trouverTuteur(nom, prn, niveau, matiere, dispos):
     msgout, rels, treatmentType = CoreLibs.tuteurs.trouverTuteur(nom, prn, niveau, matiere, dispos)
     if treatmentType == None:
         newmsgbox(msgout[0], msgout[1], msgout[2])
+    elif treatmentType == 1:
+        def ajouter():
+            resultWindow.destroy()
+            CoreLibs.relations.addRel(rels[selData[0]])
+            actualiserDB()
+            return
+        
+        selData = None
+        
+        def currentchoice(a):
+            curSel = resultTree.focus()
+            curselData = resultTree.item(curSel)
+            if curselData["values"] == "":
+                addBTN["state"] = "disabled"
+            else:
+                addBTN["state"] = "enabled"
+            nonlocal selData
+            selData = curselData["values"]
+            return
+
+        resultWindow = tkinter.Toplevel(interface)
+        resultWindow.title = "Résultats de la recherche"
+        resFrame = ttk.Frame(resultWindow)
+        relscroll = ttk.Scrollbar(resFrame)
+        resultTree = ttk.Treeview(resFrame, columns=("c1","c2","c3", "c4", "c5", "c6","c7"), show='headings', height=25, yscrollcommand=relscroll.set)
+        resultTree.column("# 1", anchor=tkinter.CENTER,  width = 10)
+        resultTree.heading("# 1", text="ID")
+        resultTree.column("# 2", anchor=tkinter.CENTER,  width = 200)
+        resultTree.heading("# 2", text="Nom tuteur")
+        resultTree.column("# 3", anchor=tkinter.CENTER,  width = 200)
+        resultTree.heading("# 3", text="Prenom tuteur")
+        resultTree.column("# 4", anchor=tkinter.CENTER,  width = 200)
+        resultTree.heading("# 4", text="Nom tutore")
+        resultTree.column("# 5", anchor=tkinter.CENTER,  width = 200)
+        resultTree.heading("# 5", text="Prenom tutore")
+        resultTree.column("# 6", anchor=tkinter.CENTER,  width = 90)
+        resultTree.heading("# 6", text="Matiere")
+        resultTree.column("# 7", anchor=tkinter.CENTER,  width = 150)
+        resultTree.heading("# 7", text="Horaire")
+        resultTree.bind('<Button-1>', currentchoice)
+        resultTree.pack(side=tkinter.LEFT, fill=tkinter.Y)
+        relscroll.config(command=resultTree.yview)
+        relscroll.pack(side=tkinter.RIGHT, fill=tkinter.Y)
+        addBTN = ttk.Button(resultWindow, text="Ajouter la relation à la base de données", command=ajouter)
+        addBTN.grid(column=1, row=0)
+        resFrame.grid(column=0, row=0)
+        for e,i in zip(rels, range(len(rels))):
+            resultTree.insert('', 'end', text=str(i), values=(i,e["tuteur"][0],e["tuteur"][1],e["tutore"][0],e["tutore"][1],e["matiere"],creneaux[e["horaire"]]))
     return
 
 
@@ -230,7 +275,7 @@ def supprimerTuteur(nom, prn, matiere):
     return
 
 
-def FusionnerDB():
+def FusionnerDBTuteurs():
     target = filedialog.askopenfilename(initialdir =  "/",title = "Select file",filetypes = (("CSV", "*.csv "),("all files", "*.*")))
     out = CoreLibs.tuteurs.FusionnerDB(target)
     if out is not None:
@@ -238,7 +283,51 @@ def FusionnerDB():
     return
 
 
-#Vérification contre les conflits
+def FusionnerDBRelations():
+    target = filedialog.askopenfilename(initialdir =  "/",title = "Select file",filetypes = (("CSV", "*.csv "),("all files", "*.*")))
+    out = CoreLibs.relations.FusionnerDB(target)
+    if out is not None:
+        newmsgbox(out)
+    return 
+
+
+#Fonction qui affiche les relations existantes
+def refreshRel():
+    for child in principalView.get_children():
+        principalView.delete(child)
+    if len(relDB) == 0:
+        principalView.insert('', 'end', text="1", values=("Aucune Donnée.","Aucune Donnée.","Aucune Donnée.","Aucune Donnée.","Aucune Donnée.","Aucune Donnée.","Aucune Donnée."))
+        return
+    for i in range(2,len(relDB)+1):=
+        principalView.insert('', 'end', text=str(i), values=(relDB.loc[i,"relID"],relDB.loc[i,"tuteur"]["nom"], relDB.loc[i,"tuteur"]["prenom"],relDB.loc[i,"tutore"]["nom"],relDB.loc[i,"Tutore"]["prenom"],relDB.loc[i,"matiere"], CoreLibs.utils.creneaux[relDB.loc[i,"horaire"]]))
+    return
+
+
+#Fonction qui récupère l'id de la selection
+def selectItem(a):
+    global selectedRelID
+    curItem = principalView.focus()
+    selectedRelID = principalView.item(curItem)
+    if selectedRelID["values"] == '':
+        newmsgbox("Information","Votre selection n'a pas été prise en compte. Veuillez re-sélectioner l'élément.", 1)
+        return
+    selectedRelID = selectedRelID["values"][0]
+    if selectedRelID == "Aucune Donnée.":
+        rmBTN["state"] = "disabled"
+    else:
+        rmBTN["state"] = "enabled"
+    return
+
+
+#Suppression de relation
+def delRel():
+    out = CoreLibs.relations.rmRel(selectedRelID)
+    if out != None:
+        newmsgbox("Information",out,1)
+    return
+
+
+#Fonction anti-doublons
 def estDansBase(row):
     global tuteursDB
     estDansDB = CoreLibs.tuteurs.estDansBase(tuteursDB, row)
@@ -349,7 +438,7 @@ def Valider():
 ##Création de l'IUG
 # initialisation de l'interface graphique
 interface = tkinter.Tk()
-interface.title("Interface base de données CAPS")
+interface.title("Utilitaire CAPS")
 interface.geometry("1500x720")
 interface.minsize(1500, 720)
 try:
@@ -466,14 +555,45 @@ nivvar.set(0)
 Listematiere = ["Allemand" ,"Histoire-Geographie", "Education Morale et Civique", "Espagnol",  "HGGSP", "Enseignement-scientifique SVT","Enseignement scientifique Physique","Francais", "Anglais","SES", "HLP",
 "Philosophie", "Litt. Anglaise", "Mathematiques" ,"Mathématiques tronc-commun (TC)","Musique","NSI/SNT", "Physique Spe", "SVT Spe"]
 
+# Menus d'options
+menuBar = tkinter.Menu(interface)
+interface.config(menu=menuBar)
+fileMenu = tkinter.Menu(menuBar,tearoff=0)
+settingsMenu = tkinter.Menu(menuBar,tearoff=0)
+menuBar.add_cascade(label="Fichier",menu=fileMenu)
+menuBar.add_cascade(label="Options",menu=settingsMenu)
+
+# Ajout d'options
+fileMenu.add_command(label = "Réinitialiser les bases de données", command=resetDB)
+fileMenu.add_separator()
+fileMenu.add_command(label = "Fusionner deux bases de données de tuteurs", command=FusionnerDBTuteurs)
+fileMenu.add_command(label = "Fusionner deux bases de données de relations", command=FusionnerDBRelations)
+fileMenu.add_separator()
+fileMenu.add_command(label = "Quitter", command=exit)
+
+
+settingsMenu.add_command(label = "Actualiser la configuration", command=actualiserConfig)
+settingsMenu.add_command(label = "Restaurer la configuration par défaut", command=configDefaut)
+settingsMenu.add_separator()
+settingsMenu.add_command(label = "Configurer", command=afficherConfigMenu)
+
+# création d'onglets
+tabs = ttk.Notebook(interface)
+tabs.grid(column = 1, row = 0)
 
 # initialisation des frames
-mainframe = ttk.Frame(interface)
-menuframe = ttk.Frame(interface)
-TopFrame = ttk.Frame(interface)
-EDTFrame = ttk.Frame(interface)
-BottomFrame = ttk.Frame(interface)
-OptnFrame = ttk.Frame(interface)
+mainframe = ttk.Frame(tabs)
+relMainframe = ttk.Frame(tabs)
+
+
+#########################################################################################################################
+#                                                   Gestion des tuteurs                                                 #
+#########################################################################################################################
+TopFrame = ttk.Frame(mainframe)
+EDTFrame = ttk.Frame(mainframe)
+BottomFrame = ttk.Frame(mainframe)
+OptnFrame = ttk.Frame(mainframe)
+
 
 # ajout du premier texte
 label_mode = ttk.Label(TopFrame, text="Veuillez choisir le mode de fonctionnement de l'application:")
@@ -564,16 +684,6 @@ contact_entry = tkinter.Entry(BottomFrame, width=30, textvariable=cont)
 mat_label = tkinter.Label(BottomFrame, text="Sélectionnez la matière de la personne:")
 mat_list = ttk.Combobox(BottomFrame, values=Listematiere, width=30, textvariable=mat)
 
-
-# insertion des elements la barre d'actions rapides
-resetDBBTN = Button(OptnFrame, text="Réinitialiser les bases de données" , command=resetDB)
-optnBTN = Button(OptnFrame, text="Options du logiciel", command=afficherConfigMenu)
-resetConfigBtn = Button(OptnFrame, text="Rétablir la configuration par défaut", command=configDefaut)
-fusionDBBtn = Button(OptnFrame,text="Fusionner des base de données", command=FusionnerDB)
-
-# Menus d'options
-fileMenu = ""
-
 # Insertions des boutons de radio
 modebtn1 = Radiobutton(TopFrame, text="S'enregistrer en tant que tuteur.", variable=modeout, value=0)
 modebtn2 = Radiobutton(TopFrame, text="Trouver un tuteur", variable=modeout, value=1)
@@ -610,10 +720,10 @@ label_blank2.grid(column=6, row=0, columnspan=1)
 label_level.grid(column=10, row=0, columnspan=1, sticky="w")
 niv.grid(column=10, row=1, sticky = "w")
 
-label_blank3.grid(columnspan=10, column=0, row=3)
-label_blank10.grid(column = 10, row=0)
-label_blank11.grid(column = 11, row=0)
-label_blank12.grid(column = 12, row=0)
+#label_blank3.grid(columnspan=10, column=0, row=3)
+#label_blank10.grid(column = 10, row=0)
+#label_blank11.grid(column = 11, row=0)
+#label_blank12.grid(column = 12, row=0)
 
 g_label.grid(sticky='n')
 
@@ -701,21 +811,61 @@ label_blank8.grid(sticky='sw', column=7, row=3)
 validation = ttk.Button(BottomFrame, text="Valider", command=Valider)
 label_blank9.grid(sticky='sw', column=9, row=4)
 progbar.grid(sticky='se', column=10, row=4)
-resetDBBTN.grid(sticky='s', column=2, row=4)
-optnBTN.grid(sticky='s', column=2, row=5)
-resetConfigBtn.grid(sticky='s', column=2, row=6)
-fusionDBBtn.grid(sticky='s',column=2,row=7)
 
 
 #Initialisation des derniers composants
 validation.grid(sticky='sw', column=8, row=4)
 
+
 # activation des frames:
-mainframe.grid(sticky ='n')
+mainframe.pack(fill='both', expand=True)
 TopFrame.grid(column = 0, row = 0, columnspan=5)
 EDTFrame.grid(sticky ='n', column=0, columnspan=6, row=4, rowspan=12)
 BottomFrame.grid(sticky ='s')
-OptnFrame.grid(column = 10, row = 0)
+
+
+#########################################################################################################################
+#                                                 Gestion des relations                                                 #
+#########################################################################################################################
+
+# Creation de la Frame d'affichage
+treeViewFrame = ttk.Frame(relMainframe)
+
+#Affichage de la liste des relations
+refreshBTN = ttk.Button(relMainframe, text="Rafraîchir la liste des relations", command=refreshRel)
+scrollbar = ttk.Scrollbar(treeViewFrame)
+rmBTN = ttk.Button(relMainframe, text="Supprimer la relation", command=delRel)
+principalView = ttk.Treeview(treeViewFrame, column=("c1","c2","c3", "c4", "c5", "c6", "c7"), show='headings', height=25, yscrollcommand=scrollbar.set)
+principalView.column("# 1", anchor=tkinter.CENTER,  width = 80)
+principalView.heading("# 1", text="relID")
+principalView.column("# 2", anchor=tkinter.CENTER,  width = 200)
+principalView.heading("# 2", text="Nom tuteur")
+principalView.column("# 3", anchor=tkinter.CENTER,  width = 200)
+principalView.heading("# 3", text="Prenom tuteur")
+principalView.column("# 4", anchor=tkinter.CENTER,  width = 200)
+principalView.heading("# 4", text="Nom tutore")
+principalView.column("# 5", anchor=tkinter.CENTER,  width = 200)
+principalView.heading("# 5", text="Prenom tutore")
+principalView.column("# 6", anchor=tkinter.CENTER,  width = 90)
+principalView.heading("# 6", text="Matiere")
+principalView.column("# 7", anchor=tkinter.CENTER,  width = 150)
+principalView.heading("# 7", text="Horaire")
+principalView.bind('<Button-1>', selectItem)
+
+
+
+# activation des composants
+treeViewFrame.grid(column=0, row=1, rowspan=40)
+principalView.pack(side=tkinter.LEFT, fill=tkinter.Y)
+scrollbar.config(command=principalView.yview)
+scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
+refreshBTN.grid(column = 1, row= 1)
+rmBTN.grid(column=1, row=2)
+
+
+# Ajout des onglets
+tabs.add(mainframe, text="Gestion des tuteurs")
+tabs.add(relMainframe, text="Gestion des relations")
 
 #Appel de l'init du programme
 init()
