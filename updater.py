@@ -10,7 +10,7 @@ updatingUpdater = False
 
 ##Fonction de verification de la version installée et de recherche de mises à jour
 def trouverMAJ():
-    ignoredFiles = ["PythonEnv","config.csv","tuteurs.csv","feedback.csv","relations.csv","lastestlog.txt"]
+    ignoredFiles = ["PythonEnv","config.csv","tuteurs.csv","feedback.csv","relations.csv","lastestlog.txt","makePackage.py","PackageMakerLang",".git"]
     """Recherche de mise a jour pour le logiciel principal"""
     with open(file=str(filepath)+"version.txt",mode='r') as versionActuelle:
         versioninstallee = versionActuelle.read()
@@ -48,14 +48,6 @@ def trouverMAJ():
         zipPath = str(getcwd())+"/software.zip"
         with zipfile.ZipFile(zipPath, 'r') as zip:
             zip.extractall(getcwd())
-        with open(file = 'finishupdate.txt', mode = 'a+') as command:
-            command.writelines("@echo off\n")
-            command.writelines("echo The program need to be restarted to complete the update. Please wait...\n")
-            command.writelines("timeout /t 1\n")
-            command.writelines("del updater.py")
-            command.writelines("rename newupdater.py, updater.py\n")
-            command.writelines("del finishupdate.bat")
-            command.close()
         system("PythonEnv/App/Python/python.exe -m pip install -r {0}/libs.txt")
         system("finishupdate.bat")
     print("\nCleaning up...")
