@@ -4,6 +4,7 @@ from random import randint
 from os import remove
 CoreLibs = __import__("fr-Xabi08-CAPAlgorythmCore", globals(), locals(), ["utils"],0)
 
+
 idList = []
 IDLEN = 8
 
@@ -32,7 +33,7 @@ def rmRel(id):
         tempw.writeheader()
         for j in range(len(_rels)):
             if j != index:
-                tempw.writerow({"id": str(_rels.loc[j,"id"]).strip(), "tutore": str(_rels.loc[j,"tutore"]).strip(), "matiere": str(_rels.loc[j,"matiere"]).strip(), "horaire": str(_rels.loc[j,"horaire"]).strip()})
+                tempw.writerow({"id": str(_rels.loc[j,"id"]).strip(), "tuteur":str(_rels.loc[j,"tuteur"]),"tutore": str(_rels.loc[j,"tutore"]).strip(), "matiere": str(_rels.loc[j,"matiere"]).strip(), "horaire": str(_rels.loc[j,"horaire"]).strip()})
         temp.close()
     return
 
@@ -78,3 +79,25 @@ def FusionnerDB(target):
                 writer.writerow(row)
                 idList.append(row["id"])
     return
+
+
+def getRelByID(id):
+    if id not in idList:
+        return False, None
+    for row in CoreLibs.utils.relDB:
+        if row["id"] == id:
+            return True, row
+    return False, None
+
+
+def getRelByTuteur(tuteur:tuple):
+    DB = CoreLibs.utils.feedback
+    tuteur = str(tuteur)
+    try:
+        tuteur = DB.tuteur[(DB.tuteur == tuteur)]
+        horaire = DB.horaire[(DB.tuteur == tuteur)]
+    except Exception as e:
+        print(e)
+        tuteur = "Aucune donnée"
+        horaire = "Aucune donnée"
+    return tuteur, horaire
