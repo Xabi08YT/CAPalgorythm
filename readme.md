@@ -14,3 +14,5 @@ Installation:</br>
 Il vous suffit d'extraire le ZIP dans un dossier et c'est parti ! Double-cliquez sur Executer CAPS.bat ou .exe suivant votre version de windows.</br>
 
 Les supports MacOS et Linux sont prévus dans les version ultérieures.
+
+MIT LISENCE
