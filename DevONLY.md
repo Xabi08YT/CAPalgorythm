@@ -2,7 +2,7 @@
 
 To clone the repo, just type this command:
 
- $ git clone https://github.com/Xabi08YT/CAPalgorythm.git
+    $ git clone https://github.com/Xabi08YT/CAPalgorythm.git
 
 Enjoy !
 
