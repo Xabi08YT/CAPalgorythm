@@ -15,4 +15,4 @@ Il vous suffit d'extraire le ZIP dans un dossier et c'est parti ! Double-cliquez
 
 Les supports MacOS et Linux sont prévus dans les version ultérieures.
 
-MIT LISENCE
+MIT LICENSE
