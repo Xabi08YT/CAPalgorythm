@@ -6,7 +6,7 @@ def resetDB():
     createDB('tuteurs.csv', fieldnames = ['nom', 'prenom','niveau','disponibilites','matiere','contact'])
     try:
         os.remove(path = 'relations.csv')
-        createDB("relations.csv", fieldnames=['id', 'Tuteur','Tutore','matiere','horaire'])
+        createDB("relations.csv", fieldnames=['id', 'tuteur','tutore','matiere','horaire'])
         os.remove(path = "feedback.csv")
         createDB("feedback.csv", fieldnames=["feedbackid","tutore","tuteur","caractere","matiere","efficacite","idrelation","commentaires"])
     except FileNotFoundError:

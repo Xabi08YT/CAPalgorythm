@@ -78,7 +78,7 @@ def resetDB():
     msg = ttk.Label(msgbox, text = "Toutes les bases de données seront réinitialisées. Cette action est irréversible. Souhaitez-vous continuer ?")
     def YES():
         msgbox.destroy()
-        printInLogs("Début de la réinitialisation des bases de données...")
+        printInLogs("Début de la réinitialisation des bases de données...",0)
         CoreLibs.basicDBCtrl.resetDB()
         printInLogs("Bases de données supprimées avec succès. Début d'une nouvelle initialisation...",0)
         init()
@@ -391,7 +391,8 @@ def selectItemRel(a):
         endRelBTN["state"] = "disabled"
     else:
         rmBTN["state"] = "enabled"
-        feedbackBTN["state"] = "enabled"
+        if config["enableFeedback"]:
+            feedbackBTN["state"] = "enabled"
         endRelBTN["state"] = "enabled"
     return
 
@@ -512,16 +513,17 @@ def modifyFeedbackByFeedback():
 
 ##fonction appellée lors de la fin d'une relation
 def finRelation():
-    usrEntry = getFeedbackFromUser()
-    oldData = CoreLibs.feedback.getFeedbackIdByRelID(selectedRelID)
-    print(str(oldData))
-    if usrEntry == None:
-        return
-    try:
-        if oldData == None:
-            out = CoreLibs.feedback.ajouterFeedback(usrEntry[1],usrEntry[0], selectedRelID, False, usrEntry[2])
-    except ValueError:
-        out = CoreLibs.feedback.replaceFeedback(oldData["feedbackid"], usrEntry[1],usrEntry[0],selectedRelID,False,usrEntry[2])
+    if config["enableFeedback"]:
+        usrEntry = getFeedbackFromUser()
+        oldData = CoreLibs.feedback.getFeedbackIdByRelID(selectedRelID)
+        print(str(oldData))
+        if usrEntry == None:
+            return
+        try:
+            if oldData == None:
+                out = CoreLibs.feedback.ajouterFeedback(usrEntry[1],usrEntry[0], selectedRelID, False, usrEntry[2])
+        except ValueError:
+            out = CoreLibs.feedback.replaceFeedback(oldData["feedbackid"], usrEntry[1],usrEntry[0],selectedRelID,False,usrEntry[2])
     delRel()
     return
 
