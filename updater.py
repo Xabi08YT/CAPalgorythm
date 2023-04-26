@@ -1,6 +1,5 @@
 import wget
 from os import remove, getcwd, system, rename, rmdir, path, listdir
-from pandas import *
 import zipfile
 
 

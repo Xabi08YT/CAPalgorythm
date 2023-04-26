@@ -51,7 +51,7 @@ def checkRels(nom, prenom, matiere):
 def buildIDList():
     DB = CoreLibs.utils.relDB
     global idList
-    idList = DB.loc[:,"id"]
+    idList = list(DB.loc[:,"id"])
     return
 
 
@@ -84,7 +84,7 @@ def FusionnerDB(target):
 def getRelByID(id):
     if id not in idList:
         return False, None
-    for row in CoreLibs.utils.relDB:
+    for _,row in CoreLibs.utils.relDB.iterrows():
         if row["id"] == id:
             return True, row
     return False, None

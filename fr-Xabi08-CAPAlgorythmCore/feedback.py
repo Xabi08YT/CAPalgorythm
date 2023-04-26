@@ -10,37 +10,47 @@ IDLEN = 10
 idList = []
 
 
-def ajouterFeedback(efficacite:int, caractere:int, relID:int, temporary:bool, commentaires:str, id:int = -1):
+def ajouterFeedback(efficacite:int, caractere:int, relID:int, temporary:bool, commentaires:str, id:int = -1, tuteur = None, tutore = None, matiere = None):
+    print(efficacite, caractere, relID)
     idrelation = ""
     commentaires = unidecode.unidecode(commentaires)
     CoreLibs.relations.getRelByID(relID)
     if idList == []:
         buildIDList()
-    relInfos = CoreLibs.relations.getRelByID()
+    out = CoreLibs.relations.getRelByID(relID)
+    relInfos = out[1]
     if temporary:
         idrelation = relID
     if id == -1:
         feedbackid = generateID()
     else: 
         feedbackid = id
-    with open("feedback.csv", mode = "a+") as f:
-        writer = csv.DictWriter(f, fieldnames=["feedbackid","tutore","tuteur","caractere","matiere","efficacite","idrelation","commentaire"])
-        writer.writerow({"feedbackid": feedbackid,"tutore": relInfos["tutore"],"tuteur": relInfos["tuteur"], "caractere": caractere,"matiere": relInfos["matiere"],"efficacite":efficacite,"idrelation":idrelation, "commentaires": commentaires})
-        f.close()
+    if matiere == None and tutore == None and tuteur == None:
+        with open("feedback.csv", mode = "a+") as f:
+            writer = csv.DictWriter(f, fieldnames=["feedbackid","tutore","tuteur","caractere","matiere","efficacite","idrelation","commentaires"])
+            tutore = relInfos["tutore"]
+            tuteur = relInfos["tuteur"]
+            writer.writerow({"feedbackid": feedbackid,"tutore": tutore,"tuteur": tuteur, "caractere": caractere,"matiere": relInfos["matiere"],"efficacite":efficacite,"idrelation":idrelation, "commentaires": commentaires})
+            f.close()
+    else:            
+        with open("feedback.csv", mode = "a+") as f:
+            writer = csv.DictWriter(f, fieldnames=["feedbackid","tutore","tuteur","caractere","matiere","efficacite","idrelation","commentaires"])
+            writer.writerow({"feedbackid": feedbackid,"tutore": tutore,"tuteur": tuteur, "caractere": caractere,"matiere": matiere,"efficacite":efficacite,"idrelation":idrelation, "commentaires": commentaires})
+            f.close()
     return
         
 
 def buildIDList():
     DB = CoreLibs.utils.feedback
     global idList
-    idList = DB.loc[:,"id"]
+    idList = list(DB.loc[:,"feedbackid"])
     return
 
 
 def generateID():
     global idList
     for _ in range(5):
-        generatedID = randint(0,(10**IDLEN)-1)
+        generatedID = randint(a=0,b=((10**IDLEN)-1))
         if generatedID not in idList:
             idList.append(generatedID)
             return generatedID
@@ -60,13 +70,13 @@ def removeFeedbackByID(id):
         tempw.writeheader()
         for j in range(len(_feedbacks)):
             if j != index:
-                tempw.writerow({"id": _feedbacks.loc[j,"feedbackid"], "tutore": str(_feedbacks.loc[j,"tutore"]).strip(), "tuteur":str(_feedbacks.loc["tuteur"]),"caractere":_feedbacks.loc[j,"caractere"],"matiere": str(_feedbacks.loc[j,"matiere"]).strip(), "efficacite": _feedbacks.loc[j,"efficacite"], "idrelation": _feedbacks.loc[j,"idrelation"],"commentaires":_feedbacks.loc[j, "commentaires"]})
+                tempw.writerow({"feedbackid": _feedbacks.loc[j,"feedbackid"], "tutore": str(_feedbacks.loc[j,"tutore"]).strip(), "tuteur":str(_feedbacks.loc[j,"tuteur"]),"caractere":_feedbacks.loc[j,"caractere"],"matiere": str(_feedbacks.loc[j,"matiere"]).strip(), "efficacite": _feedbacks.loc[j,"efficacite"], "idrelation": _feedbacks.loc[j,"idrelation"],"commentaires":_feedbacks.loc[j, "commentaires"]})
         temp.close()
 
 
-def replaceFeedback(id, efficacite:int, caractere:int, relID:int, temporary:bool, commentaires:str):
+def replaceFeedback(id, efficacite:int, caractere:int, relID:int, temporary:bool, commentaires:str, tuteur = None, tutore = None, matiere = None):
     removeFeedbackByID(id)
-    ajouterFeedback(efficacite, caractere, relID, temporary, commentaires)
+    ajouterFeedback(efficacite, caractere, relID, temporary, commentaires, id = id,tuteur = tuteur, tutore = tutore, matiere = matiere)
     return
 
 
@@ -74,7 +84,7 @@ def getFeedbackIdByRelID(relID):
     DB = CoreLibs.utils.feedback
     for _,row in DB.iterrows():
         if relID == row["idrelation"]:
-            return row["feedbackid"]
+            return row
     return None
 
 
@@ -106,3 +116,14 @@ def getFeedbackByUsers(tuteur:tuple,tutore:tuple):
         efficacite = "Aucune donnée"
         caractere = "Aucune donnée"
     return efficacite, caractere
+
+
+def getFeedbackByID(id):
+    DB = CoreLibs.utils.feedback
+    if id not in idList:
+        return None
+    for i in DB.iterrows():
+        print(i)
+        if i[1]["feedbackid"] == id:
+            return i
+    return None

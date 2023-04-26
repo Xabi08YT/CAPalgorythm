@@ -31,6 +31,10 @@ def init():
     CoreLibs.utils.init()
     tuteursDB,relDB, feedback, config, isConfigLoaded, isDB1loaded, isDB2loaded, isDB3loaded, newLogs = CoreLibs.utils.getVars()
     appliquerConfig()
+    if config["enableRelDB"]:
+        CoreLibs.relations.buildIDList()
+    if config["enableFeedback"]:
+        CoreLibs.feedback.buildIDList()
     return
 
 
@@ -323,6 +327,10 @@ def FusionnerDBFeedback():
 
 #Fonction qui affiche les relations existantes
 def refreshRelPrint():
+    actualiserDB()
+    rmBTN["state"] = "disabled"
+    feedbackBTN["state"] = "disabled"
+    endRelBTN["state"] = "disabled"
     for child in principalView.get_children():
         principalView.delete(child)
     if len(relDB) == 0:
@@ -343,10 +351,13 @@ def refreshRelPrint():
 
 
 def refreshFeedbackPrint():
-    for child in principalView.get_children():
-        principalView.delete(child)
+    actualiserDB()
+    rmBTNFeedback["state"] = "disabled"
+    editBTNFeedback["state"] = "disabled"
+    for child in feedview.get_children():
+        feedview.delete(child)
     if len(feedback) == 0:
-        feedview.insert('', 'end', text="1", values=("Aucune Donnée.","Aucune Donnée.","Aucune Donnée.","Aucune Donnée.","Aucune Donnée.","Aucune Donnée.","Aucune Donnée.","Aucune Donnée."))
+        feedview.insert('', 'end', text="1", values=("Aucune Donnée.","Aucune Donnée.","Aucune Donnée.","Aucune Donnée.","Aucune Donnée.","Aucune Donnée.","Aucune Donnée.","Aucune Donnée.","Aucune Donnée.","Aucune Donnée."))
         return
     for i in range(len(feedback)):
         tuteurInfos = feedback.loc[i,"tuteur"].split(",")
@@ -358,7 +369,7 @@ def refreshFeedbackPrint():
             tutoreInfos[j] = tutoreInfos[j].replace("'","")
             tutoreInfos[j] = tutoreInfos[j].replace("(","")
             tutoreInfos[j] = tutoreInfos[j].replace(")","")
-        feedview.insert('', 'end', text=str(i), values=(feedback.loc[i,"feedbackid"],tuteurInfos[0], tuteurInfos[1],tutoreInfos[0],tutoreInfos[1],feedback.loc[i,"caractere"],feedback.loc[i,"matiere"], feedback.loc[i,"efficacite"], feedback.loc[i,"commentaires"]))
+        feedview.insert('', 'end', text=str(i), values=(feedback.loc[i,"feedbackid"],tuteurInfos[0], tuteurInfos[1],tutoreInfos[0],tutoreInfos[1],feedback.loc[i,"caractere"],feedback.loc[i,"matiere"], feedback.loc[i,"efficacite"],feedback.loc[i, "idrelation"], feedback.loc[i,"commentaires"]))
     return
 
 
@@ -370,12 +381,18 @@ def selectItemRel(a):
     if selectedRelID["values"] == '':
         newmsgbox("Information","Votre selection n'a pas été prise en compte. Veuillez re-sélectioner l'élément.", 1)
         rmBTN["state"] = "disabled"
+        feedbackBTN["state"] = "disabled"
+        endRelBTN["state"] = "disabled"
         return
     selectedRelID = selectedRelID["values"][0]
     if selectedRelID == "Aucune Donnée.":
         rmBTN["state"] = "disabled"
+        feedbackBTN["state"] = "disabled"
+        endRelBTN["state"] = "disabled"
     else:
         rmBTN["state"] = "enabled"
+        feedbackBTN["state"] = "enabled"
+        endRelBTN["state"] = "enabled"
     return
 
 
@@ -383,16 +400,19 @@ def selectItemRel(a):
 def selectItemFeedback(a):
     global selectedFeedbackID
     curItem = feedview.focus()
-    selectedFeedbackID = principalView.item(curItem)
+    selectedFeedbackID = feedview.item(curItem)
     if selectedFeedbackID["values"] == '':
         newmsgbox("Information","Votre selection n'a pas été prise en compte. Veuillez re-sélectioner l'élément.", 1)
         rmBTNFeedback["state"] = "disabled"
+        editBTNFeedback["state"] = "disabled"
         return
     selectedFeedbackID = selectedFeedbackID["values"][0]
     if selectedFeedbackID == "Aucune Donnée.":
         rmBTNFeedback["state"] = "disabled"
+        editBTNFeedback["state"] = "disabled"
     else:
         rmBTNFeedback["state"] = "enabled"
+        editBTNFeedback["state"] = "enabled"
     return
 
 
@@ -408,11 +428,101 @@ def delRel():
 
 #Suppression de relation
 def delFeedback():
-    out = CoreLibs.relations.rmFeedback(selectedFeedbackID)
+    out = CoreLibs.feedback.removeFeedbackByID(selectedFeedbackID)
     if out != None:
         newmsgbox("Information",out,1)
     actualiserDB()
     refreshFeedbackPrint()
+    return
+
+
+##Fonction pour obtenir le feedback de l'utilisateur
+def getFeedbackFromUser():
+    out = None
+    caractere = tkinter.StringVar()
+    efficacite = tkinter.StringVar()
+    commentaire = tkinter.StringVar()
+    def Confirmer():
+        nonlocal out
+        try:
+            out = (int(caractere.get()), int(efficacite.get()), commentaire.get())
+            feedbackprompt.destroy()
+        except ValueError:
+            newmsgbox("Plusieurs condition non respectée.", "Conditions non respectées, verifiez les informations entrées.",1)
+        return
+    
+    def Annuler():
+        feedbackprompt.destroy()
+        return
+    
+    feedbackprompt = tkinter.Toplevel(interface)
+    feedbackprompt.title = "Entrée d'avis"
+    caractNote = ttk.Label(feedbackprompt, text="Entrez une note /5 concernant la bonne entente dans le groupe:")
+    efficaciteNote = ttk.Label(feedbackprompt, text="Entrez une note /5 d'efficacite du binome:")
+    commentaireLabel = ttk.Label(feedbackprompt, text="Entrez un commentaire plus détaillé ici (facultatif):")
+    caractEntree = ttk.Entry(feedbackprompt, textvariable=caractere)
+    efficacitEntree = ttk.Entry(feedbackprompt, textvariable=efficacite)
+    commentaireEntree = ttk.Entry(feedbackprompt, textvariable=commentaire, width=200)
+    confirmBTN = ttk.Button(feedbackprompt,text="Confirmer", command=Confirmer)
+    annulerBTN = ttk.Button(feedbackprompt, text="Annuler", command=Annuler)
+    caractNote.grid(column=0, row=0, columnspan=5)
+    efficaciteNote.grid(column=7, row=0, columnspan=5)
+    commentaireLabel.grid(column=0, row=7, columnspan=12)
+    caractEntree.grid(column=0, row=1, rowspan=5, columnspan=5)
+    efficacitEntree.grid(column=7, row=1, rowspan=5, columnspan=5)
+    commentaireEntree.grid(column=0, row=8, rowspan=5, columnspan=12)
+    confirmBTN.grid(column=5, row=16)
+    annulerBTN.grid(column=7, row=16)
+    feedbackprompt.wait_window()
+    return out
+
+
+##Modification d'avis par la sélection d'une relation
+def modifyFeedbackByRel():
+    usrEntry = getFeedbackFromUser()
+    oldData = CoreLibs.feedback.getFeedbackIdByRelID(selectedRelID)
+    if usrEntry == None:
+        return
+    try:
+        if oldData == None:
+            CoreLibs.feedback.ajouterFeedback(usrEntry[1],usrEntry[0], selectedRelID, True, usrEntry[2])
+            return
+    except ValueError: 
+        pass
+    CoreLibs.feedback.replaceFeedback(oldData["feedbackid"], usrEntry[1],usrEntry[0],selectedRelID,True,usrEntry[2])
+    return
+
+
+##Modification d'avis par la sélection d'un avis
+def modifyFeedbackByFeedback():
+    usrEntry = getFeedbackFromUser()
+    oldData = CoreLibs.feedback.getFeedbackByID(selectedFeedbackID)
+    if usrEntry == None:
+        return
+    try:
+        if oldData == None:
+            return
+    except ValueError:
+        pass
+    else:
+        oldData = oldData[1]
+        CoreLibs.feedback.replaceFeedback(oldData["feedbackid"],usrEntry[1],usrEntry[0],oldData["idrelation"],True,usrEntry[2], oldData["tuteur"],oldData["tutore"],oldData["matiere"])
+    return
+
+
+##fonction appellée lors de la fin d'une relation
+def finRelation():
+    usrEntry = getFeedbackFromUser()
+    oldData = CoreLibs.feedback.getFeedbackIdByRelID(selectedRelID)
+    print(str(oldData))
+    if usrEntry == None:
+        return
+    try:
+        if oldData == None:
+            out = CoreLibs.feedback.ajouterFeedback(usrEntry[1],usrEntry[0], selectedRelID, False, usrEntry[2])
+    except ValueError:
+        out = CoreLibs.feedback.replaceFeedback(oldData["feedbackid"], usrEntry[1],usrEntry[0],selectedRelID,False,usrEntry[2])
+    delRel()
     return
 
 
@@ -653,6 +763,7 @@ menuBar.add_cascade(label="Fichier",menu=fileMenu)
 menuBar.add_cascade(label="Options",menu=settingsMenu)
 
 # Ajout d'options
+fileMenu.add_command(label = "Actualiser les bases de données", command=actualiserDB)
 fileMenu.add_command(label = "Réinitialiser les bases de données", command=resetDB)
 fileMenu.add_separator()
 fileMenu.add_command(label = "Fusionner deux bases de données de tuteurs", command=FusionnerDBTuteurs)
@@ -926,6 +1037,8 @@ treeViewFrame = ttk.Frame(relMainframe)
 refreshBTN = ttk.Button(relMainframe, text="Rafraîchir la liste des relations", command=refreshRelPrint)
 scrollbar = ttk.Scrollbar(treeViewFrame)
 rmBTN = ttk.Button(relMainframe, text="Supprimer la relation", command=delRel)
+feedbackBTN = ttk.Button(relMainframe, text="Ajouter/Modifier un avis", command=modifyFeedbackByRel)
+endRelBTN = ttk.Button(relMainframe, text="Marque la relation comme terminée", command=finRelation)
 principalView = ttk.Treeview(treeViewFrame, column=("c1","c2","c3", "c4", "c5", "c6", "c7"), show='headings', height=25, yscrollcommand=scrollbar.set)
 principalView.column("# 1", anchor=tkinter.CENTER,  width = 80)
 principalView.heading("# 1", text="relID")
@@ -952,6 +1065,8 @@ scrollbar.config(command=principalView.yview)
 scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
 refreshBTN.grid(column = 1, row= 1)
 rmBTN.grid(column=1, row=2)
+feedbackBTN.grid(column=1, row=3)
+endRelBTN.grid(column=1, row=4)
 
 
 #########################################################################################################################
@@ -962,10 +1077,11 @@ rmBTN.grid(column=1, row=2)
 treeViewFrameFeedback = ttk.Frame(feedbackMainframe)
 
 #Affichage de la liste des relations
-refreshBTN = ttk.Button(feedbackMainframe, text="Rafraîchir la liste des avis", command=refreshFeedbackPrint)
+refreshBTNFeedback = ttk.Button(feedbackMainframe, text="Rafraîchir la liste des avis", command=refreshFeedbackPrint)
 scrollbarFeed = ttk.Scrollbar(treeViewFrameFeedback)
 rmBTNFeedback = ttk.Button(feedbackMainframe, text="Supprimer l'avis", command=delFeedback)
-feedview = ttk.Treeview(treeViewFrameFeedback, column=("c1","c2","c3", "c4", "c5", "c6", "c7","c8"), show='headings', height=25, yscrollcommand=scrollbarFeed.set)
+editBTNFeedback = ttk.Button(feedbackMainframe, text="Editer l'avis", command=modifyFeedbackByFeedback)
+feedview = ttk.Treeview(treeViewFrameFeedback, column=("c1","c2","c3", "c4", "c5", "c6", "c7","c8", "c9", "c10"), show='headings', height=25, yscrollcommand=scrollbarFeed.set)
 feedview.column("# 1", anchor=tkinter.CENTER,  width = 80)
 feedview.heading("# 1", text="feedbackID")
 feedview.column("# 2", anchor=tkinter.CENTER,  width = 200)
@@ -976,12 +1092,16 @@ feedview.column("# 4", anchor=tkinter.CENTER,  width = 200)
 feedview.heading("# 4", text="Nom tutore")
 feedview.column("# 5", anchor=tkinter.CENTER,  width = 200)
 feedview.heading("# 5", text="Prenom tutore")
-feedview.column("# 6", anchor=tkinter.CENTER,  width = 90)
-feedview.heading("# 6", text="Matiere")
-feedview.column("# 7", anchor=tkinter.CENTER,  width = 150)
-feedview.heading("# 7", text="RelID")
-feedview.column("# 8", anchor=tkinter.CENTER,  width = 150)
-feedview.heading("# 8", text="Commentaires")
+feedview.column("# 6", anchor=tkinter.CENTER,  width = 60)
+feedview.heading("# 6", text="Caractère")
+feedview.column("# 7", anchor=tkinter.CENTER,  width = 90)
+feedview.heading("# 7", text="Matiere")
+feedview.column("# 8", anchor=tkinter.CENTER,  width = 60)
+feedview.heading("# 8", text="Efficacité")
+feedview.column("# 9", anchor=tkinter.CENTER,  width = 80)
+feedview.heading("# 9", text="RelID")
+feedview.column("# 10", anchor=tkinter.CENTER,  width = 150)
+feedview.heading("# 10", text="Commentaires")
 feedview.bind('<Button-1>', selectItemFeedback)
 
 
@@ -990,8 +1110,9 @@ treeViewFrameFeedback.grid(column=0, row=1, rowspan=40)
 feedview.pack(side=tkinter.LEFT, fill=tkinter.Y)
 scrollbar.config(command=feedview.yview)
 scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
-refreshBTN.grid(column = 1, row= 1)
+refreshBTNFeedback.grid(column = 1, row= 1)
 rmBTNFeedback.grid(column=1, row=2)
+editBTNFeedback.grid(column=1, row=3)
 
 # Ajout des onglets
 tabs.add(mainframe, text="Gestion des tuteurs")
