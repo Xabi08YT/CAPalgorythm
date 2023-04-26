@@ -18,7 +18,7 @@ creneaux = CoreLibs.utils.creneaux
 
 ##Fonction d'Ecriture d'informations de debuggage
 def printInLogs(objet, categorie, forceshowing = False):
-    CoreLibs.utils.printInLogs(objet, categorie, forceshowing = False)
+    CoreLibs.utils.printInLogs(objet, categorie, forceshowing)
     return
 
 
@@ -132,6 +132,7 @@ def appliquerConfig():
         tabs.tab(2, state = "disabled")
     else:
         tabs.tab(2, state = "normal")
+    actualiserDB()
 
 
 ##Fonction d'actualisation des bases de données
