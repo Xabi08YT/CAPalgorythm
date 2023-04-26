@@ -44,7 +44,7 @@ def trouverMAJ():
         zipPath = str(getcwd())+"/software.zip"
         with zipfile.ZipFile(zipPath, 'r') as zip:
             zip.extractall(getcwd())
-        system("PythonEnv\App\Python\python.exe -m pip install -r {0}".format(path.join(getcwd(),"Update/libs.txt")))
+        system("PythonEnv\App\Python\python.exe -m pip install -r \"{0}\"".format(path.join(str(getcwd()),"Update/libs.txt")))
         rename(src="newupdater.py",dst="updater.py")
     print("\nCleaning up...")
     remove("software.zip")

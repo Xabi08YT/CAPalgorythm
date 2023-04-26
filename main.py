@@ -10,7 +10,7 @@ from CoreProxy import *
 newLogs = False
 isDB1loaded = False
 isDB2loaded = False
-isDB3loaded = True
+isDB3loaded = False
 isConfigLoaded = False
 selectedRelID = None
 creneaux = CoreLibs.utils.creneaux
@@ -30,6 +30,7 @@ def init():
     global tuteursDB,relDB, feedback, config, isConfigLoaded, isDB1loaded, isDB2loaded, isDB3loaded, newLogs
     CoreLibs.utils.init()
     tuteursDB,relDB, feedback, config, isConfigLoaded, isDB1loaded, isDB2loaded, isDB3loaded, newLogs = CoreLibs.utils.getVars()
+    appliquerConfig()
     return
 
 
@@ -121,6 +122,18 @@ def regroupInfos():
     return disponibs
 
 
+##Application de la configuration
+def appliquerConfig():
+    if not config["enableRelDB"]:
+        tabs.tab(1, state = "disabled")
+    else:
+        tabs.tab(1, state = "normal")
+    if not config["enableFeedback"]:
+        tabs.tab(2, state = "disabled")
+    else:
+        tabs.tab(2, state = "normal")
+
+
 ##Fonction d'actualisation des bases de données
 def actualiserDB():
     global tuteursDB, relDB, feedback
@@ -132,6 +145,7 @@ def actualiserDB():
 def actualiserConfig():
     global config
     config = CoreLibs.utils.actualiserConfig()
+    appliquerConfig()
     return
 
 
@@ -140,7 +154,8 @@ def modifConfig(logsOpt,feedbackOpt, RelDB):
     printInLogs("Modification de la configuration suivant les choix de l'utilisateur...",0, True)
     global config
     CoreLibs.basicDBCtrl.editConfig(logsOpt,feedbackOpt, RelDB)
-    config = actualiserConfig()
+    actualiserConfig()
+    print(config)
     return
 
 
@@ -226,12 +241,16 @@ def trouverTuteur(nom, prn, niveau, matiere, dispos):
         def currentchoice(a):
             curSel = resultTree.focus()
             curselData = resultTree.item(curSel)
-            if curselData["values"] == "":
+            if curselData["values"] == "" or config["enableRelDB"] == False:
                 addBTN["state"] = "disabled"
             else:
                 addBTN["state"] = "enabled"
             nonlocal selData
             selData = curselData["values"]
+            return
+        
+        def close():
+            resultWindow.destroy()
             return
 
         resultWindow = tkinter.Toplevel(interface)
@@ -258,8 +277,10 @@ def trouverTuteur(nom, prn, niveau, matiere, dispos):
         relscroll.config(command=resultTree.yview)
         relscroll.pack(side=tkinter.RIGHT, fill=tkinter.Y)
         addBTN = ttk.Button(resultWindow, text="Ajouter la relation à la base de données", command=ajouter)
+        closeBTN = ttk.Button(resultWindow, text="Fermer", command=close)
         addBTN.grid(column=1, row=0)
-        resFrame.grid(column=0, row=0)
+        closeBTN.grid(column=1, row=1)
+        resFrame.grid(column=0, row=0, rowspan=25)
         for e,i in zip(rels, range(len(rels))):
             resultTree.insert('', 'end', text=str(i), values=(i,e["tuteur"][0],e["tuteur"][1],e["tutore"][0],e["tutore"][1],e["matiere"],creneaux[e["horaire"]]))
     return
@@ -279,7 +300,7 @@ def FusionnerDBTuteurs():
     target = filedialog.askopenfilename(initialdir =  "/",title = "Select file",filetypes = (("CSV", "*.csv "),("all files", "*.*")))
     out = CoreLibs.tuteurs.FusionnerDB(target)
     if out is not None:
-        newmsgbox(out)
+        newmsgbox("Erreur",out,1)
     return
 
 
@@ -287,8 +308,16 @@ def FusionnerDBRelations():
     target = filedialog.askopenfilename(initialdir =  "/",title = "Select file",filetypes = (("CSV", "*.csv "),("all files", "*.*")))
     out = CoreLibs.relations.FusionnerDB(target)
     if out is not None:
-        newmsgbox(out)
+        newmsgbox("Erreur",out,1)
     return 
+
+
+def FusionnerDBFeedback():
+    target = filedialog.askopenfilename(initialdir =  "/",title = "Select file",filetypes = (("CSV", "*.csv "),("all files", "*.*")))
+    out = CoreLibs.feedback.FusionnerDB(target)
+    if out is not None:
+        newmsgbox("Erreur",out,1)
+    return
 
 
 #Fonction qui affiche les relations existantes
@@ -312,8 +341,28 @@ def refreshRelPrint():
     return
 
 
+def refreshFeedbackPrint():
+    for child in principalView.get_children():
+        principalView.delete(child)
+    if len(feedback) == 0:
+        feedview.insert('', 'end', text="1", values=("Aucune Donnée.","Aucune Donnée.","Aucune Donnée.","Aucune Donnée.","Aucune Donnée.","Aucune Donnée.","Aucune Donnée.","Aucune Donnée."))
+        return
+    for i in range(len(feedback)):
+        tuteurInfos = feedback.loc[i,"tuteur"].split(",")
+        tutoreInfos = feedback.loc[i,"tutore"].split(",")
+        for j in range(2):
+            tuteurInfos[j] = tuteurInfos[j].replace("'","")
+            tuteurInfos[j] = tuteurInfos[j].replace("(","")
+            tuteurInfos[j] = tuteurInfos[j].replace(")","")
+            tutoreInfos[j] = tutoreInfos[j].replace("'","")
+            tutoreInfos[j] = tutoreInfos[j].replace("(","")
+            tutoreInfos[j] = tutoreInfos[j].replace(")","")
+        feedview.insert('', 'end', text=str(i), values=(feedback.loc[i,"feedbackid"],tuteurInfos[0], tuteurInfos[1],tutoreInfos[0],tutoreInfos[1],feedback.loc[i,"caractere"],feedback.loc[i,"matiere"], feedback.loc[i,"efficacite"], feedback.loc[i,"commentaires"]))
+    return
+
+
 #Fonction qui récupère l'id de la selection
-def selectItem(a):
+def selectItemRel(a):
     global selectedRelID
     curItem = principalView.focus()
     selectedRelID = principalView.item(curItem)
@@ -329,6 +378,23 @@ def selectItem(a):
     return
 
 
+#Fonction qui récupère l'id de la selection
+def selectItemFeedback(a):
+    global selectedFeedbackID
+    curItem = feedview.focus()
+    selectedFeedbackID = principalView.item(curItem)
+    if selectedFeedbackID["values"] == '':
+        newmsgbox("Information","Votre selection n'a pas été prise en compte. Veuillez re-sélectioner l'élément.", 1)
+        rmBTNFeedback["state"] = "disabled"
+        return
+    selectedFeedbackID = selectedFeedbackID["values"][0]
+    if selectedFeedbackID == "Aucune Donnée.":
+        rmBTNFeedback["state"] = "disabled"
+    else:
+        rmBTNFeedback["state"] = "enabled"
+    return
+
+
 #Suppression de relation
 def delRel():
     out = CoreLibs.relations.rmRel(selectedRelID)
@@ -339,10 +405,20 @@ def delRel():
     return
 
 
+#Suppression de relation
+def delFeedback():
+    out = CoreLibs.relations.rmFeedback(selectedFeedbackID)
+    if out != None:
+        newmsgbox("Information",out,1)
+    actualiserDB()
+    refreshFeedbackPrint()
+    return
+
+
 #Fonction anti-doublons
 def estDansBase(row):
     global tuteursDB
-    estDansDB = CoreLibs.tuteurs.estDansBase(tuteursDB, row)
+    estDansDB = CoreLibs.tuteurs.estDansBase(row)
     return estDansDB
 
 
@@ -580,6 +656,7 @@ fileMenu.add_command(label = "Réinitialiser les bases de données", command=res
 fileMenu.add_separator()
 fileMenu.add_command(label = "Fusionner deux bases de données de tuteurs", command=FusionnerDBTuteurs)
 fileMenu.add_command(label = "Fusionner deux bases de données de relations", command=FusionnerDBRelations)
+fileMenu.add_command(label = "Fusionner deux bases de données de retours", command=FusionnerDBFeedback)
 fileMenu.add_separator()
 fileMenu.add_command(label = "Quitter", command=exit)
 
@@ -596,6 +673,7 @@ tabs.grid(column = 1, row = 0)
 # initialisation des frames
 mainframe = ttk.Frame(tabs)
 relMainframe = ttk.Frame(tabs)
+feedbackMainframe = ttk.Frame(tabs)
 
 
 #########################################################################################################################
@@ -862,7 +940,7 @@ principalView.column("# 6", anchor=tkinter.CENTER,  width = 90)
 principalView.heading("# 6", text="Matiere")
 principalView.column("# 7", anchor=tkinter.CENTER,  width = 150)
 principalView.heading("# 7", text="Horaire")
-principalView.bind('<Button-1>', selectItem)
+principalView.bind('<Button-1>', selectItemRel)
 
 
 
@@ -875,9 +953,49 @@ refreshBTN.grid(column = 1, row= 1)
 rmBTN.grid(column=1, row=2)
 
 
+#########################################################################################################################
+#                                                 Gestion des feedbacks                                                 #
+#########################################################################################################################
+
+# Creation de la Frame d'affichage
+treeViewFrameFeedback = ttk.Frame(feedbackMainframe)
+
+#Affichage de la liste des relations
+refreshBTN = ttk.Button(feedbackMainframe, text="Rafraîchir la liste des avis", command=refreshFeedbackPrint)
+scrollbarFeed = ttk.Scrollbar(treeViewFrameFeedback)
+rmBTNFeedback = ttk.Button(feedbackMainframe, text="Supprimer l'avis", command=delFeedback)
+feedview = ttk.Treeview(treeViewFrameFeedback, column=("c1","c2","c3", "c4", "c5", "c6", "c7","c8"), show='headings', height=25, yscrollcommand=scrollbarFeed.set)
+feedview.column("# 1", anchor=tkinter.CENTER,  width = 80)
+feedview.heading("# 1", text="feedbackID")
+feedview.column("# 2", anchor=tkinter.CENTER,  width = 200)
+feedview.heading("# 2", text="Nom tuteur")
+feedview.column("# 3", anchor=tkinter.CENTER,  width = 200)
+feedview.heading("# 3", text="Prenom tuteur")
+feedview.column("# 4", anchor=tkinter.CENTER,  width = 200)
+feedview.heading("# 4", text="Nom tutore")
+feedview.column("# 5", anchor=tkinter.CENTER,  width = 200)
+feedview.heading("# 5", text="Prenom tutore")
+feedview.column("# 6", anchor=tkinter.CENTER,  width = 90)
+feedview.heading("# 6", text="Matiere")
+feedview.column("# 7", anchor=tkinter.CENTER,  width = 150)
+feedview.heading("# 7", text="RelID")
+feedview.column("# 8", anchor=tkinter.CENTER,  width = 150)
+feedview.heading("# 8", text="Commentaires")
+feedview.bind('<Button-1>', selectItemFeedback)
+
+
+# activation des composants
+treeViewFrameFeedback.grid(column=0, row=1, rowspan=40)
+feedview.pack(side=tkinter.LEFT, fill=tkinter.Y)
+scrollbar.config(command=feedview.yview)
+scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
+refreshBTN.grid(column = 1, row= 1)
+rmBTNFeedback.grid(column=1, row=2)
+
 # Ajout des onglets
 tabs.add(mainframe, text="Gestion des tuteurs")
 tabs.add(relMainframe, text="Gestion des relations")
+tabs.add(feedbackMainframe, text="Gestion des retours")
 
 #Appel de l'init du programme
 init()

@@ -1,4 +1,4 @@
-PythonEnv/
+PythonEnv/*
 /**/__pycache__/
 /fr-Xabi08-CAPAlgorythmCore.zip
 config.csv
@@ -7,3 +7,4 @@ newupdater.py
 software-version.zip
 relations.csv
 lastestlog.txt
+feedback.csv

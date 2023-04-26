@@ -17,7 +17,7 @@ creneaux = {"LU0": "Lundi de 8h à 9h","LU1": "Lundi de 9h à 10h","LU2": "Lundi
 newLogs = False
 isDB1loaded = False
 isDB2loaded = False
-isDB3loaded = True
+isDB3loaded = False
 isConfigLoaded = False
 relDB = None
 feedback = None
@@ -91,13 +91,13 @@ def init():
                 except FileNotFoundError:                    
                     CoreLibs.basicDBCtrl.createDB("relations.csv", fieldnames = ["id","tuteur","tutore","matiere","horaire"])
                     printInLogs("Impossible de charger la Base de Données relations.csv vu que le fichier est introuvable. Ce fichier à été ajouté au répertoire courant.", 1)
-            if not(isDB3loaded):
+            if not(isDB3loaded) and config["enableFeedback"]:
                 try:
                     feedback = pandas.read_csv("feedback.csv")
                     printInLogs("La Base de Données feedback.csv à été chargée avec succès.", 0)
                     isDB3loaded = True
                 except FileNotFoundError:
-                    CoreLibs.basicDBCtrl.createDB("feedback.csv", fielnames= ["feedbackid","tutore","tuteur","caractere","matiere","efficacite","idrelation","commentaires"])
+                    CoreLibs.basicDBCtrl.createDB("feedback.csv", fieldnames= ["feedbackid","tutore","tuteur","caractere","matiere","efficacite","idrelation","commentaires"])
                     printInLogs("Impossible de charger la Base de Données relations.csv vu que le fichier est introuvable. Ce fichier à été ajouté au répertoire courant.", 1)
             if isDB1loaded and isDB2loaded and isDB3loaded:
                 break
@@ -118,6 +118,7 @@ def unloadDB():
     global isDB1loaded, isDB2loaded, isDB3loaded
     isDB1loaded = False
     isDB2loaded = False
+    isDB3loaded = False
     return
 
 
@@ -131,6 +132,7 @@ def actualiserDB():
         global isDB1loaded, isDB2loaded, isDB3loaded
         isDB1loaded = False
         isDB2loaded = False
+        isDB3loaded = False
         init()
     return tuteursDB, relDB, feedback
 
@@ -143,7 +145,7 @@ def actualiserConfig():
         printInLogs("Configuration chargée. Construction et application de la configuration lue...", 0)
         config["enableLogs"] = cfg.loc[0,"state"]
         config["enableFeedback"] = cfg.loc[1,"state"]
-        config["RelDB"] = cfg.loc[2,"state"]
+        config["enableRelDB"] = cfg.loc[2,"state"]
         printInLogs("Table de configuration Construite et Appliquée.", 0, True)
     except FileNotFoundError:
         CoreLibs.basicDBCtrl.createDB("config.csv",["properties","state"], [{"properties": "enableLogs", "state": True},{"properties": "enableFeedback", "state": False},{"properties": "RelDB", "state": False}])
