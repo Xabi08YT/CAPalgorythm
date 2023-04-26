@@ -9,8 +9,11 @@ Enjoy !
 ## Python micro environment:
 
 If you want to make a custom Install package, you will need to download and extract one of the archives below:
+
 For Windows 10+: https://sourceforge.net/projects/portable-python/files/Portable%20Python%203.10/Portable%20Python-3.10.5.exe/download
+
 For Windows 7+: https://sourceforge.net/projects/portable-python/files/Portable%20Python%203.7/Portable%20Python-3.7.7.exe/download
+
 For MacOS or Linux: UNSUPPORTED YET
 
 ## For update deployment:
