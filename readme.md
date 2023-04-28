@@ -1,17 +1,17 @@
 # CAPalgorythm FR
 
-Ce programme a pour but d'aider a mettre en relation des élèves sur des créneaux horaires donné en fonctiobn des matières. Ce logiciel a été créé dans le
+Ce programme a pour but d'aider a mettre en relation des élèves sur des créneaux horaires donné en fonction des matières. Ce logiciel a été créé dans le
 but de faciliter la mise en place d'un AP entre élèves.
 
 
-## Fonctionnalités actuelles :
+## Fonctionnalités actuelles
 
 - Une GUI simple
 - Un support des versions de windows antérieures a partir de Windows 7
 - Un système de mise a jour automatique complet
 - Des bases de données en CSV
 - Des options d'activation / désactivation de fonctionnalités
-- Un micro-environnement python Optimisé pour le logiciel permettant de l'utiliser sur une clé USB
+- Un micro-environnement python Optimisé pour le logiciel permettant de l'utiliser sur une clé USB et sécurisé contre la faille CVE-2007-4559
 - Une gestion automatisée des relations avec management possible pour l'utilisateur.
 
 ## Installation
@@ -19,8 +19,28 @@ but de faciliter la mise en place d'un AP entre élèves.
 
 - Les supports MacOS et Linux sont prévus dans les version ultérieures.
 
+# CAPalgorythm EN:
 
-## License
+This program is made to help by creating relationships between students on specific time slots depending of what school lesson you entered. This software
+is meant to help setting up a personalized help between students.
+
+
+## Current features
+
+- A simple graphical user interface
+- An official support for older version of Windows starting with Windows 7
+- A complete automated software update system
+- Database in CSV for better portability between devices
+- Some functions to enable / disable features
+- A fixed python micro-environment built for the software and CVE-2007-4559 proof.
+- Relationships managing is automated and the user is able to directly manage the related database
+
+## Install
+- You just need to extract the `ZIP` archive in a folder and that's it ! At this moment, please note that THE FOLDER MUST BE EMPTY OR THE EXTRA FILES WILL BE DELETED DURING THE NEXT UPDATE. EXTRA FOLDER WILL MAKE THE SOFTWARE CRASH.
+
+- MacOS and Linux supported are scheduled in the next update.
+
+# License
 
 MIT License
 

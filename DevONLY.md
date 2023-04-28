@@ -35,6 +35,12 @@ On your web server, you make an index html with two download links: one for a co
 Don't forget to update the updater.py and the newupdater.py files with your new links !
 The link for the version is line 17 and for the link for the archive is line 43.
 
+
+## To create install package
+
+Include the python micro environment, updater.py, Update folder. If the python env does not have the necessary libs installed, at least install wget. The updater will install the other. If you want the updater to update, just leave version.txt empty.
+
+
 ## LICENSE
 
 MIT License
