@@ -91,13 +91,10 @@ def getRelByID(id):
 
 
 def getRelByTuteur(tuteur:tuple):
-    DB = CoreLibs.utils.feedback
-    tuteur = str(tuteur)
-    try:
-        tuteur = DB.tuteur[(DB.tuteur == tuteur)]
-        horaire = DB.horaire[(DB.tuteur == tuteur)]
-    except Exception as e:
-        print(e)
-        tuteur = "Aucune donnée"
-        horaire = "Aucune donnée"
-    return tuteur, horaire
+    DB = CoreLibs.utils.relDB
+    for i in range(len(DB)):
+        if DB.loc[i, "tuteur"] == tuteur:
+            return DB.loc[i, "tutore"], DB.loc[i, "horaire"]
+    horaire = "Aucune donnée"
+    tutore = "Aucune donnée"
+    return tutore, horaire

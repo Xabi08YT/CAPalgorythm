@@ -51,16 +51,22 @@ def newmsgbox(title, message, type, textbtnA=None, textbtnB=None):
         errbtn = ttk.Button(errbox, text="OK", command=OK)
         errbtn.pack()
     elif type==2:
+        Out = None
         def senderF():
             errbox.destroy()
-            return False
+            nonlocal Out
+            Out = False
+            return 
         def senderT():
             errbox.destroy()
-            return True
+            nonlocal Out
+            Out = True
+            return
         btn1 = ttk.Button(errbox, text="Oui", command=senderT)
         btn2 = ttk.Button(errbox, text='Non', command=senderF)
         btn1.pack()
         btn2.pack()
+        return Out
     elif type == 99:
         def output(outobject):
             return(outobject)
@@ -236,6 +242,24 @@ def trouverTuteur(nom, prn, niveau, matiere, dispos):
         newmsgbox(msgout[0], msgout[1], msgout[2])
     elif treatmentType == 1:
         def ajouter():
+            existingRels = CoreLibs.relations.getRelByTuteur((selData[0], selData[1]))
+            feedbacks = CoreLibs.feedback.getFeedbackByUsers(tuteur = (selData[0], selData[1]), tutore = (nom, prn))
+            print(existingRels, feedbacks)
+            try:
+                if feedbacks == ("Aucune donnée", "Aucune donnée", "Aucune donnée") and existingRels == ("Aucune donnée", "Aucune donnée"):
+                    pass
+            except Exception:
+                toShow = ""
+                if feedbacks != ("Aucune donnée", "Aucune donnée", "Aucune donnée"):
+                    if feedbacks[3] == "nan":
+                        feedback[3] = ""
+                    toShow = "Une précédente relation avec ce tuteur avait mené au résultats suivants: \n Efficacité: {0}/5, Entente au sein du groupe: {1}/5 \n Commentaires: {2}".format(feedback[0], feedback[1], feedback[2])
+                if existingRels != ("Aucune donnée", "Aucune donnée"):
+                    toShow += "\n Ce tuteur possède déja une relation avec {0} sur le créneau horaire {1}.".format(existingRels[0], existingRels[1])
+                toShow += "Souhaitez-vous continuer ?"
+                Continue = newmsgbox("Avertissement", toShow, 2)
+                if Continue == False:
+                    return
             resultWindow.destroy()
             CoreLibs.relations.addRel(rels[selData[0]])
             actualiserDB()
@@ -761,8 +785,10 @@ menuBar = tkinter.Menu(interface)
 interface.config(menu=menuBar)
 fileMenu = tkinter.Menu(menuBar,tearoff=0)
 settingsMenu = tkinter.Menu(menuBar,tearoff=0)
+#helpMenu = tkinter.Menu(menuBar, tearoff=0)
 menuBar.add_cascade(label="Fichier",menu=fileMenu)
 menuBar.add_cascade(label="Options",menu=settingsMenu)
+#menuBar.add_cascade(label="Aide", menu=helpMenu)
 
 # Ajout d'options
 fileMenu.add_command(label = "Actualiser les bases de données", command=actualiserDB)
@@ -774,6 +800,7 @@ fileMenu.add_command(label = "Fusionner deux bases de données de retours", comm
 fileMenu.add_separator()
 fileMenu.add_command(label = "Quitter", command=exit)
 
+#helpMenu.add_command(label = "Contacter les développeurs")
 
 settingsMenu.add_command(label = "Actualiser la configuration", command=actualiserConfig)
 settingsMenu.add_command(label = "Restaurer la configuration par défaut", command=configDefaut)
