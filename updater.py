@@ -8,7 +8,7 @@ updatingUpdater = False
 
 ##Fonction de verification de la version installée et de recherche de mises à jour
 def trouverMAJ():
-    ignoredFiles = ["PythonEnv","config.csv","tuteurs.csv","feedback.csv","relations.csv","lastestlog.txt","makePackage.py","PackageMakerLang",".git"]
+    ignoredFiles = ["PythonEnv","config.csv","tuteurs.csv","feedback.csv","relations.csv","lastestlog.txt","makePackage.py","PackageMakerLang",".git", "ExecuterCAPS.bat"]
     """Recherche de mise a jour pour le logiciel principal"""
     with open(file=str(filepath)+"version.txt",mode='r') as versionActuelle:
         versioninstallee = versionActuelle.read()
