@@ -37,6 +37,12 @@ def getLabel(name):
     return label
 
 
+def getLabels():
+    global labels
+    labels = repo.get_labels()
+    return 
+
+
 def init():
     global g, repo
     g = Github(get_token())
