@@ -8,7 +8,7 @@ updatingUpdater = False
 
 ##Fonction de verification de la version installée et de recherche de mises à jour
 def trouverMAJ():
-    ignoredFiles = ["PythonEnv","config.csv","tuteurs.csv","feedback.csv","relations.csv","lastestlog.txt","makePackage.py","PackageMakerLang",".git", "ExecuterCAPS.bat"]
+    ConcernedFiles = ["CoreProxy.py","main.py","fr-Xabi08-CAPAlgorythmCore","Update","updater.py"]
     """Recherche de mise a jour pour le logiciel principal"""
     with open(file=str(filepath)+"version.txt",mode='r') as versionActuelle:
         versioninstallee = versionActuelle.read()
@@ -22,19 +22,18 @@ def trouverMAJ():
         pass
     else:
         for e in listdir(getcwd()):
-            if e == 'fr-Xabi08-CAPAlgorythmCore' or e == 'Update':
-                for f in listdir(e):
-                    if f != "__pycache__":
-                        remove(path.join(e, f))
-                    else:
-                        for g in listdir(path.join(e, f)):
-                            remove(path.join(e,f, g))
-                        rmdir(path.join(e, f))
-                rmdir(e)
-            elif e in ignoredFiles:
-                pass
-            else:
-                remove(e)
+            if e in ConcernedFiles:
+                if e == 'fr-Xabi08-CAPAlgorythmCore' or e == 'Update':
+                    for f in listdir(e):
+                        if f != "__pycache__":
+                            remove(path.join(e, f))
+                        else:
+                            for g in listdir(path.join(e, f)):
+                                remove(path.join(e,f, g))
+                            rmdir(path.join(e, f))
+                    rmdir(e)
+                else:
+                    remove(e)
         try:
             rmdir(path = 'fr-Xabi08-CAPAlgorythmCore')
         except FileNotFoundError:

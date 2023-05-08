@@ -37,6 +37,14 @@ def printInLogs(objet, categorie, forceshowing = False):
             logs.close()
         return
 
+
+def transformToText(strlist):
+    out = ""
+    for e in strlist:
+        out += e
+    return out
+
+
 #####################################################
 #                   Init                            #
 #####################################################

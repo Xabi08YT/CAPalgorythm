@@ -14,6 +14,7 @@ isDB3loaded = False
 isConfigLoaded = False
 selectedRelID = None
 creneaux = CoreLibs.utils.creneaux
+GitHubLabels = None
 
 
 ##Fonction d'Ecriture d'informations de debuggage
@@ -35,6 +36,7 @@ def init():
         CoreLibs.relations.buildIDList()
     if config["enableFeedback"]:
         CoreLibs.feedback.buildIDList()
+    CoreLibs.issueHandler.init()
     return
 
 
@@ -66,6 +68,7 @@ def newmsgbox(title, message, type, textbtnA=None, textbtnB=None):
         btn2 = ttk.Button(errbox, text='Non', command=senderF)
         btn1.pack()
         btn2.pack()
+        errbox.wait_window()
         return Out
     elif type == 99:
         def output(outobject):
@@ -540,7 +543,6 @@ def finRelation():
     if config["enableFeedback"]:
         usrEntry = getFeedbackFromUser()
         oldData = CoreLibs.feedback.getFeedbackIdByRelID(selectedRelID)
-        print(str(oldData))
         if usrEntry == None:
             return
         try:
@@ -550,6 +552,67 @@ def finRelation():
             out = CoreLibs.feedback.replaceFeedback(oldData["feedbackid"], usrEntry[1],usrEntry[0],selectedRelID,False,usrEntry[2])
     delRel()
     return
+
+
+def getGithubLabels():
+    global GitHubLabels
+    GitHubLabels = CoreLibs.issueHandler.getLabels()
+    return
+
+
+## Fonction qui affiche le menu de création d'issue GitHub
+def invokeGithub():
+    body = tkinter.StringVar()
+    title = tkinter.StringVar()
+    if GitHubLabels == None:
+        getGithubLabels()
+    
+
+    def annuler():
+        issueGUI.destroy()
+        return
+    
+
+    def send():
+        continuer = newmsgbox("Voulez-vous continuer ?", "Un ticket sera créé sur le github officiel avec le nom du compte utilisateur github lié au logiciel. \n De plus, des informations de débugging seront incluses telles que les logs,\n mais aussi les informations système (OS,CPU,RAM,Résolution de l'écran...)", 2, "Continuer", "Annuler")
+        if title.get() == "" or body.get() == "" or LabelList.curselection() == None:
+            newmsgbox("Erreur", "Un ou plusieurs champs sont vides. Veuillez les renseigner.", 1)
+            return 
+        
+        if not continuer:
+            return issueGUI.destroy()
+        else:
+            selected_labels = [LabelList.get(i) for i in LabelList.curselection()]
+            issueGUI.destroy()
+            labels = []
+            for e in selected_labels:
+                labels.append(CoreLibs.issueHandler.getLabel(e))
+            CoreLibs.issueHandler.issueTemplate(title.get(), body.get(), labels)
+            return
+            
+
+    issueGUI = tkinter.Toplevel(interface)
+    issueGUI.title("Création de ticket GitHub")
+    TitleLabel = ttk.Label(issueGUI,text = "Entrez le titre du ticket:")
+    TitleEntry = ttk.Entry(issueGUI, textvariable=title)
+    TitleLabel.grid(row=0, column=0, sticky=tkinter.W)
+    TitleEntry.grid(row=1, column=0, sticky=tkinter.W)
+    BodyLabel = ttk.Label(issueGUI, text="Entrez le contenu détaillé du ticket.")
+    BodyEntry = ttk.Entry(issueGUI, textvariable=body)
+    BodyEntry.grid(row=3, column=0)
+    BodyLabel.grid(row=2, column=0)
+    Label = ttk.Label(issueGUI, text="Sélectionnez le label du ticket:")
+    Label.grid(row=0, column=1)
+    LabelList = tkinter.Listbox(issueGUI, selectmode="multiple")
+    for l in GitHubLabels:
+        LabelList.insert(tkinter.END, l.name)
+    LabelList.grid(row=2, column=1)
+    SendBTN = ttk.Button(issueGUI,text = "Envoyer", command=send)
+    SendBTN.grid(row=4, column=1)
+    CancelBTN = ttk.Button(issueGUI, text= "Annuler", command=annuler)
+    CancelBTN.grid(row=4, column=2)
+    return
+
 
 
 #Fonction anti-doublons
@@ -786,10 +849,10 @@ menuBar = tkinter.Menu(interface)
 interface.config(menu=menuBar)
 fileMenu = tkinter.Menu(menuBar,tearoff=0)
 settingsMenu = tkinter.Menu(menuBar,tearoff=0)
-#helpMenu = tkinter.Menu(menuBar, tearoff=0)
+helpMenu = tkinter.Menu(menuBar, tearoff=0)
 menuBar.add_cascade(label="Fichier",menu=fileMenu)
 menuBar.add_cascade(label="Options",menu=settingsMenu)
-#menuBar.add_cascade(label="Aide", menu=helpMenu)
+menuBar.add_cascade(label="Aide", menu=helpMenu)
 
 # Ajout d'options
 fileMenu.add_command(label = "Actualiser les bases de données", command=actualiserDB)
@@ -801,7 +864,7 @@ fileMenu.add_command(label = "Fusionner deux bases de données de retours", comm
 fileMenu.add_separator()
 fileMenu.add_command(label = "Quitter", command=exit)
 
-#helpMenu.add_command(label = "Contacter les développeurs")
+helpMenu.add_command(label = "Contacter les développeurs", command=invokeGithub)
 
 settingsMenu.add_command(label = "Actualiser la configuration", command=actualiserConfig)
 settingsMenu.add_command(label = "Restaurer la configuration par défaut", command=configDefaut)

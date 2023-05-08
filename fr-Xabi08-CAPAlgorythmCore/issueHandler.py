@@ -1,4 +1,5 @@
 from github import *
+CoreLibs = __import__("fr-Xabi08-CAPAlgorythmCore", globals(), locals(), ["utils"],0)
 
 
 def getLogContent():
@@ -12,11 +13,12 @@ def get_token():
     with open(file="token.bin", mode="rb") as tokenfile:
         token = tokenfile.read()
         tokenfile.close()
+    token = token.decode("utf-8")
     return token
 
 
 def issueTemplate(title, body, labels = None):
-    body = body + "\n ============LOGS============ \n" + getLogContent()
+    body = body + "\n \n ============LOGS============ \n \n ```" + CoreLibs.utils.transformToText(getLogContent())+" ```"
     if labels is not None:
         try:
             repo.create_issue(title=title, body=body, labels=labels)
@@ -40,7 +42,7 @@ def getLabel(name):
 def getLabels():
     global labels
     labels = repo.get_labels()
-    return 
+    return labels
 
 
 def init():
