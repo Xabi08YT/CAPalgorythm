@@ -633,16 +633,10 @@ def estDansBase(row):
 def modessplt(disp):
     printInLogs("Determining mode to use...", 0)
     nom = str(name.get())
-    print(nom)
     pren = str(prenom.get())
-    print(pren)
     niveau = int(niv.get())
-    print(niveau)
-    print(disp)
     matiere = str(mat_list.get())
-    print(matiere)
     contact = str(contact_entry.get())
-    print(contact)
     serialized = unicode_serialize([nom,pren,contact])
     if modeout.get() == 1:
         printInLogs("Initialisation du mode lecture...", 0)
