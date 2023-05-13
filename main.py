@@ -5,6 +5,7 @@ from tkinter import filedialog
 import tkinter.ttk as ttk
 from datetime import *
 from CoreProxy import *
+from webbrowser import open_new_tab
 
 
 newLogs = False
@@ -84,6 +85,14 @@ def newmsgbox(title, message, type, textbtnA=None, textbtnB=None):
         custombtn2 = ttk.Button(errbox, text=textbtnB, command=output(0))
         custombtn1.pack()
         custombtn2.pack()
+    elif type == 44:
+        def GHRedirect():
+            open_new_tab("https://github.com/Xabi08YT/CAPalgorythm/issues")
+            return
+        btn1 = ttk.Button(errbox, text="Terminé", command=errbox.destroy)
+        btn1.pack()
+        btn2 = ttk.Button(errbox, text="Ouvrir la page", command=GHRedirect)
+        btn2.pack()
 
 ##Fonction de réinitialisation des bases de donnees
 def resetDB():
@@ -594,7 +603,11 @@ def invokeGithub():
             labels = []
             for e in selected_labels:
                 labels.append(CoreLibs.issueHandler.getLabel(e))
-            CoreLibs.issueHandler.issueTemplate(title.get(), body.get(), labels)
+            isPublished = CoreLibs.issueHandler.issueTemplate(title.get(), body.get(), labels)
+            if isPublished:
+                newmsgbox("Information","Votre ticket à bien été publié et est visible sur cette page: https://github.com/Xabi08YT/CAPalgorythm/issues", 44)
+            else:
+                newmsgbox("Erreur","Une erreur est survenue. Veuillez créer un ticket à la main sur https://github.com/Xabi08YT/CAPalgorythm/issues en joignant lastestlog.txt", 44)
             return
             
 
