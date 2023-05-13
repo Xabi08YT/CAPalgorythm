@@ -23,6 +23,13 @@ def printInLogs(objet, categorie, forceshowing = False):
     return
 
 
+def modifiedPrint(element):
+    printInLogs(element, 4)
+    return
+
+
+print = modifiedPrint
+
 
 ################################################################################################################################
 ##                                          Initialisation du programme                                                       ##

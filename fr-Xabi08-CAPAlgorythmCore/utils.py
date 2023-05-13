@@ -34,6 +34,8 @@ def printInLogs(objet, categorie, forceshowing = False):
                 logs.writelines(str(datetime.now())+"/[ERR] : "+str(objet)+"\n")
             elif categorie == 3:
                 logs.writelines(str(datetime.now())+"/[FATAL] : "+str(objet)+"\n")
+            elif categorie == 4:
+                logs.writelines(str(datetime.now())+"/[CONSOLEOUT] : "+str(objet)+"\n")
             logs.close()
         return
 
