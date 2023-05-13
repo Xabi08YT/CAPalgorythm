@@ -168,6 +168,10 @@ def appliquerConfig():
 def actualiserDB():
     global tuteursDB, relDB, feedback
     tuteursDB, relDB, feedback = CoreLibs.utils.actualiserDB()
+    if config["enableFeedback"]:
+        refreshFeedbackPrint()
+    if config["enableRelDB"]:
+        refreshRelPrint()
     return
 
 
@@ -245,7 +249,7 @@ def unicode_serialize(texts:list):
 
 ##Fonction d'ajout de tuteurs dans la base de données
 def ajouterTuteur(nom, pnm, niveau, dispos, matiere, contact):
-    newRow = {'nom': nom, 'prenom': pnm,'niveau': niveau, 'disponibilites': dispos,'matiere': matiere, 'contact': contact}
+    newRow = {'nom': nom, 'prenom': pnm,'niveau': niveau, 'disponibilites': dispos,'matiere': str(matiere), 'contact': contact}
     if estDansBase(newRow):
         newmsgbox("Erreur","Ces informations ont déjà été entrées dans la base de données",1)
         return
@@ -259,28 +263,38 @@ def trouverTuteur(nom, prn, niveau, matiere, dispos):
     msgout, rels, treatmentType = CoreLibs.tuteurs.trouverTuteur(nom, prn, niveau, matiere, dispos)
     if treatmentType == None:
         newmsgbox(msgout[0], msgout[1], msgout[2])
-    elif treatmentType == 1:
+    else:
         def ajouter():
             existingRels = CoreLibs.relations.getRelByTuteur((selData[0], selData[1]))
             feedbacks = CoreLibs.feedback.getFeedbackByUsers(tuteur = (selData[0], selData[1]), tutore = (nom, prn))
-            print(existingRels, feedbacks)
+            toShow = ""
             try:
                 if feedbacks == ("Aucune donnée", "Aucune donnée", "Aucune donnée") and existingRels == ("Aucune donnée", "Aucune donnée"):
-                    pass
+                    print("TEST21")
+                    CoreLibs.relations.addRel(rels[selData[0]])
+                    newmsgbox("Information", "Relation ajoutee.",1)
             except Exception:
-                toShow = ""
-                if feedbacks != ("Aucune donnée", "Aucune donnée", "Aucune donnée"):
+                try:
+                    if feedbacks == ("Aucune donnée", "Aucune donnée", "Aucune donnée"):
+                        pass
+                except Exception:
                     if feedbacks[3] == "nan":
                         feedback[3] = ""
-                    toShow = "Une précédente relation avec ce tuteur avait mené au résultats suivants: \n Efficacité: {0}/5, Entente au sein du groupe: {1}/5 \n Commentaires: {2}".format(feedback[0], feedback[1], feedback[2])
-                if existingRels != ("Aucune donnée", "Aucune donnée"):
+                    toShow = "Une précédente relation avec ce tuteur avait mené au résultats suivants: \n Efficacité: {0}/5, Entente au sein du groupe: {1}/5 \n Commentaires: {2}".format(feedback[0], feedback[1], feedback[2])    
+                try:
+                    if existingRels == ("Aucune donnée", "Aucune donnée"):
+                        pass
+                except Exception:
                     toShow += "\n Ce tuteur possède déja une relation avec {0} sur le créneau horaire {1}.".format(existingRels[0], existingRels[1])
-                toShow += "Souhaitez-vous continuer ?"
+                    toShow += "Souhaitez-vous continuer ?"
+                if toShow != "":
+                    return
                 Continue = newmsgbox("Avertissement", toShow, 2)
                 if Continue == False:
                     return
-            resultWindow.destroy()
-            CoreLibs.relations.addRel(rels[selData[0]])
+                else:
+                    CoreLibs.relations.addRel(rels[selData[0]])
+                    newmsgbox("Information", "Relation ajoutee.",1)
             actualiserDB()
             return
         
@@ -335,9 +349,9 @@ def trouverTuteur(nom, prn, niveau, matiere, dispos):
 
 
 ##Fonction permettant de supprimer un tuteur de la base de données
-def supprimerTuteur(nom, prn, matiere):
+def supprimerTuteur(nom, prn):
     print("suppression...") 
-    out = CoreLibs.tuteurs.supprimerTuteur(nom, prn, matiere)
+    out = CoreLibs.tuteurs.supprimerTuteur(nom, prn)
     if out is not None:
         newmsgbox(out[0],out[1],out[2])
     actualiserDB()
@@ -648,7 +662,9 @@ def modessplt(disp):
     nom = str(name.get())
     pren = str(prenom.get())
     niveau = int(niv.get())
-    matiere = str(mat_list.get())
+    matiere = []
+    for m in mat_list.curselection():
+        matiere.append(mat_list.get(m))
     contact = str(contact_entry.get())
     serialized = unicode_serialize([nom,pren,contact])
     if modeout.get() == 1:
@@ -659,7 +675,7 @@ def modessplt(disp):
         ajouterTuteur(serialized[0], serialized[1], niveau, disp, matiere, serialized[2])
     else:
         printInLogs("Initialisation du mode de suppression...", 0)
-        supprimerTuteur(serialized[0], serialized[1], matiere)
+        supprimerTuteur(serialized[0], serialized[1])
     return printInLogs("Opération terminée.", 0)
 
 
@@ -722,18 +738,24 @@ def reset():
     return printInLogs("Opération terminée.", 0)
 
 
+def buildListMat():
+    for i in range(len(Listematiere), 0 ,-1):
+        mat_list.insert(0,Listematiere[i-1])
+    return
+
 
 ##Foction de validation
 def Valider():
     progbar.start()
     dispos = regroupInfos()
-    if str(name_entry.get()) == '' or str(prenom_entry.get()) == '' or str(mat_list.get()) == '' or len(dispos) == 0 and modeout.get() != 2:
+    if str(name_entry.get()) == '' or str(prenom_entry.get()) == '' or (mat_list.curselection() == () and modeout.get() != 2) or (len(dispos) == 0 and modeout.get() != 2):
         printInLogs("Données manquantes pour le lancement de processus...",1)
         newmsgbox('Erreur de saisie', "Erreur: Une ou plusieurs entrée textuelle obligatoires sont vides.", 1)
         return progbar.stop()
     modessplt(dispos)
     reset()
     progbar.stop()
+    buildListMat()
     return
 
 
@@ -851,11 +873,10 @@ modeout.set(1)
 name = tkinter.StringVar()
 prenom = tkinter.StringVar()
 cont = tkinter.StringVar()
-mat = tkinter.StringVar()
 nivvar = tkinter.IntVar()
 nivvar.set(0)
 Listematiere = ["Allemand" ,"Histoire-Geographie", "Education Morale et Civique", "Espagnol",  "HGGSP", "Enseignement-scientifique SVT","Enseignement scientifique Physique","Francais", "Anglais","SES", "HLP",
-"Philosophie", "Litt. Anglaise", "Mathematiques" ,"Mathématiques tronc-commun (TC)","Musique","NSI/SNT", "Physique Spe", "SVT Spe"]
+"Philosophie", "Litt. Anglaise", "Mathematiques" ,"Mathematiques tronc-commun (TC)","Musique","NSI/SNT", "Physique Spe", "SVT Spe"]
 
 
 # Menus d'options
@@ -991,7 +1012,7 @@ prenom_entry = tkinter.Entry(BottomFrame, width=30, textvariable=prenom)
 contact_label = tkinter.Label(BottomFrame, text="Entrez un moyen de contacter la personne: (factultatif)")
 contact_entry = tkinter.Entry(BottomFrame, width=30, textvariable=cont)
 mat_label = tkinter.Label(BottomFrame, text="Sélectionnez la matière de la personne:")
-mat_list = ttk.Combobox(BottomFrame, values=Listematiere, width=30, textvariable=mat)
+mat_list = tkinter.Listbox(BottomFrame, width=30, selectmode="multiple")
 
 # Insertions des boutons de radio
 modebtn1 = Radiobutton(TopFrame, text="S'enregistrer en tant que tuteur.", variable=modeout, value=0)
@@ -1115,7 +1136,7 @@ contact_label.grid(sticky='sw', column=4, row=3)
 contact_entry.grid(sticky='sw', column=4, row=4)
 label_blank7.grid(sticky='sw', column=5, row=3)
 mat_label.grid(sticky='sw', column=6, row=3)
-mat_list.grid(sticky='sw', column=6, row=4)
+mat_list.grid(sticky='sw', column=6, row=4, rowspan = 25)
 label_blank8.grid(sticky='sw', column=7, row=3)
 validation = ttk.Button(BottomFrame, text="Valider", command=Valider)
 label_blank9.grid(sticky='sw', column=9, row=4)
@@ -1228,6 +1249,10 @@ tabs.add(feedbackMainframe, text="Gestion des retours")
 
 #Appel de l'init du programme
 init()
+
+#Construction de certains éléments
+
+buildListMat()
 
 #Lancement de l'IUG
 interface.mainloop()

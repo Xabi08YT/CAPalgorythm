@@ -28,7 +28,7 @@ def estDansBase(row):
     return False
 
 
-def supprimerTuteur( nom, prn, matiere):
+def supprimerTuteur( nom, prn):
     tuteursDB = CoreLibs.utils.tuteursDB
     print("suppression...") 
     ligneASupprimer = None
@@ -40,8 +40,7 @@ def supprimerTuteur( nom, prn, matiere):
         print(i)
         nomt = tuteursDB.loc[i, "nom"]
         prenomt = tuteursDB.loc[i, "prenom"]
-        matieret = tuteursDB.loc[i, "matiere"]
-        if nomt.strip() == nom and prenomt.strip() == prn and matieret.strip() == matiere:
+        if nomt.strip() == nom and prenomt.strip() == prn:
             ligneASupprimer = i
             break
     print("debug2")
@@ -72,28 +71,58 @@ def FusionnerDB(target):
     return
 
 
+def doOtherChecks(i, nom, prn, niveau, dispos, matiere, niveaut):
+    rels = []
+    tuteursDB = CoreLibs.utils.tuteursDB
+    if niveaut <= niveau:
+        dispost = tuteursDB.loc[i,"disponibilites"]
+    print(dispost)
+    for j in range(len(dispos)):
+        if dispos[j] in dispost:
+            msg = "Un tuteur à été trouvé pour "+str(nom)+" "+str(prn)+" sur le créneau du "+str(creneaux[dispos[j]])+". Il s'agit de "+str(tuteursDB.loc[i,"nom"])+" "+str(tuteursDB.loc[i,"prenom"])+"."
+            msg += "\n"
+            rels.append({"tuteur":(tuteursDB.loc[i,"nom"],tuteursDB.loc[i,"prenom"]),"tutore": (nom, prn), "matiere": matiere, "horaire": dispos[j]})
+    if rels != []:
+        return True, rels, msg
+    return False, None, None
+
+
+
 ##Fonction permettant de trouver les tuteurs
-def trouverTuteur(nom, prn, niveau, matiere, dispos):
+def trouverTuteur(nom, prn, niveau, matieres, dispos):
     tuteursDB = CoreLibs.utils.tuteursDB
     nbRelations = 0
     relationsTrouves = []
-    finalmsg = ""
-    for i in range(len(tuteursDB)):
-        matieret = str(tuteursDB.loc[i,"matiere"])
-        niveaut = tuteursDB.loc[i,"niveau"]
-        matieret = matieret.strip()
-        print(matieret)
-        print(niveaut)
-        print(eval("matieret == matiere"))
-        if matieret.strip() == matiere.strip() and niveaut <= niveau or (matiere == "Enseignement-scientifique SVT" and matieret == "SVT Spe") or (matiere == "Enseignement scientifique Physique" and matieret == "Physique Spe"):
-            dispost = tuteursDB.loc[i,"disponibilites"]
-            print(dispost)
-            for j in range(len(dispos)):
-                if dispos[j] in dispost:
-                    msg = "Un tuteur à été trouvé pour "+str(nom)+" "+str(prn)+" sur le créneau du "+str(creneaux[dispos[j]])+". Il s'agit de "+str(tuteursDB.loc[i,"nom"])+" "+str(tuteursDB.loc[i,"prenom"])+"."
-                    finalmsg = finalmsg +msg+"\n"
-                    relationsTrouves.append({"tuteur":(tuteursDB.loc[i,"nom"],tuteursDB.loc[i,"prenom"]),"tutore": (nom, prn), "matiere": matiere, "horaire": dispos[j]})
-                nbRelations += 1
+    for matiere in matieres:
+        finalmsg = ""
+        for i in range(len(tuteursDB)):
+            niveaut = tuteursDB.loc[i,"niveau"]
+            matieret = tuteursDB.loc[i,"matiere"]
+            if "]" in matieret:
+                matieret = matieret.split(",")
+                print(matieret)
+                for m in matieret:
+                    m = m.replace("[","")
+                    m = m.replace("]","")
+                    m = m.replace("'","")
+                    m = m.replace(" ","")
+                    if m == matiere.replace(" ","") or (matiere == "Enseignement-scientifique SVT" and m == "SVT Spe") or (matiere == "Enseignement scientifique Physique" and m == "Physique Spe") or (matiere == "Mathematiques tronc-commun (TC)" and m == "Mathematiques"):
+                        match, data, msg = doOtherChecks(i, nom, prn, niveau, dispos, matiere, niveaut)
+                        if match:
+                            print(data)
+                            relationsTrouves+=data
+                            finalmsg+=msg
+                            nbRelations += 1
+            else:
+                matieret = matieret.strip()
+                if matieret.strip() == matiere.strip() or (matiere == "Enseignement-scientifique SVT" and m == "SVT Spe") or (matiere == "Enseignement scientifique Physique" and m == "Physique Spe") or (matiere == "Mathematiques tronc-commun (TC)" and m == "Mathematiques"):
+                    match, data, msg = doOtherChecks(i, nom, prn, niveau, dispos, matiere, niveaut)
+                    if match:
+                        relationsTrouves+=data
+                        finalmsg+=msg
+                        nbRelations += 1
+    print(nbRelations)
+    print(relationsTrouves)
     if nbRelations == 0:
         return ("Information","Aucune relation n'a été trouvée.", 1), None, None
     if nbRelations == 1:
