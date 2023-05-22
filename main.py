@@ -16,6 +16,7 @@ isConfigLoaded = False
 selectedRelID = None
 creneaux = CoreLibs.utils.creneaux
 GitHubLabels = None
+calledFromRefresh = False
 
 
 ##Fonction d'Ecriture d'informations de debuggage
@@ -168,9 +169,9 @@ def appliquerConfig():
 def actualiserDB():
     global tuteursDB, relDB, feedback
     tuteursDB, relDB, feedback = CoreLibs.utils.actualiserDB()
-    if config["enableFeedback"]:
+    if config["enableFeedback"] and not calledFromRefresh:
         refreshFeedbackPrint()
-    if config["enableRelDB"]:
+    if config["enableRelDB"] and not calledFromRefresh:
         refreshRelPrint()
     return
 
@@ -384,6 +385,8 @@ def FusionnerDBFeedback():
 
 #Fonction qui affiche les relations existantes
 def refreshRelPrint():
+    global calledFromRefresh
+    calledFromRefresh = True
     actualiserDB()
     rmBTN["state"] = "disabled"
     feedbackBTN["state"] = "disabled"
@@ -404,10 +407,13 @@ def refreshRelPrint():
             tutoreInfos[j] = tutoreInfos[j].replace("(","")
             tutoreInfos[j] = tutoreInfos[j].replace(")","")
         principalView.insert('', 'end', text=str(i), values=(relDB.loc[i,"id"],tuteurInfos[0], tuteurInfos[1],tutoreInfos[0],tutoreInfos[1],relDB.loc[i,"matiere"], CoreLibs.utils.creneaux[relDB.loc[i,"horaire"]]))
+    calledFromRefresh = False
     return
 
 
 def refreshFeedbackPrint():
+    global calledFromRefresh
+    calledFromRefresh = True
     actualiserDB()
     rmBTNFeedback["state"] = "disabled"
     editBTNFeedback["state"] = "disabled"
@@ -427,6 +433,7 @@ def refreshFeedbackPrint():
             tutoreInfos[j] = tutoreInfos[j].replace("(","")
             tutoreInfos[j] = tutoreInfos[j].replace(")","")
         feedview.insert('', 'end', text=str(i), values=(feedback.loc[i,"feedbackid"],tuteurInfos[0], tuteurInfos[1],tutoreInfos[0],tutoreInfos[1],feedback.loc[i,"caractere"],feedback.loc[i,"matiere"], feedback.loc[i,"efficacite"],feedback.loc[i, "idrelation"], feedback.loc[i,"commentaires"]))
+    calledFromRefresh = False
     return
 
 
