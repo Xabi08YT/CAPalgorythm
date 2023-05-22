@@ -2,3 +2,4 @@ pandas
 wget
 tk
 unidecode
+pygithub
