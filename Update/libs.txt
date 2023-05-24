@@ -3,3 +3,4 @@ wget
 tk
 unidecode
 pygithub
+psutil
