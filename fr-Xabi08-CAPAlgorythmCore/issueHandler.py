@@ -141,6 +141,9 @@ def getLabels():
 
 def init():
     global g, repo
-    g = Github(get_token())
-    repo = g.get_repo("Xabi08YT/CAPalgorythm")
-    return
+    try:
+        g = Github(get_token())
+        repo = g.get_repo("Xabi08YT/CAPalgorythm")
+    except Exception as e:
+        return "Error","Impossible de se connecter à github. Veuillez demander au distributeur \ndu programme de générer un nouveau jeton d'accès et de le mettre dans le fichier token.bin"
+    return None, None

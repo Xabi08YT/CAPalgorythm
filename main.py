@@ -45,7 +45,10 @@ def init():
         CoreLibs.relations.buildIDList()
     if config["enableFeedback"]:
         CoreLibs.feedback.buildIDList()
-    CoreLibs.issueHandler.init()
+    out1, out2 = CoreLibs.issueHandler.init()
+    if out1 is not None:
+        newmsgbox(out1, out2, 1)
+        helpMenu.entryconfig("Contacter les développeurs", state="disabled")
     return
 
 

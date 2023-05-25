@@ -108,9 +108,8 @@ def getFeedbackByUsers(tuteur:tuple,tutore:tuple):
     DB = CoreLibs.utils.feedback
     tuteur = str(tuteur)
     tutore = str(tutore)
-    tuteur = str(tuteur)
     for i in range(len(DB)):
-        if DB.loc[i, "tuteur"] == tuteur and DB.loc[i, "tutore"]:
+        if DB.loc[i, "tuteur"] == str(tuteur) and str(DB.loc[i, "tutore"]):
             return DB.loc[i, "efficacite"], DB.loc[i, "caractere"], DB.loc[i,"commentaires"]
     efficacite = "Aucune donnée"
     caractere = "Aucune donnée"

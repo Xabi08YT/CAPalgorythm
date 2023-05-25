@@ -93,7 +93,7 @@ def getRelByID(id):
 def getRelByTuteur(tuteur:tuple):
     DB = CoreLibs.utils.relDB
     for i in range(len(DB)):
-        if DB.loc[i, "tuteur"] == tuteur:
+        if DB.loc[i, "tuteur"] == str(tuteur):
             return DB.loc[i, "tutore"], DB.loc[i, "horaire"]
     horaire = "Aucune donnée"
     tutore = "Aucune donnée"
