@@ -14,11 +14,14 @@ def getLogContent():
 
 
 def get_token():
-    with open(file="token.bin", mode="rb") as tokenfile:
-        token = tokenfile.read()
-        tokenfile.close()
-    token = token.decode("utf-8")
-    return token
+    try:
+        with open(file="token.bin", mode="rb") as tokenfile:
+            token = tokenfile.read()
+            tokenfile.close()
+        token = token.decode("utf-8")
+        return token
+    except FileNotFoundError:
+        return "Err"
 
 
 def get_size(bytes, suffix="B"):
@@ -142,7 +145,10 @@ def getLabels():
 def init():
     global g, repo
     try:
-        g = Github(get_token())
+        out = get_token()
+        if out == "Err":
+            raise Exception("Token.bin missing or empty.")
+        g = Github()
         repo = g.get_repo("Xabi08YT/CAPalgorythm")
     except Exception as e:
         return "Error","Impossible de se connecter à github. Veuillez demander au distributeur \ndu programme de générer un nouveau jeton d'accès et de le mettre dans le fichier token.bin"

@@ -269,26 +269,26 @@ def trouverTuteur(nom, prn, niveau, matiere, dispos):
         newmsgbox(msgout[0], msgout[1], msgout[2])
     else:
         def ajouter():
-            existingRels = CoreLibs.relations.getRelByTuteur((selData[0], selData[1]))
-            feedbacks = CoreLibs.feedback.getFeedbackByUsers(tuteur = (selData[0], selData[1]), tutore = (nom, prn))
+            existingRels = CoreLibs.relations.getRelByTuteur((selData[1], selData[2]))
+            feedbacks = CoreLibs.feedback.getFeedbackByUsers(tuteur = (selData[1], selData[2]), tutore = (nom, prn))
             toShow = ""
             try:
                 if feedbacks == ("Aucune donnée", "Aucune donnée", "Aucune donnée") and existingRels == ("Aucune donnée", "Aucune donnée"):
-                    print("TEST21")
                     CoreLibs.relations.addRel(rels[selData[0]])
                     newmsgbox("Information", "Relation ajoutee.",1)
             except Exception:
-                try:
-                    if feedbacks == ("Aucune donnée", "Aucune donnée", "Aucune donnée"):
-                        pass
-                except Exception:
-                    if feedbacks[3] == "nan":
+                if feedbacks == ("Aucune donnée", "Aucune donnée", "Aucune donnée"):
+                    pass
+                else:
+                    if feedback[3]:
+                        feedbacks[3] == "nan"
                         feedback[3] = ""
-                    toShow = "Une précédente relation avec ce tuteur avait mené au résultats suivants: \n Efficacité: {0}/5, Entente au sein du groupe: {1}/5 \n Commentaires: {2}".format(feedback[0], feedback[1], feedback[2])    
-                try:
-                    if existingRels == ("Aucune donnée", "Aucune donnée"):
-                        pass
-                except Exception:
+                        toShow = "Une précédente relation avec ce tuteur avait mené au résultats suivants: \n Efficacité: {0}/5, Entente au sein du groupe: {1}/5 \n Commentaires: {2}".format(feedback[0], feedback[1], feedback[2])    
+                if existingRels == ("Aucune donnée", "Aucune donnée"):
+                    existingRels[1].replace("'","")
+                    existingRels[1].replace("(","")
+                    existingRels[1].replace(")","")
+                    existingRels[1].split(",")
                     toShow += "\n Ce tuteur possède déja une relation avec {0} sur le créneau horaire {1}.".format(existingRels[0], existingRels[1])
                     toShow += "Souhaitez-vous continuer ?"
                 if toShow != "":
@@ -1261,7 +1261,6 @@ tabs.add(feedbackMainframe, text="Gestion des retours")
 init()
 
 #Construction de certains éléments
-
 buildListMat()
 
 #Lancement de l'IUG
