@@ -285,11 +285,11 @@ def trouverTuteur(nom, prn, niveau, matiere, dispos):
                         feedback[3] = ""
                         toShow = "Une précédente relation avec ce tuteur avait mené au résultats suivants: \n Efficacité: {0}/5, Entente au sein du groupe: {1}/5 \n Commentaires: {2}".format(feedback[0], feedback[1], feedback[2])    
                 if existingRels == ("Aucune donnée", "Aucune donnée"):
-                    existingRels[1].replace("'","")
-                    existingRels[1].replace("(","")
-                    existingRels[1].replace(")","")
-                    existingRels[1].split(",")
-                    toShow += "\n Ce tuteur possède déja une relation avec {0} sur le créneau horaire {1}.".format(existingRels[0], existingRels[1])
+                    existingRels[0].replace("'","")
+                    existingRels[0].replace("(","")
+                    existingRels[0].replace(")","")
+                    existingRels[0].split(",")
+                    toShow += "\n Ce tuteur possède déja une relation avec {0} sur le(s) créneau(x) horaire(s) {1}.".format(existingRels[0], existingRels[1])
                     toShow += "Souhaitez-vous continuer ?"
                 if toShow != "":
                     return
@@ -406,7 +406,7 @@ def refreshRelPrint():
             tuteurInfos[j] = tuteurInfos[j].replace("'","")
             tuteurInfos[j] = tuteurInfos[j].replace("(","")
             tuteurInfos[j] = tuteurInfos[j].replace(")","")
-            tutoreInfos[j] = tutoreInfos[j].replace("'","")
+            tutoreInfos[j] = tutoreInfos[j].replace("'","") 
             tutoreInfos[j] = tutoreInfos[j].replace("(","")
             tutoreInfos[j] = tutoreInfos[j].replace(")","")
         principalView.insert('', 'end', text=str(i), values=(relDB.loc[i,"id"],tuteurInfos[0], tuteurInfos[1],tutoreInfos[0],tutoreInfos[1],relDB.loc[i,"matiere"], CoreLibs.utils.creneaux[relDB.loc[i,"horaire"]]))
