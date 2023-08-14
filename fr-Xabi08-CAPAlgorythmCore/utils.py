@@ -2,6 +2,7 @@ import pandas
 import os
 from datetime import datetime
 import unidecode
+import sqlite3
 
 
 CoreLibs = __import__("fr-Xabi08-CAPAlgorythmCore", globals(), locals(), ["basicDBCtrl"],0)
@@ -15,12 +16,7 @@ creneaux = {"LU0": "Lundi de 8h à 9h","LU1": "Lundi de 9h à 10h","LU2": "Lundi
 
 
 newLogs = False
-isDB1loaded = False
-isDB2loaded = False
-isDB3loaded = False
 isConfigLoaded = False
-relDB = None
-feedback = None
 
 ##Fonction d'Ecriture d'informations de debuggage
 def printInLogs(objet, categorie, forceshowing = False):
@@ -52,7 +48,7 @@ def transformToText(strlist):
 #####################################################
 
 def init():
-    global tuteursDB,relDB, feedback, config, isConfigLoaded, isDB1loaded, isDB2loaded, isDB3loaded, newLogs
+    global config, isConfigLoaded,newLogs
     for i in range(2):
         if isConfigLoaded == False:
             config = {"enableLogs": True, "enableFeedback": False, "enableRelDB": False}
@@ -85,32 +81,19 @@ def init():
             isConfigLoaded = True
         printInLogs("Chargement des fichiers en cours...", 0)
         for i in range(3):
-            if not(isDB1loaded):
-                try:
-                    tuteursDB = pandas.read_csv("tuteurs.csv")
-                    printInLogs("La Base de Données tuteurs.csv à été chargée avec succès.", 0)
-                    isDB1loaded = True
-                except FileNotFoundError:
-                    CoreLibs.basicDBCtrl.createDB("tuteurs.csv", fieldnames = ['nom', 'prenom','niveau','disponibilites','matiere','contact'])
-                    printInLogs("Impossible de charger la Base de Données tuteurs.csv vu que le fichier est introuvable. Ce fichier à été ajouté au répertoire courant.", 1)
-            if not(isDB2loaded) and config["enableRelDB"]:
-                try:
-                    relDB = pandas.read_csv("relations.csv")
-                    printInLogs("La Base de Données relations.csv à été chargée avec succès.", 0)
-                    isDB2loaded = True
-                except FileNotFoundError:                    
-                    CoreLibs.basicDBCtrl.createDB("relations.csv", fieldnames = ["id","tuteur","tutore","matiere","horaire"])
-                    printInLogs("Impossible de charger la Base de Données relations.csv vu que le fichier est introuvable. Ce fichier à été ajouté au répertoire courant.", 1)
-            if not(isDB3loaded) and config["enableFeedback"]:
-                try:
-                    feedback = pandas.read_csv("feedback.csv")
-                    printInLogs("La Base de Données feedback.csv à été chargée avec succès.", 0)
-                    isDB3loaded = True
-                except FileNotFoundError:
-                    CoreLibs.basicDBCtrl.createDB("feedback.csv", fieldnames= ["feedbackid","tutore","tuteur","caractere","matiere","efficacite","idrelation","commentaires"])
-                    printInLogs("Impossible de charger la Base de Données relations.csv vu que le fichier est introuvable. Ce fichier à été ajouté au répertoire courant.", 1)
-            if isDB1loaded and isDB2loaded and isDB3loaded:
+            try:
+                global MainDB
+                MainDB = sqlite3.connect("data.db")
                 break
+            except FileNotFoundError:
+                try:
+                    CoreLibs.basicDBCtrl.createDB()
+                except Exception as e:
+                    printInLogs('Erreur lors de la création de la base de données : ' + str(e),3)
+                    exit(-1)
+            except Exception as e:
+                printInLogs('Erreur lors du chargement de la base de données : ' + str(e),3)
+                exit(-1)
         if i == 3:
             printInLogs("Initialisation s'est terminée à cause d'une erreur: Echec du chargement des fichiers. Le programme va maintenant s'arrêter.", 3)
             quit()
@@ -121,30 +104,21 @@ def init():
 
 
 def getVars():
-    return (tuteursDB,relDB, feedback, config, isConfigLoaded, isDB1loaded, isDB2loaded, isDB3loaded, newLogs)
+    return (MainDB, config, isConfigLoaded, newLogs)
 
 
 def unloadDB():
-    global isDB1loaded, isDB2loaded, isDB3loaded
-    isDB1loaded = False
-    isDB2loaded = False
-    isDB3loaded = False
+    MainDB.close()
     return
 
 
 def actualiserDB():
-    global tuteursDB, relDB, feedback
+    global MainDB
     try:
-        tuteursDB = pandas.read_csv("tuteurs.csv")
-        relDB = pandas.read_csv("relations.csv")
-        feedback = pandas.read_csv("feedback.csv")
+        MainDB = sqlite3.connect("data.db")
     except FileNotFoundError:
-        global isDB1loaded, isDB2loaded, isDB3loaded
-        isDB1loaded = False
-        isDB2loaded = False
-        isDB3loaded = False
-        init()
-    return tuteursDB, relDB, feedback
+        CoreLibs.basicDBCtrl.createDB()
+    return MainDB
 
 
 def actualiserConfig():
