@@ -4,3 +4,5 @@
 PythonEnv/
 *.bin
 *.zip
+*db
+*json
