@@ -110,11 +110,11 @@ def getFeedbackByUsers(tuteur:tuple,tutore:tuple):
     tutore = str(tutore)
     for i in range(len(DB)):
         if DB.loc[i, "tuteur"] == str(tuteur) and str(DB.loc[i, "tutore"]):
-            return DB.loc[i, "efficacite"], DB.loc[i, "caractere"], DB.loc[i,"commentaires"]
+            return [str(DB.loc[i, "efficacite"]), str(DB.loc[i, "caractere"]), str(DB.loc[i,"commentaires"])]
     efficacite = "Aucune donnée"
     caractere = "Aucune donnée"
     commentaires = "Aucune donnée"    
-    return efficacite, caractere, commentaires
+    return (efficacite, caractere, commentaires)
 
 
 def getFeedbackByID(id):
