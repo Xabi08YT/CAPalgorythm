@@ -1,11 +1,10 @@
-import pandas
 import os
 from datetime import datetime
 import unidecode
 import sqlite3
 
 
-CoreLibs = __import__("fr-Xabi08-CAPAlgorythmCore", globals(), locals(), ["basicDBCtrl"],0)
+CoreLibs = __import__("fr-Xabi08-CAPAlgorythmCore", globals(), locals(), ["DBCreator","cfgHandler"],0)
 
 
 creneaux = {"LU0": "Lundi de 8h à 9h","LU1": "Lundi de 9h à 10h","LU2": "Lundi de 10h à 11h","LU3": "Lundi de 11h à 12h","LU4": "Lundi de 12h à 13h","LU5": "Lundi de 13h à 14h","LU6": "Lundi de 14h à 15h","LU7": "Lundi de 15h à 16h","LU8": "Lundi de 16h à 17h","LU9":"Lundi de 17h à 18h",
@@ -21,7 +20,7 @@ isConfigLoaded = False
 ##Fonction d'Ecriture d'informations de debuggage
 def printInLogs(objet, categorie, forceshowing = False):
     if config["enableLogs"] == True or forceshowing == True:
-        with open(file="lastestlog.txt", mode="a+") as logs:
+        with open(file="latestlog.txt", mode="a+") as logs:
             if categorie == 0:
                 logs.writelines(str(datetime.now())+"/[INFO] : "+str(objet)+"\n")
             elif categorie == 1:
@@ -48,58 +47,33 @@ def transformToText(strlist):
 #####################################################
 
 def init():
-    global config, isConfigLoaded,newLogs
-    for i in range(2):
-        if isConfigLoaded == False:
-            config = {"enableLogs": True, "enableFeedback": False, "enableRelDB": False}
-            if newLogs == False:
-                try:
-                    os.remove("lastestlog.txt")
-                except FileNotFoundError:
-                    pass
-                newLogs = True
-            printInLogs("Début de l'initialisation du programme...", 0)
-            printInLogs("Chargement de la configuration...",0)
-            for i in range(3):
-                try:
-                    try:
-                        cfg = pandas.read_csv("config.csv")
-                        printInLogs("Configuration chargée. Construction et application de la configuration lue...", 0)
-                        config["enableLogs"] = cfg.loc[0,"state"]
-                        config["enableFeedback"] = cfg.loc[1,"state"]
-                        config["enableRelDB"] = cfg.loc[2,"state"]
-                        printInLogs("Table de configuration Construite et Appliquée.", 0, True)
-                        break
-                    except FileNotFoundError:
-                        CoreLibs.basicDBCtrl.createDB("config.csv",["properties","state"], [{"properties": "enableLogs", "state": True},{"properties": "enableFeedback", "state": False},{"properties": "enableRelDB", "state": False}])
-                        printInLogs("Impossible de charger la configuration à cause d'un fichier inexistant. Création d'une configuration vierge...", 1)
-                except KeyError:
-                    printInLogs("Impossible d'appliquer la configuration. Utilisation de la configuration par défaut...", 2)
-                    break
-            if i==3:
-                printInLogs("Impossible de charger la configuration. Utilisation de la configuration par défaut...", 2)
-            isConfigLoaded = True
-        printInLogs("Chargement des fichiers en cours...", 0)
-        for i in range(3):
+    global config
+    config = CoreLibs.cfgHandler.getCfg()
+    printInLogs("Configuration chargée et appliquée.",0)
+    try:
+        os.remove("latestlog.txt")
+    except FileNotFoundError:
+        pass
+    printInLogs("Chargement des fichiers en cours...", 0)
+    for i in range(3):
+        try:
+            global MainDB
+            MainDB = sqlite3.connect("data.db")
+            break
+        except FileNotFoundError:
             try:
-                global MainDB
-                MainDB = sqlite3.connect("data.db")
-                break
-            except FileNotFoundError:
-                try:
-                    CoreLibs.basicDBCtrl.createDB()
-                except Exception as e:
-                    printInLogs('Erreur lors de la création de la base de données : ' + str(e),3)
-                    exit(-1)
+                CoreLibs.DBCreator.createDB()
             except Exception as e:
-                printInLogs('Erreur lors du chargement de la base de données : ' + str(e),3)
+                printInLogs('Erreur lors de la création de la base de données : ' + str(e),3)
                 exit(-1)
-        if i == 3:
-            printInLogs("Initialisation s'est terminée à cause d'une erreur: Echec du chargement des fichiers. Le programme va maintenant s'arrêter.", 3)
-            quit()
-        printInLogs("Chargement des fichiers terminé.",0)
-        printInLogs("Initialisation du programme terminée avec succès. Démarrage...",0)
-        break
+        except Exception as e:
+            printInLogs('Erreur lors du chargement de la base de données : ' + str(e),3)
+            exit(-1)
+    if i == 3:
+        printInLogs("Initialisation s'est terminée à cause d'une erreur: Echec du chargement des fichiers. Le programme va maintenant s'arrêter.", 3)
+        quit()
+    printInLogs("Chargement des fichiers terminé.",0)
+    printInLogs("Initialisation du programme terminée avec succès. Démarrage...",0)
     return
 
 
@@ -114,33 +88,23 @@ def unloadDB():
 
 def actualiserDB():
     global MainDB
+    MainDB.close()
     try:
         MainDB = sqlite3.connect("data.db")
     except FileNotFoundError:
-        CoreLibs.basicDBCtrl.createDB()
+        CoreLibs.DBCreator.createDB()
     return MainDB
 
 
 def actualiserConfig():
     global config
-    printInLogs("Actualisation de la configuration...",0, True)
-    try:
-        cfg = pandas.read_csv("config.csv")
-        printInLogs("Configuration chargée. Construction et application de la configuration lue...", 0)
-        config["enableLogs"] = cfg.loc[0,"state"]
-        config["enableFeedback"] = cfg.loc[1,"state"]
-        config["enableRelDB"] = cfg.loc[2,"state"]
-        printInLogs("Table de configuration Construite et Appliquée.", 0, True)
-    except FileNotFoundError:
-        CoreLibs.basicDBCtrl.createDB("config.csv",["properties","state"], [{"properties": "enableLogs", "state": True},{"properties": "enableFeedback", "state": False},{"properties": "RelDB", "state": False}])
-        printInLogs("Impossible de charger la configuration à cause d'un fichier inexistant. Création d'une configuration vierge...", 1)
+    config = CoreLibs.cfgHandler.getCfg()
+    printInLogs("Configuration actualisée.",0)
     return config
 
 
-def unicode_serialize(texts):
-    for i in range(len(texts)):
-        print(texts[i])
-        string_sortie = unidecode.unidecode(texts[i])
-        print(string_sortie)
-        texts[i] = string_sortie
-    return texts
+def unicode_serialize(text):
+    for i in range(len(text)):
+        strOut = unidecode.unidecode(text[i])
+        text[i] = strOut
+    return text
