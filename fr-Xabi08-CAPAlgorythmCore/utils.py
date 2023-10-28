@@ -61,19 +61,16 @@ def init():
         pass
     print("Chargement des fichiers en cours...", 0)
     for i in range(3):
-        try:
+        if "data.db" in os.listdir():
             global MainDB
             MainDB = sqlite3.connect("data.db", check_same_thread=False)
             break
-        except FileNotFoundError:
+        else:
             try:
                 CoreLibs.DBCreator.createDB(config["enableRelDB"],config["enableFeedback"])
             except Exception as e:
                 print('Erreur lors de la création de la base de données : ' + str(e),3)
                 exit(-1)
-        except Exception as e:
-            print('Erreur lors du chargement de la base de données : ' + str(e),3)
-            exit(-1)
     if i == 3:
         print("Initialisation s'est terminée à cause d'une erreur: Echec du chargement des fichiers. Le programme va maintenant s'arrêter.", 3)
         quit()
