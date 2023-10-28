@@ -78,7 +78,7 @@ def init():
 
 
 def getVars():
-    return (MainDB, config, isConfigLoaded, newLogs)
+    return (MainDB, config)
 
 
 def unloadDB():
@@ -86,7 +86,7 @@ def unloadDB():
     return
 
 
-def actualiserDB():
+def refreshDB():
     global MainDB
     MainDB.close()
     try:
