@@ -32,9 +32,15 @@ def index_post():
         for i in toDelete:
             datas = datas.replace(i,"")
         datas = datas.split("&")
+        print(datas)
+        CoreLibs.backendEntry.modeSplit(datas)
         return "OK ! ",200
     except Exception as e:
+        print(datas)
         print(f"[STDERR] > {e}")
+        with open("exception.txt", mode='w+') as exceptionFile:
+            exceptionFile.write(str(e))
+            exceptionFile.close()
         return "Internal server error", 500
     
 

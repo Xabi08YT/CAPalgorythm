@@ -1,4 +1,4 @@
-CoreLibs = __import__("fr-Xabi08-CAPAlgorythmCore", globals(), locals(), ["utils","relations"],0)
+CoreLibs = __import__("fr-Xabi08-CAPAlgorythmCore", globals(), locals(), ["utils"],0)
 
 
 def addFeedback(tuteurid,tutoreid,subject,time,effScore,socScore,com = None):

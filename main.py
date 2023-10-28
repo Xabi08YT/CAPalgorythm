@@ -6,14 +6,18 @@ from CoreProxy import *
 
 
 def shutdown():
-    CoreLibs.utils.unloadDB()
+    try:
+        CoreLibs.utils.unloadDB()
+    except Exception:
+        pass
+    CoreLibs.utils.stop()
     get("http://127.0.0.1:5000/shutdown")
 
 
 CoreLibs.utils.init()
 
 
-cfg, DB = CoreLibs.utils.getVar()
+cfg, DB = CoreLibs.utils.getVars()
 srv.init(cfg,DB)
 
 
