@@ -1,1 +1,1 @@
-CoreLibs = __import__("fr-Xabi08-CAPAlgorythmCore", globals(), locals(), ["utils","basicDBCtrl","tuteurs", "relations","feedback", "issueHandler"],0)
+CoreLibs = __import__("fr-Xabi08-CAPAlgorythmCore", globals(), locals(), ["utils","DBCreator","tuteurs", "relations","feedback", "issueHandler","groupes","cfgHandler","backendEntry"],0)

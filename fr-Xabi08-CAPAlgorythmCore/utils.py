@@ -2,6 +2,10 @@ import os
 from datetime import datetime
 import unidecode
 import sqlite3
+import sys
+
+
+old_stdout = sys.stdout
 
 
 CoreLibs = __import__("fr-Xabi08-CAPAlgorythmCore", globals(), locals(), ["DBCreator","cfgHandler"],0)
@@ -13,9 +17,8 @@ creneaux = {"LU0": "Lundi de 8h à 9h","LU1": "Lundi de 9h à 10h","LU2": "Lundi
                 "JE0": "Jeudi de 8h à 9h","JE1": "Jeudi de 9h à 10h","JE2": "Jeudi de 10h à 11h","JE3": "Jeudi de 11h à 12h","JE4": "Jeudi de 12h à 13h","JE5": "Jeudi de 13h à 14h","JE6": "Jeudi de 14h à 15h","JE7": "Jeudi de 15h à 16h","JE8": "Jeudi de 16h à 17h","JE9":"Jeudi de 17h à 18h",
                 "VE0": "Vendredi de 8h à 9h","VE1": "Vendredi de 9h à 10h","VE2": "Vendredi de 10h à 11h","VE3": "Vendredi de 11h à 12h","VE4": "Vendredi de 12h à 13h","VE5": "Vendredi de 13h à 14h","VE6": "Vendredi de 14h à 15h","VE7": "Vendredi de 15h à 16h","VE8": "Vendredi de 16h à 17h","VE9":"Vendredi de 17h à 18h",}
 
+matieres = ['Allemand', 'Anglais', 'Education Morale et Civique', 'Enseignement scientifique Physique', 'Enseignement-scientifique SVT', 'Espagnol', 'Francais', 'HGGSP', 'HLP', 'Histoire-Geographie', 'Litt. Anglaise', 'Mathematiques', 'Mathematiques tronc-commun (TC)', 'Musique', 'NSI/SNT', 'Philosophie', 'Physique Spe', 'SES', 'SVT Spe']
 
-newLogs = False
-isConfigLoaded = False
 
 ##Fonction d'Ecriture d'informations de debuggage
 def printInLogs(objet, categorie, forceshowing = False):
@@ -47,33 +50,35 @@ def transformToText(strlist):
 #####################################################
 
 def init():
-    global config
+    global config, log_file
     config = CoreLibs.cfgHandler.getCfg()
-    printInLogs("Configuration chargée et appliquée.",0)
+    log_file = open("message.log","w")
+    sys.stdout = log_file
+    print("Configuration chargée et appliquée.",0)
     try:
         os.remove("latestlog.txt")
     except FileNotFoundError:
         pass
-    printInLogs("Chargement des fichiers en cours...", 0)
+    print("Chargement des fichiers en cours...", 0)
     for i in range(3):
         try:
             global MainDB
-            MainDB = sqlite3.connect("data.db")
+            MainDB = sqlite3.connect("data.db", check_same_thread=False)
             break
         except FileNotFoundError:
             try:
-                CoreLibs.DBCreator.createDB()
+                CoreLibs.DBCreator.createDB(config["enableRelDB"],config["enableFeedback"])
             except Exception as e:
-                printInLogs('Erreur lors de la création de la base de données : ' + str(e),3)
+                print('Erreur lors de la création de la base de données : ' + str(e),3)
                 exit(-1)
         except Exception as e:
-            printInLogs('Erreur lors du chargement de la base de données : ' + str(e),3)
+            print('Erreur lors du chargement de la base de données : ' + str(e),3)
             exit(-1)
     if i == 3:
-        printInLogs("Initialisation s'est terminée à cause d'une erreur: Echec du chargement des fichiers. Le programme va maintenant s'arrêter.", 3)
+        print("Initialisation s'est terminée à cause d'une erreur: Echec du chargement des fichiers. Le programme va maintenant s'arrêter.", 3)
         quit()
-    printInLogs("Chargement des fichiers terminé.",0)
-    printInLogs("Initialisation du programme terminée avec succès. Démarrage...",0)
+    print("Chargement des fichiers terminé.",0)
+    print("Initialisation du programme terminée avec succès. Démarrage...",0)
     return
 
 
@@ -90,13 +95,13 @@ def refreshDB():
     global MainDB
     MainDB.close()
     try:
-        MainDB = sqlite3.connect("data.db")
+        MainDB = sqlite3.connect("data.db", check_same_thread=False)
     except FileNotFoundError:
         CoreLibs.DBCreator.createDB()
     return MainDB
 
 
-def actualiserConfig():
+def refreshConfig():
     global config
     config = CoreLibs.cfgHandler.getCfg()
     printInLogs("Configuration actualisée.",0)
@@ -106,5 +111,45 @@ def actualiserConfig():
 def unicode_serialize(text):
     for i in range(len(text)):
         strOut = unidecode.unidecode(text[i])
-        text[i] = strOut
+        text[i] = strOut.lower()
     return text
+
+
+def parseSubjects(input,forGetRequest = False):
+    input = input.split(",")
+    if not forGetRequest:
+        finalTXT = ""
+        for i,e in enumerate(input):
+            if e.lower() == "true":
+                finalTXT += matieres[i]
+        return finalTXT
+    lengths = 0
+    finalTXT = []
+    for i,e in enumerate(matieres):
+        if input[i].lower() == "true":
+            finalTXT.append("_"*lengths+input[i]+"%")
+        lengths+=len(e)
+    return finalTXT
+
+
+def parseDispos(input,forGetRequest = False):
+    input = input.split(",")
+    if not forGetRequest:
+        finalTXT = ""
+        for i,e in enumerate(input):
+            if e.lower() == "true":
+                finalTXT += list(creneaux.keys())[i]
+        return finalTXT
+    lengths = 0
+    finalTXT = []
+    for i,e in enumerate(creneaux.keys()):
+        if input[i].lower() == "true":
+            finalTXT.append("_"*lengths+input[i]+"%")
+        lengths+=len(e)
+    return finalTXT
+
+
+def stop():
+    sys.stdout = old_stdout
+    log_file.close()
+    return

@@ -1,4 +1,4 @@
-CoreLibs = __import__("fr-Xabi08-CAPAlgorythmCore", globals(), locals(), ["basicDBCtrl", "utils"],0)
+CoreLibs = __import__("fr-Xabi08-CAPAlgorythmCore", globals(), locals(), ["utils"],0)
 
 
 creneaux = CoreLibs.utils.creneaux
@@ -7,7 +7,7 @@ creneaux = CoreLibs.utils.creneaux
 def deleteTuteur(name, surname, group):
     MainDB = CoreLibs.utils.MainDB
     cursor = MainDB.cursor()
-    cursor.execute("DELETE FROM tuteur INNER JOIN group ON group.id = tuteur.group WHERE name = ? AND surname = ? AND groups.label = ?" (name,surname,group))
+    cursor.execute("DELETE FROM tuteur INNER JOIN group ON group.id = tuteur.group WHERE name = ? AND surname = ? AND groups.label = ?", (name,surname,group))
     MainDB.commit()
     return
 
@@ -21,5 +21,11 @@ def addTuteur(name, surname, groupid,parsedFreetime,parsedSubjects):
 
 
 def findTuteur(groupLVL,parsedFreetime,parsedSubjects):
-    pass
-#         cursor.execute("""SELECT nom, prenom FROM tuteur WHERE tuteur.grade >= ? AND freeon LIKE ? AND subject LIKE ?""",(niveau,check,matieres[m]))
+    results = []
+    MainDB = CoreLibs.utils.MainDB
+    cursor = MainDB.cursor()
+    for i in parsedFreetime:
+        for j in parsedSubjects:
+            cursor.execute("""SELECT nom, prenom FROM tuteur INNER JOIN groupe ON tuteur.group = groupe.id WHERE groupe.level >= ? AND freeon LIKE ? AND subject LIKE ?""",(groupLVL,i,j))
+            results.append((i,j,cursor.fetchall()))
+    return results

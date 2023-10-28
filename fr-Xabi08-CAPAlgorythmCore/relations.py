@@ -1,5 +1,4 @@
-CoreLibs = __import__("fr-Xabi08-CAPAlgorythmCore", globals(), locals(), ["utils","relations"],0)
-
+CoreLibs = __import__("fr-Xabi08-CAPAlgorythmCore", globals(), locals(), ["utils"],0)
 
 def addRelationship(tuteurid,tutoreid,subject,lessons,feedbackid = None):
     MainDB = CoreLibs.utils.MainDB
