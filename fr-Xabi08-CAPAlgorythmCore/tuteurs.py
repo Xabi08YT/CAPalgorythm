@@ -6,14 +6,6 @@ CoreLibs = __import__("fr-Xabi08-CAPAlgorythmCore", globals(), locals(), ["basic
 creneaux = CoreLibs.utils.creneaux
 
 
-def generateVerifTable():
-    verifList = {}
-    for i in range(len(creneaux)):
-        verifList[creneaux.keys()[i]] = "_"*i+"1"+"%"
-    return verifList
-
-
-
 def supprimerTuteur(nom, prn, classe):
     MainDB = CoreLibs.utils.MainDB
     cursor = MainDB.cursor()
@@ -44,24 +36,17 @@ def doOtherChecks(i, nom, prn, niveau, dispos, matiere, niveaut):
     return False, None, None
 
 
-def serializeFreeTime(input):
-    out = []
-    verifTables = generateVerifTable()
-    for i in input:
-        out.append(verifTables[i])
-    return out 
-
-
 ##Fonction permettant de trouver les tuteurs
 def trouverTuteur(nom, prn, niveau, matieres, dispos):
     results = []
-    checks = serializeFreeTime(dispos)
     MainDB = CoreLibs.utils.MainDB
     cursor = MainDB.cursor()
-    matieres = "%"+matieres+"%"
-    for check in checks:
-        cursor.execute(""""SELECT nom, prenom FROM tuteur WHERE tuteur.grade >= ? AND freeon LIKE ? AND subject LIKE ?""",(niveau,check,matieres))
-        results += cursor.fetchall()
+    for m in len(matieres):
+        matieres[m] = "%"+matieres[m]+"%"
+        for i in len(dispos):
+            check = "%"+dispos[i]+"%"
+            cursor.execute(""""SELECT nom, prenom FROM tuteur WHERE tuteur.grade >= ? AND freeon LIKE ? AND subject LIKE ?""",(niveau,check,matieres[m]))
+            results.append(cursor.fetchall())
     nbRelations = len(results)
     if nbRelations == 0:
         return ("Information","Aucune relation n'a été trouvée.", 1), None, None
