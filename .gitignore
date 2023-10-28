@@ -6,3 +6,4 @@ PythonEnv/
 *.zip
 *db
 *json
+pythonvenv
