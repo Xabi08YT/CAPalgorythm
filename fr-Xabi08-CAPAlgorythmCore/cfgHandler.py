@@ -18,6 +18,13 @@ def getCfg():
     return cfg
 
 
+def writeCfg(cfg):
+    with open('cfg.json', mode='w+') as cfgFile:
+        json.dump(cfg,cfgFile)
+        cfgFile.close()
+    return
+
+
 def resetCfg():
     try:
         remove("cfg.json")
