@@ -154,8 +154,7 @@ def stop():
 
 def createModifyRequest(input):
     input = input.decode('utf-8')
-    if not "id" in input:
-        eid = input.split("+")[1][0]
+    eid = input.split("+")[1][0]
     input = input.replace("+"+eid,"")
     input = input.split("&")
     updateRq = "UPDATE '"+input[0].split("=")[1]+"' SET "
