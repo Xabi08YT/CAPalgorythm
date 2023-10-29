@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <h1>Visualisation des données de: tuteur</h1>
+    <div class="databaseview">
+        {% for item in data %}
+            <form id="5_{{item[0]}}">
+                <input id="5_id_{{item[0]}}" value="{{item[0]}}" disabled>
+                <input id="5_name_{{item[0]}}" value="{{item[1]}}">
+                <input id="5_surname_{{item[0]}}" value="{{item[2]}}">
+                <input id="5_group_{{item[0]}}" value="{{item[3]}}">
+                <input id="5_subjects_{{item[0]}}" value="{{item[4]}}">
+                <input id="5_name_{{item[0]}}" value="{{item[5]}}">
+                <button id="5_modify_{{item[0]}}" onclick="updateinfo(this.id)">Mettre à jour</button>
+                <input id="5_reset_{{item[0]}}" type="reset" value="Annuler">
+            </form>
+            </br>
+        {% endfor %}
+    </div>
+</body>
+</html>
