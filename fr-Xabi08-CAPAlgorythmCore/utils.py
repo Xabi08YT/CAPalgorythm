@@ -122,10 +122,10 @@ def parseSubjects(input,forGetRequest = False):
         return finalTXT
     lengths = 0
     finalTXT = []
-    for i,e in enumerate(matieres):
-        if input[i].lower() == "true":
-            finalTXT.append("_"*lengths+input[i]+"%")
-        lengths+=len(e)
+    for i,e in enumerate(input):
+        if e.lower() == "true":
+            finalTXT += "_"*lengths+matieres[i]+"%"
+        lengths += len(matieres[i])
     return finalTXT
 
 
@@ -139,10 +139,10 @@ def parseDispos(input,forGetRequest = False):
         return finalTXT
     lengths = 0
     finalTXT = []
-    for i,e in enumerate(creneaux.keys()):
-        if input[i].lower() == "true":
-            finalTXT.append("_"*lengths+input[i]+"%")
-        lengths+=len(e)
+    for i,e in enumerate(input):
+        if e.lower() == "true":
+            finalTXT += "_"*lengths+list(creneaux.keys())[i]+"%"
+        lengths += len(list(creneaux.keys())[i])
     return finalTXT
 
 
