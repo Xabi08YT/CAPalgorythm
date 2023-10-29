@@ -7,7 +7,8 @@ creneaux = CoreLibs.utils.creneaux
 def deleteTuteur(name, surname, groupid):
     MainDB = CoreLibs.utils.MainDB
     cursor = MainDB.cursor()
-    cursor.execute("DELETE FROM 'tuteur' WHERE name = ? AND surname = ? AND groupid = ?", (name,surname,groupid))
+    delete_rq="DELETE FROM 'tuteur' WHERE name = '"+name+"' AND surname = '"+surname+"' AND groupid = "+str(groupid)
+    cursor.execute(delete_rq)
     MainDB.commit()
     cursor.close()
     return 
