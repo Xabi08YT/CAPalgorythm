@@ -33,7 +33,7 @@ def index_post():
         print(datas)
         results = CoreLibs.backendEntry.modeSplit(datas)
         print(results)
-        return 'OK !'
+        return 'window.location = "http://www.yoururl.com"'
     except Exception as e:
         print(datas)
         print(f"[STDERR] > {e}")
@@ -46,13 +46,15 @@ def refresh():
     return "Done", 200
 
 
-@srv.get("/tuteurEditor")
-def tuteurEdit():
+@srv.get("/editor/<table>")
+def editor(table):
     MainDB = CoreLibs.utils.MainDB
     cursor = MainDB.cursor()
-    cursor.execute("""SELECT id,name,surname,groupid,freeon,subject FROM 'tuteur'""")
+    sqlrequest = "SELECT * FROM '"+table+"'"
+    cursor.execute(sqlrequest)
     data = cursor.fetchall()
-    return render_template('tuteurEditor.html',data=data)
+    file = table+"Editor.html"
+    return render_template(file,data=data)
 
 
 @srv.post("/modifyDB")

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="{{url_for('static',filename='assets/Scripts/JS/modifyDB.js')}}"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../">Acceuil</a>
+            <a href="tuteur">Tuteurs</a>
+            <a href="tutore">Tutores</a>
+            <a href="group">Groupes classe</a>
+            <a href="retour">Retours</a>
+        </nav>
+    </header>
+    <main>
+        <h1>Visualisation des données des relations</h1>
+        <div class="databaseview">
+            {% for item in data %}
+                <form id="3_{{item[0]}}">
+                    <input id="3_id_{{item[0]}}" value="{{item[0]}}" disabled>
+                    <input id="3_tuteurid_{{item[0]}}" value="{{item[1]}}">
+                    <input id="3_tutoreid_{{item[0]}}" value="{{item[2]}}">
+                    <input id="3_lessonsnumber_{{item[0]}}" value="{{item[3]}}">
+                    <input id="3_subject_{{item[0]}}" value="{{item[4]}}">
+                    <input id="3_feedbackid_{{item[0]}}" value="{{item[5]}}">
+                    <button id="3_modify_{{item[0]}}" onclick="updateinfo(this.id)">Mettre à jour</button>
+                    <input id="3_reset_{{item[0]}}" type="reset" value="Annuler">
+                </form>
+                </br>
+            {% endfor %}
+        </div>
+    </main>
+</body>
+</html>
