@@ -10,7 +10,7 @@ def groupGetLVL(gname):
 def addGroup(gname,level):
     MainDB = CoreLibs.utils.MainDB
     cursor = MainDB.cursor()
-    cursor.execute("""INSERT INTO group (label,level) VALUES (?,?)""",(gname,level))
+    cursor.execute("""INSERT INTO 'group'(label,level) VALUES (?,?)""",(gname,level))
     MainDB.commit()
     return
 
@@ -18,13 +18,13 @@ def addGroup(gname,level):
 def getGroupByName(gname):
     MainDB = CoreLibs.utils.MainDB
     cursor = MainDB.cursor()
-    cursor.execute("""SELECT * FROM group WHERE label = ?""",(gname,))
+    cursor.execute("""SELECT * FROM 'group' WHERE label = ?""",(gname,))
     return cursor.fetchall()
 
 
 def rmGroup(gid):
     MainDB = CoreLibs.utils.MainDB
     cursor = MainDB.cursor()
-    cursor.execute("""DELETE FROM group WHERE id = ?""",(gid,))
+    cursor.execute("""DELETE FROM 'group' WHERE id = ?""",(gid,))
     MainDB.commit()
     return

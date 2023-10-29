@@ -1,9 +1,0 @@
-Configuration chargée et appliquée. 0
-Chargement des fichiers en cours... 0
-Chargement des fichiers terminé. 0
-Initialisation du programme terminée avec succès. Démarrage... 0
- * Serving Flask app 'Serveur local CAPS'
- * Debug mode: off
-['Add', 'TEST', 'TEST', '2E6', 'true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false', 'true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false']
-['Add', 'TEST', 'TEST', '2E6', 'true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false', 'true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false']
-[STDERR] > near "group": syntax error

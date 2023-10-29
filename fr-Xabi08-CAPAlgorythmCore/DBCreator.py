@@ -58,6 +58,12 @@ def createDB(relEnabled = False, feedbackEnabled = False):
             )
             """)
     connectDB.commit()
+    insertQuery = """INSERT INTO 'group'
+                          (label,level) 
+                          VALUES (?,?);"""
+    classes = [("2E6",2),("2E5",2),("2E4",2),("2E3",2),("2E2",2),("2E1",2),("1TC5",1),("1TC4",1),("1TC3",1),("1TC2",1),("1TC1",1),("TE4",0),("TE3",0),("TE2",0),("TE1",0)]
+    cursor.executemany(insertQuery,classes)
+    connectDB.commit()
     connectDB.close()
     return
 

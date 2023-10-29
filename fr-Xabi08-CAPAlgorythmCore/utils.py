@@ -52,7 +52,7 @@ def transformToText(strlist):
 def init():
     global config, log_file
     config = CoreLibs.cfgHandler.getCfg()
-    log_file = open("message.log","w")
+    log_file = open("latest.log","w")
     sys.stdout = log_file
     print("Configuration chargée et appliquée.",0)
     try:

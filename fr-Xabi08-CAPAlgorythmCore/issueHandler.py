@@ -7,10 +7,10 @@ CoreLibs = __import__("fr-Xabi08-CAPAlgorythmCore", globals(), locals(), ["utils
 
 
 def getLogContent():
-    with open(file='lastestlog.txt', mode = 'r') as lastestlog:
-        content = lastestlog.readlines()
+    with open(file='latest.log', mode = 'rb') as lastestlog:
+        content = lastestlog.read()
         lastestlog.close()
-    return content
+    return content.decode("utf-8")
 
 
 def get_token():

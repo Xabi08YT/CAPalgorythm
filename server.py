@@ -38,9 +38,6 @@ def index_post():
     except Exception as e:
         print(datas)
         print(f"[STDERR] > {e}")
-        with open("exception.txt", mode='w+') as exceptionFile:
-            exceptionFile.write(str(e))
-            exceptionFile.close()
         return "Internal server error", 500
     
 
