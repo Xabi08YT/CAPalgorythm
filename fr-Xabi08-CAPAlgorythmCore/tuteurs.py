@@ -9,7 +9,8 @@ def deleteTuteur(name, surname, groupid):
     cursor = MainDB.cursor()
     cursor.execute("DELETE FROM 'tuteur' WHERE name = ? AND surname = ? AND groupid = ?", (name,surname,groupid))
     MainDB.commit()
-    return cursor.close()
+    cursor.close()
+    return 
 
 
 def addTuteur(name, surname, groupid,parsedFreetime,parsedSubjects):

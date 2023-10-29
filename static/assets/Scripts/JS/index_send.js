@@ -24,7 +24,7 @@ let sendToBackend = function() {
     } 
     
 
-    if(name == null || surname == null || matiere===false || creneaux===false) {
+    if(name == null || surname == null || ((matiere===false || creneaux===false) && mode != "Rem")) {
         alert("Des entrées sont manquantes. Opération annulée.")
         return;
     }
