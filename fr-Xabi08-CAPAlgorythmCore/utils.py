@@ -150,3 +150,18 @@ def stop():
     sys.stdout = old_stdout
     log_file.close()
     return
+
+
+def createModifyRequest(input):
+    input = input.decode('utf-8')
+    if not "id" in input:
+        eid = input.split("+")[1][0]
+    input = input.replace("+"+eid,"")
+    input = input.split("&")
+    updateRq = "UPDATE '"+input[0].split("=")[1]+"' SET "
+    for e in input:
+        if not("table=" in e or "id=" in e):
+            updateRq+=e+","
+    updateRq[-1] = ""
+    updateRq+=" WHERE "+input[1]
+    return updateRq
