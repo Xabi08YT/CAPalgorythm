@@ -9,7 +9,7 @@ def modeSplit(data):
         CoreLibs.tuteurs.addTuteur(data[1],data[2],groupid,freetime,subjects)
         return "Successfully added tuteur."
     elif data[0] == "Rem":
-        CoreLibs.tuteurs.deleteTuteur(data[1],data[2],CoreLibs.groupes.groupGetLVL(data[3])[0][0])
+        CoreLibs.tuteurs.deleteTuteur(data[1],data[2],CoreLibs.groupes.getGroupByName(data[3])[0][0])
         return "Successfully removed tuteur."
     elif data[0] == "Sea":
         freetime = CoreLibs.utils.parseDispos(data[5],True)
