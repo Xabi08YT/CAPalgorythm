@@ -4,10 +4,6 @@ Ce programme a pour but d'aider a mettre en relation des élèves sur des créne
 but de faciliter la mise en place d'un AP entre élèves.
 
 
-## PROJET EN PAUSE
-
-Le support ainsi que le développement de ce projet est en pause jusqu'à mon retour de vacances dans environ 3 mois. Vous pouvez rapporter des bugs mais ceux-ci ne seront pas réglés avant mon retour.
-
 ## Fonctionnalités actuelles :
 
 - Une GUI simple
