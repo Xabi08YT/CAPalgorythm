@@ -6,21 +6,32 @@
     <script src="{{url_for('static',filename='assets/Scripts/JS/modifyDB.js')}}"></script>
 </head>
 <body>
-    <h1>Visualisation des données de: tuteur</h1>
-    <div class="databaseview">
-        {% for item in data %}
-            <form id="1_{{item[0]}}">
-                <input id="1_id_{{item[0]}}" value="{{item[0]}}" disabled>
-                <input id="1_name_{{item[0]}}" value="{{item[1]}}">
-                <input id="1_surname_{{item[0]}}" value="{{item[2]}}">
-                <input id="1_groupid_{{item[0]}}" value="{{item[3]}}">
-                <input id="1_freeon_{{item[0]}}" value="{{item[4]}}">
-                <input id="1_subject_{{item[0]}}" value="{{item[5]}}">
-                <button id="1_modify_{{item[0]}}" onclick="updateinfo(this.id)">Mettre à jour</button>
-                <input id="1_reset_{{item[0]}}" type="reset" value="Annuler">
-            </form>
-            </br>
-        {% endfor %}
-    </div>
+    <header>
+        <nav>
+            <a href="../">Acceuil</a>
+            <a href="tutore">Tutores</a>
+            <a href="group">Groupes classe</a>
+            <a href="retour">Retours</a>
+            <a href="relation">Relations</a>
+        </nav>
+    </header>
+    <main>
+        <h1>Visualisation des données des tuteurs</h1>
+        <div class="databaseview">
+            {% for item in data %}
+                <form id="1_{{item[0]}}">
+                    <input id="1_id_{{item[0]}}" value="{{item[0]}}" disabled>
+                    <input id="1_name_{{item[0]}}" value="{{item[1]}}">
+                    <input id="1_surname_{{item[0]}}" value="{{item[2]}}">
+                    <input id="1_groupid_{{item[0]}}" value="{{item[3]}}">
+                    <input id="1_freeon_{{item[0]}}" value="{{item[4]}}">
+                    <input id="1_subject_{{item[0]}}" value="{{item[5]}}">
+                    <button id="1_modify_{{item[0]}}" onclick="updateinfo(this.id)">Mettre à jour</button>
+                    <input id="1_reset_{{item[0]}}" type="reset" value="Annuler">
+                </form>
+                </br>
+            {% endfor %}
+        </div>
+    </main>
 </body>
 </html>
