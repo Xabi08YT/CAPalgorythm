@@ -3,7 +3,7 @@ CoreLibs = __import__("fr-Xabi08-CAPAlgorythmCore", globals(), locals(), ["utils
 def groupGetLVL(gname):
     MainDB = CoreLibs.utils.MainDB
     cursor = MainDB.cursor()
-    cursor.execute("""SELECT level FROM group WHERE label = ?""",(gname,))
+    cursor.execute("""SELECT level FROM 'group' WHERE label = ?""",(gname,))
     return cursor.fetchall()
 
 

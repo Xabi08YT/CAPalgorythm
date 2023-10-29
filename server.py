@@ -4,8 +4,6 @@ from CoreProxy import *
 
 
 toDelete = ["mode","surname","name","group","subjects","freetime","="]
-cfgSRV = {}
-DBSRV = None
 
 
 srv = Flask("Serveur local CAPS")
@@ -33,8 +31,9 @@ def index_post():
             datas = datas.replace(i,"")
         datas = datas.split("&")
         print(datas)
-        CoreLibs.backendEntry.modeSplit(datas)
-        return "OK ! ",200
+        results = CoreLibs.backendEntry.modeSplit(datas)
+        print(results)
+        return 'OK !'
     except Exception as e:
         print(datas)
         print(f"[STDERR] > {e}")
@@ -45,6 +44,21 @@ def index_post():
 def refresh():
     CoreLibs.utils.refreshDB()
     return "Done", 200
+
+
+@srv.get("/tuteurEditor")
+def tuteurEdit():
+    MainDB = CoreLibs.utils.MainDB
+    cursor = MainDB.cursor()
+    cursor.execute("""SELECT id,name,surname,groupid,freeon,subject FROM 'tuteur'""")
+    data = cursor.fetchall()
+    return render_template('tuteurEditor.html',data=data)
+
+
+@srv.post("/modifyDB")
+def modifyDB():
+    rq = request.get_data()
+    print(rq)
     
 
 def init(conf,db):

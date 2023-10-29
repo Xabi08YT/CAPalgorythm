@@ -18,7 +18,7 @@ def createDB(relEnabled = False, feedbackEnabled = False):
         groupid INTEGER NOT NULL,
         freeon TEXT NOT NULL,
         subject TEXT NOT NULL,
-        FOREIGN KEY (groupid) REFERENCES 'group'(id)
+        FOREIGN KEY (groupid) REFERENCES 'group'(id) ON DELETE CASCADE
         )
         """)
     cursor.execute("""CREATE TABLE IF NOT EXISTS 'tutore'(
@@ -28,7 +28,7 @@ def createDB(relEnabled = False, feedbackEnabled = False):
         groupid INTEGER NOT NULL,
         freeon TEXT NOT NULL,
         subject TEXT NOT NULL,
-        FOREIGN KEY (groupid) REFERENCES 'group'(id)
+        FOREIGN KEY (groupid) REFERENCES 'group'(id) ON DELETE CASCADE
         )""")
     connectDB.commit()
     if relEnabled:
@@ -39,9 +39,9 @@ def createDB(relEnabled = False, feedbackEnabled = False):
             lessonsnumber INT,
             subject TEXT NOT NULL,
             feedbackid INTEGER,
-            FOREIGN KEY (tuteurid) REFERENCES 'tuteur'(tuteurid),
-            FOREIGN KEY (tutoreid) REFERENCES 'tutore'(tutoreid),
-            FOREIGN KEY (feedbackid) REFERENCES 'retour'(id) 
+            FOREIGN KEY (tuteurid) REFERENCES 'tuteur'(tuteurid) ON DELETE CASCADE,
+            FOREIGN KEY (tutoreid) REFERENCES 'tutore'(tutoreid) ON DELETE CASCADE,
+            FOREIGN KEY (feedbackid) REFERENCES 'retour'(id) ON DELETE CASCADE 
             )""")
     if feedbackEnabled:
         cursor.execute("""CREATE TABLE IF NOT EXISTS retour(
@@ -53,8 +53,8 @@ def createDB(relEnabled = False, feedbackEnabled = False):
             efficiencyscore INT NOT NULL,
             socialscore INT NOT NULL,
             commentary TEXT,
-            FOREIGN KEY (tuteurid) REFERENCES 'tuteur'(tuteurid),
-            FOREIGN KEY (tutoreid) REFERENCES 'tutore'(tutoreid)
+            FOREIGN KEY (tuteurid) REFERENCES 'tuteur'(tuteurid) ON DELETE CASCADE,
+            FOREIGN KEY (tutoreid) REFERENCES 'tutore'(tutoreid) ON DELETE CASCADE
             )
             """)
     connectDB.commit()
