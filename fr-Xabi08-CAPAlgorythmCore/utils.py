@@ -92,7 +92,7 @@ def refreshDB():
     global MainDB
     MainDB.close()
     try:
-        MainDB = sqlite3.connect("data.db", check_same_thread=False)
+        MainDB = sqlite3.connect("data.db", check_same_thread=False,)
     except FileNotFoundError:
         CoreLibs.DBCreator.createDB()
     return MainDB
@@ -159,8 +159,8 @@ def createModifyRequest(input):
     input = input.split("&")
     updateRq = "UPDATE '"+input[0].split("=")[1]+"' SET "
     for e in input:
-        if not("table=" in e or "id=" in e):
-            updateRq+=e+","
+        if not("table=" in e or ("id=" in e and not "groupid=" in e)):
+            updateRq+=e.split("=")[0]+"='"+e.split("=")[1]+"',"
     updateRq = updateRq[:-1]
     updateRq+=" WHERE "+input[1]
     return updateRq

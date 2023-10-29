@@ -9,7 +9,7 @@ def deleteTuteur(name, surname, groupid):
     cursor = MainDB.cursor()
     cursor.execute("DELETE FROM 'tuteur' WHERE name = ? AND surname = ? AND groupid = ?", (name,surname,groupid))
     MainDB.commit()
-    return
+    return cursor.close()
 
 
 def addTuteur(name, surname, groupid,parsedFreetime,parsedSubjects):
@@ -17,7 +17,7 @@ def addTuteur(name, surname, groupid,parsedFreetime,parsedSubjects):
     cursor = MainDB.cursor()
     cursor.execute("""INSERT INTO 'tuteur' (name,surname,groupid,freeon,subject) VALUES (?,?,?,?,?)""",(name,surname,groupid,parsedFreetime,parsedSubjects))
     MainDB.commit()
-    return
+    return cursor.close()
 
 
 def findTuteur(groupLVL,parsedFreetime,parsedSubjects):
@@ -28,4 +28,5 @@ def findTuteur(groupLVL,parsedFreetime,parsedSubjects):
         for j in parsedSubjects:
             cursor.execute("""SELECT name, surname FROM 'tuteur' INNER JOIN 'group' ON tuteur.groupid = 'group'.id WHERE 'group'.level <= ? AND freeon LIKE ? AND subject LIKE ?""",(groupLVL,i,j))
             results.append((i,j,cursor.fetchall()))
+    cursor.close()
     return results

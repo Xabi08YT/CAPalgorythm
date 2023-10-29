@@ -60,6 +60,7 @@ def modifyDB():
     rq = request.get_data()
     updaterq = CoreLibs.utils.createModifyRequest(rq)
     MainDB = CoreLibs.utils.MainDB
+    print(updaterq)
     cursor = MainDB.cursor()
     cursor.execute(updaterq)
     MainDB.commit()
