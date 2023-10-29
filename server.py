@@ -58,7 +58,12 @@ def tuteurEdit():
 @srv.post("/modifyDB")
 def modifyDB():
     rq = request.get_data()
-    print(rq)
+    updaterq = CoreLibs.utils.createModifyRequest(rq)
+    MainDB = CoreLibs.utils.MainDB
+    cursor = MainDB.cursor()
+    cursor.execute(updaterq)
+    MainDB.commit()
+    return "Received"
     
 
 def init(conf,db):
