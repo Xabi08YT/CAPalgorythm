@@ -161,6 +161,6 @@ def createModifyRequest(input):
     for e in input:
         if not("table=" in e or "id=" in e):
             updateRq+=e+","
-    updateRq[-1] = ""
+    updateRq = updateRq[:-1]
     updateRq+=" WHERE "+input[1]
     return updateRq
