@@ -81,6 +81,11 @@ def show_settings():
     return render_template("settings.html",Rel = cfgSRV["enableRel"],Feedback = cfgSRV["enableFeedback"])
 
 
+@srv.get("/help")
+def help_page():
+    return render_template("help.html",labels = CoreLibs.issueHandler.getLabels())
+
+
 @srv.route("/redirect/<link>")
 def timedRedirect(link):
     sleep(1)
@@ -125,10 +130,33 @@ def modifyDB():
     MainDB.commit()
     return "Received"
 
+
 @srv.post("/DB/reset")
 def reset():
     CoreLibs.utils.resetDB()
     return "OK !"
+
+
+@srv.post("/ticket")
+def open_ticket():
+    data = request.get_data().decode("utf-8")
+    data = data.replace("title=","")
+    data = data.replace("body=","")
+    data = data.replace("labels=","")
+    data = data.split("&")
+    gitLabels = CoreLibs.issueHandler.getLabels()
+    labels = []
+    for i,e in enumerate(data[2].split(",")):
+        if e.lower()=="true":
+            try:
+                labels.append(CoreLibs.issueHandler.getLabel(gitLabels[i]))
+            except Exception as e:
+                print(e)
+                labels.append(gitLabels[i])
+    if CoreLibs.issueHandler.issueTemplate(data[0],data[1],labels):
+        return "OK !",200
+    return "Erruer",500
+                
     
 
 def init(conf,db):

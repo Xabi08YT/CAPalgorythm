@@ -5,6 +5,19 @@ import sqlite3
 import sys
 
 
+class Unbuffered(object):
+   def __init__(self, stream):
+       self.stream = stream
+   def write(self, data):
+       self.stream.write(data)
+       self.stream.flush()
+   def writelines(self, datas):
+       self.stream.writelines(datas)
+       self.stream.flush()
+   def __getattr__(self, attr):
+       return getattr(self.stream, attr)
+
+
 old_stdout = sys.stdout
 
 
@@ -35,7 +48,7 @@ def init():
     global config, log_file
     config = CoreLibs.cfgHandler.getCfg()
     log_file = open("latest.log","w")
-    sys.stdout = log_file
+    sys.stdout = Unbuffered(log_file)
     print("Configuration chargée et appliquée.",0)
     try:
         os.remove("latestlog.txt")
