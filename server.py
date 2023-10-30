@@ -11,12 +11,28 @@ srv = Flask("Serveur local CAPS")
 
 def shutdown_server():
     system("taskkill /f /PID "+str(getpid()))
-    
+
+
+@srv.errorhandler(404)
+def pageNotFound(error):
+    return render_template("404.html",error=error)
+
     
 @srv.get('/shutdown')
 def shutdown():
     shutdown_server()
     return 'Server shutting down...'
+
+
+@srv.route('/results', methods = ['GET','POST'])
+def show_results():
+    datas = request.cookies
+    print(datas)
+    if request.method == 'GET':
+        return render_template_string("<h1>Voici vos données {{data}}</h1>",data=datas)
+    else:
+        return "Hello World !"
+
 
 @srv.get("/")
 def index():
@@ -33,7 +49,10 @@ def index_post():
         print(datas)
         results = CoreLibs.backendEntry.modeSplit(datas)
         print(results)
-        return 'window.location = "http://www.yoururl.com"'
+        redirectURL = "/results"
+        response = make_response(redirect(redirectURL))
+        response.set_cookie("results",str(results))
+        return response, 301
     except Exception as e:
         print(datas)
         print(f"[STDERR] > {e}")
