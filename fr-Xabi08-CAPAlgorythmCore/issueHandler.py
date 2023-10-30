@@ -108,7 +108,7 @@ def getSystemInfos():
 
 
 def issueTemplate(title, body, labels = None):
-    with open("lastestlog.txt", "a+") as f:
+    with open("latest.log", "ba+") as f:
         with redirect_stdout(f):
             getSystemInfos()
             body = body + "\n \n ============LOGS============ \n \n ```" + CoreLibs.utils.transformToText(getLogContent())+" ```"

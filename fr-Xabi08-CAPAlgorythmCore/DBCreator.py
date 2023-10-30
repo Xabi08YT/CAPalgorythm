@@ -61,3 +61,44 @@ def createDB(relEnabled = False, feedbackEnabled = False):
     connectDB.close()
     return
 
+
+def createRelTable():
+    connectDB = sqlite3.connect("data.db")
+    cursor = connectDB.cursor()
+    cursor.execute("""CREATE TABLE IF NOT EXISTS relation(
+            id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+            tuteurid INTEGER NOT NULL,
+            tutoreid INTEGER NOT NULL,
+            lessonsnumber INT,
+            subject TEXT NOT NULL,
+            feedbackid INTEGER,
+            FOREIGN KEY (tuteurid) REFERENCES 'tuteur'(id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+            FOREIGN KEY (tutoreid) REFERENCES 'tutore'(id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+            FOREIGN KEY (feedbackid) REFERENCES 'retour'(id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED 
+            )""")
+    cursor.close()
+    connectDB.commit()
+    connectDB.close()
+    return
+
+
+def createFeedbackTable():
+    connectDB = sqlite3.connect("data.db")
+    cursor = connectDB.cursor()
+    cursor.execute("""CREATE TABLE IF NOT EXISTS retour(
+            id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+            tuteurid INTEGER NOT NULL,
+            tutoreid INTEGER NOT NULL,
+            subject TEXT NOT NULL,
+            time TEXT NOT NULL,
+            efficiencyscore INT NOT NULL,
+            socialscore INT NOT NULL,
+            commentary TEXT,
+            FOREIGN KEY (tuteurid) REFERENCES 'tuteur'(id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+            FOREIGN KEY (tutoreid) REFERENCES 'tutore'(id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED
+            )
+            """)
+    cursor.close()
+    connectDB.commit()
+    connectDB.close()
+    return

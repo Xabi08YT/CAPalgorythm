@@ -15,7 +15,7 @@ def shutdown():
 
 
 CoreLibs.utils.init()
-
+CoreLibs.issueHandler.init()
 
 cfg, DB = CoreLibs.utils.getVars()
 srv.init(cfg,DB)

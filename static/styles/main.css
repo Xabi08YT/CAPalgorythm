@@ -40,12 +40,6 @@ header nav ul li a:hover{
 }
 
 
-header nav ul li.deroulant {
-    margin-right: 10px;
-    margin-left: 50px;
-}
-
-
 header nav ul li.deroulant ul {
     display: none;
 }
@@ -80,6 +74,28 @@ body {
     margin: 10px;
 }
 
+
 #mainInputBottom {
     display: inline-flex;
+    margin-top: 10px;
+}
+
+
+#mainInputEDT {
+    margin-left: 50px;
+}
+
+
+#mainInputEDT table.edt {
+    margin-top: 13px;
+}
+
+
+#mainInputCTRLBTN {
+    margin-top: 134px;
+}
+
+
+#subjects {
+    list-style: none;
 }

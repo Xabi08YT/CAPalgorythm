@@ -20,24 +20,6 @@ creneaux = {"LU0": "Lundi de 8h à 9h","LU1": "Lundi de 9h à 10h","LU2": "Lundi
 matieres = ['Allemand', 'Anglais', 'Education Morale et Civique', 'Enseignement scientifique Physique', 'Enseignement-scientifique SVT', 'Espagnol', 'Francais', 'HGGSP', 'HLP', 'Histoire-Geographie', 'Litt. Anglaise', 'Mathematiques', 'Mathematiques tronc-commun (TC)', 'Musique', 'NSI/SNT', 'Philosophie', 'Physique Spe', 'SES', 'SVT Spe']
 
 
-##Fonction d'Ecriture d'informations de debuggage
-def printInLogs(objet, categorie, forceshowing = False):
-    if config["enableLogs"] == True or forceshowing == True:
-        with open(file="latestlog.txt", mode="a+") as logs:
-            if categorie == 0:
-                logs.writelines(str(datetime.now())+"/[INFO] : "+str(objet)+"\n")
-            elif categorie == 1:
-                logs.writelines(str(datetime.now())+"/[WARN] : "+str(objet)+"\n")
-            elif categorie == 2:
-                logs.writelines(str(datetime.now())+"/[ERR] : "+str(objet)+"\n")
-            elif categorie == 3:
-                logs.writelines(str(datetime.now())+"/[FATAL] : "+str(objet)+"\n")
-            elif categorie == 4:
-                logs.writelines(str(datetime.now())+"/[CONSOLEOUT] : "+str(objet)+"\n")
-            logs.close()
-        return
-
-
 def transformToText(strlist):
     out = ""
     for e in strlist:
@@ -67,7 +49,7 @@ def init():
             break
         else:
             try:
-                CoreLibs.DBCreator.createDB(config["enableRelDB"],config["enableFeedback"])
+                CoreLibs.DBCreator.createDB(config["enableRel"],config["enableFeedback"])
             except Exception as e:
                 print('Erreur lors de la création de la base de données : ' + str(e),3)
                 exit(-1)
@@ -80,7 +62,7 @@ def init():
 
 
 def getVars():
-    return (MainDB, config)
+    return (config, MainDB)
 
 
 def unloadDB():
@@ -101,7 +83,6 @@ def refreshDB():
 def refreshConfig():
     global config
     config = CoreLibs.cfgHandler.getCfg()
-    printInLogs("Configuration actualisée.",0)
     return config
 
 
@@ -164,3 +145,12 @@ def createModifyRequest(input):
     updateRq = updateRq[:-1]
     updateRq+=" WHERE "+input[1]
     return updateRq
+
+
+def resetDB():
+    global MainDB
+    MainDB.close()
+    os.remove("data.db")
+    CoreLibs.DBCreator.createDB(config["enableRel"],config["enableFeedback"])
+    MainDB = sqlite3.connect("data.db", check_same_thread=False)
+    return

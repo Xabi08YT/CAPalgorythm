@@ -2,7 +2,7 @@ import json
 from os import remove
 
 
-basicCfg = {"enableLogs": True, "enableFeedback": False, "enableRelDB": False}
+basicCfg = {"enableFeedback": False, "enableRel": False}
 
 
 def getCfg():

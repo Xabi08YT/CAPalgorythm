@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="{{url_for('static',filename='assets/Scripts/JS/cfg.js')}}"></script>
     <link rel="stylesheet" href="{{url_for('static',filename='styles/main.css')}}">
 </head>
 <body>
@@ -28,8 +29,17 @@
         </nav>
     </header>
     <main>
-        <h1>Erreur 404</h1>
-        <p>La page recherchée n'a pu être trouvée. Cela peut être du: à une fonctionnalité non implémentée ou supprimée ou bien à un fichier manquant ou endommagé.</p>
-        <p>Error code: {{error}}</p>
+        <button onclick="refreshCfg()">Actualiser la configuration</button>
+        <form id="settings">
+            <label for="enableRel">Activer le stockage des relations</label>
+            <input id="enableRel" value={{Rel}} type="checkbox">
+            <label for="enableFeedback">Activer le stockage des retours</label>
+            <input id="enableFeedback" value={{Feedback}} type="checkbox">
+            <button onclick="sendCfg()">Appliquer</button>
+            <button onclick="resetCfg()">Restaurer la configuration par défaut</button>
+            <input type="reset" value="Annuler">
+        </form>
+        <p>Configuration actuelle: Stockage des relation : {{Rel}}, Stockage des retours : {{Feedback}}</p>
+        <button onclick="resetDB()">Vider la base de données</button>
     </main>
 </body>

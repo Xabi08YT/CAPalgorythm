@@ -1,10 +1,10 @@
 from flask import *
 from os import getpid, system
 from CoreProxy import *
+from time import sleep
 
 
 toDelete = ["mode","surname","name","group","subjects","freetime","="]
-
 
 srv = Flask("Serveur local CAPS")
 
@@ -79,6 +79,44 @@ def editor(table):
     return render_template(file,data=data)
 
 
+@srv.get("/settings")
+def show_settings():
+    return render_template("settings.html",Rel = cfgSRV["enableRel"],Feedback = cfgSRV["enableFeedback"])
+
+
+@srv.route("/redirect/<link>")
+def timedRedirect(link):
+    sleep(1)
+    return redirect("/"+link)
+
+
+@srv.post("/cfg/<op>")
+def cfgOp(op):
+    global cfgSRV
+    if op == "refresh":
+        cfgSRV = CoreLibs.utils.refreshConfig()
+        return "OK !"
+    elif op == "reset":
+        cfgSRV = CoreLibs.cfgHandler.resetCfg()
+        return "OK !"
+    elif op == "write":
+        data = request.get_data().decode('utf-8')
+        data = data.replace("enableRel","")
+        data = data.replace("enableFeedback","")
+        data = data.replace("=","")
+        data = data.split("&")
+        if cfgSRV["enableRel"] != data[0] and data[0] == "true":
+            CoreLibs.DBCreator.createRelTable()
+        if cfgSRV["enableFeedback"] != data[1] and data[1] == "true":
+            CoreLibs.DBCreator.createFeedbackTable()
+        cfgSRV["enableRel"] = data[0] == "true"
+        cfgSRV["enableFeedback"] = data[1] == "true"
+        CoreLibs.cfgHandler.writeCfg(cfgSRV)
+        return "OK !"
+    else:
+        return "Error: opcode "+op+" does not exist for url /cfg/",404
+
+
 @srv.post("/modifyDB")
 def modifyDB():
     rq = request.get_data()
@@ -89,6 +127,11 @@ def modifyDB():
     cursor.execute(updaterq)
     MainDB.commit()
     return "Received"
+
+@srv.post("/DB/reset")
+def reset():
+    CoreLibs.utils.resetDB()
+    return "OK !"
     
 
 def init(conf,db):
