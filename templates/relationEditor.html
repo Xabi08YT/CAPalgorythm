@@ -4,15 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="{{url_for('static',filename='assets/Scripts/JS/modifyDB.js')}}"></script>
+    <link rel="stylesheet" href="{{url_for('static',filename='styles/main.css')}}">
 </head>
 <body>
     <header>
         <nav>
-            <a href="../">Acceuil</a>
-            <a href="tuteur">Tuteurs</a>
-            <a href="tutore">Tutores</a>
-            <a href="group">Groupes classe</a>
-            <a href="retour">Retours</a>
+            <ul>
+                <li><a href="../">Acceuil</a></li>
+                <li><a href="tuteur">Tuteurs</a></li>
+                <li><a href="tutore">Tutores</a></li>
+                <li><a href="group">Groupes classe</a></li>
+                <li><a href="retour">Retours</a></li>
+                <li class="deroulant">
+                    <a href="">Autres options</a>
+                    <ul class="hiddenMenu">
+                        <li><a href="/settings">Paramètres</a></li>
+                        <li><a href="/importFile">Importer...</a></li>
+                        <li><a href="/export">Exporter...</a></li>
+                        <li><a href="/help">Aide...</a></li>
+                    </ul>
+                </li>
+            </ul>
         </nav>
     </header>
     <main>
