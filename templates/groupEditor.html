@@ -32,13 +32,14 @@
         <div class="databaseview">
             {% for item in data %}
                 <form id="4_{{item[0]}}">
-                    <input id="4_id_{{item[0]}}" value="{{item[0]}}" disabled>
-                    <input id="4_label_{{item[0]}}" value="{{item[1]}}">
-                    <input id="4_level_{{item[0]}}" value="{{item[2]}}">
-                    <button id="4_modify_{{item[0]}}" onclick="updateinfo(this.id)">Mettre à jour</button>
-                    <input id="4_reset_{{item[0]}}" type="reset" value="Annuler">
+                    <div class="viewer-row">
+                        <input id="4_id_{{item[0]}}" value="{{item[0]}}" disabled>
+                        <input id="4_label_{{item[0]}}" value="{{item[1]}}">
+                        <input id="4_level_{{item[0]}}" value="{{item[2]}}">
+                        <button id="4_modify_{{item[0]}}" onclick="updateinfo(this.id)">Mettre à jour</button>
+                        <input id="4_reset_{{item[0]}}" type="reset" value="Annuler">
+                    </div>
                 </form>
-                </br>
             {% endfor %}
         </div>
     </main>

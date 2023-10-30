@@ -99,3 +99,14 @@ body {
 #subjects {
     list-style: none;
 }
+
+
+.viewer-row {
+    display: inline-block;
+}
+
+
+.database-view {
+    display: flex;
+    flex-direction: column;
+}

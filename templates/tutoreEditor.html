@@ -32,16 +32,18 @@
         <div class="databaseview">
             {% for item in data %}
                 <form id="2_{{item[0]}}">
-                    <input id="2_id_{{item[0]}}" value="{{item[0]}}" disabled>
-                    <input id="2_name_{{item[0]}}" value="{{item[1]}}">
-                    <input id="2_surname_{{item[0]}}" value="{{item[2]}}">
-                    <a href="group#4_{{item[3]}}"><input id="2_groupid_{{item[0]}}" value="{{item[3]}}"></a>
-                    <input id="2_freeon_{{item[0]}}" value="{{item[4]}}">
-                    <input id="2_subject_{{item[0]}}" value="{{item[5]}}">
-                    <button id="2_modify_{{item[0]}}" onclick="updateinfo(this.id)">Mettre à jour</button>
-                    <input id="2_reset_{{item[0]}}" type="reset" value="Annuler">
+                    <div class="viewer-row">
+                        <input id="2_id_{{item[0]}}" value="{{item[0]}}" disabled>
+                        <input id="2_name_{{item[0]}}" value="{{item[1]}}">
+                        <input id="2_surname_{{item[0]}}" value="{{item[2]}}">
+                        <input id="2_groupid_{{item[0]}}" value="{{item[3]}}">
+                        <a href="group#4_{{item[3]}}">Voir</a>
+                        <input id="2_freeon_{{item[0]}}" value="{{item[4]}}">
+                        <input id="2_subject_{{item[0]}}" value="{{item[5]}}">
+                        <button id="2_modify_{{item[0]}}" onclick="updateinfo(this.id)">Mettre à jour</button>
+                        <input id="2_reset_{{item[0]}}" type="reset" value="Annuler">
+                    </div>
                 </form>
-                </br>
             {% endfor %}
         </div>
     </main>
