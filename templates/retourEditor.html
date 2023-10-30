@@ -33,10 +33,10 @@
             {% for item in data %}
                 <form id="5_{{item[0]}}">
                     <input id="5_id_{{item[0]}}" value="{{item[0]}}" disabled>
-                    <input id="5_tuteurid_{{item[0]}}" value="{{item[1]}}">
-                    <input id="5_tutoreid_{{item[0]}}" value="{{item[2]}}">
-                    <input id="5_subject_{{item[0]}}" value="{{item[3]}}">
-                    <input id="5_time_{{item[0]}}" value="{{item[4]}}">
+                    <a href="tuteur#1_{{item[1]}}"><input id="5_tuteurid_{{item[0]}}" value="{{item[1]}}" disabled></a>
+                    <a href="tutore#2_{{item[2]}}"><input id="5_tutoreid_{{item[0]}}" value="{{item[2]}}" disabled></a>
+                    <input id="5_subject_{{item[0]}}" value="{{item[3]}}" disabled>
+                    <input id="5_time_{{item[0]}}" value="{{item[4]}}" disabled>
                     <input id="5_efficiencyscore_{{item[0]}}" value="{{item[5]}}">
                     <input id="5_socialscore_{{item[0]}}" value="{{item[6]}}">
                     <input id="5_commentary_{{item[0]}}" value="{{item[7]}}">
