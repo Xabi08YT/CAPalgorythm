@@ -37,6 +37,7 @@ let sendToBackend = function() {
     xml.onreadystatechange = function() {
         if(xml.status == 200) {
             console.log(xml.response);
+            console.log("Opération effectuée avec succès.")
         }
     };
 
