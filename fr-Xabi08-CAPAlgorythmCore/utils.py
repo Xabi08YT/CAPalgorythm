@@ -5,6 +5,19 @@ import sqlite3
 import sys
 
 
+class Unbuffered(object):
+   def __init__(self, stream):
+       self.stream = stream
+   def write(self, data):
+       self.stream.write(data)
+       self.stream.flush()
+   def writelines(self, datas):
+       self.stream.writelines(datas)
+       self.stream.flush()
+   def __getattr__(self, attr):
+       return getattr(self.stream, attr)
+
+
 old_stdout = sys.stdout
 
 
@@ -34,8 +47,13 @@ def transformToText(strlist):
 def init():
     global config, log_file
     config = CoreLibs.cfgHandler.getCfg()
+<<<<<<< HEAD
     log_file = open("message.log","w")
     sys.stdout = log_file
+=======
+    log_file = open("latest.log","w")
+    sys.stdout = Unbuffered(log_file)
+>>>>>>> 66c102df (Added issue maker and modified log handling)
     print("Configuration chargée et appliquée.",0)
     try:
         os.remove("latestlog.txt")
