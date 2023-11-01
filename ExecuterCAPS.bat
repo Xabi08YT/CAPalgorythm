@@ -1,3 +1,6 @@
-PythonEnv\App\Python\python.exe updater.py
-PythonEnv\App\Python\python.exe main.py
-pause
+cd pythonvenv
+cd Scripts
+activate.bat
+cd ../../
+python updater.py
+python main.py
