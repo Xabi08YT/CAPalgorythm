@@ -7,3 +7,5 @@ PythonEnv/
 newupdater.py
 *db
 *json
+*.log
+pythonvenv
