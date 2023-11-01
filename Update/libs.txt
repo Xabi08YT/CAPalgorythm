@@ -1,6 +1,8 @@
 pandas
 wget
-tk
+pywebview
+flask
+requests
 unidecode
 pygithub
 psutil

@@ -11,7 +11,6 @@ def createDB(relEnabled = False, feedbackEnabled = False):
         id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
         name TEXT NOT NULL,
         surname TEXT NOT NULL,
-        grade INTEGER NOT NULL,
         group INTEGER NOT NULL REFERENCES group(id),
         freeon TEXT NOT NULL,
         subjects TEXT NOT NULL)
@@ -27,6 +26,7 @@ def createDB(relEnabled = False, feedbackEnabled = False):
     cursor.execute("""CREATE TABLE IF NOT EXISTS group(
         id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
         label TEXT NOT NULL,
+        level INT NOT NULL,
     )""")
     if relEnabled:
         cursor.execute("""CREATE TABLE IF NOT EXISTS relation(
