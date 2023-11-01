@@ -28,16 +28,26 @@ def shutdown():
 def show_results():
     if len(request.cookies) == 0:
         return redirect("/")
-    filename = request.cookies
-    datas = CoreLibs.utils.getResults(filename['results'])
-    if filename["tutoreid"] != None:
-        tutore = CoreLibs.tutore.getTutoreNameByID(int(filename["tutoreid"]))[0]
-    else:
-        tutore = ("NaN","NaN")
     if request.method == 'GET':
+        filename = request.cookies
+        datas = CoreLibs.utils.getResults(filename['results'])
+        if filename["tutoreid"] != None:
+            tutore = CoreLibs.tutore.getTutoreNameByID(int(filename["tutoreid"]))[0]
+        else:
+            tutore = ("NaN","NaN")
         return render_template("results.html",tutoreID = filename["tutoreid"],tutoreName = tutore[0],tutoreSurname = tutore[1],creneaux = datas["creneaux"], creneauxTXT = datas["creneauxTXT"], matieres = datas["subjects"], data = datas["results"])
     else:
-        pass
+        if cfgSRV["enableRel"]:
+            datas = request.get_data()
+            datas = datas.decode("utf-8")
+            datas = datas.replace("tuteurid=","").replace("tutoreid=","").replace("subject=","").replace("time=","").replace("lessons=","")
+            datas = datas.split("&")
+            try:
+                CoreLibs.relations.addRelationship(int(datas[1]),int(datas[0]),datas[2],datas[3],int(datas[4]))
+                return "OK !",200
+            except Exception as e:
+                print("[STDERR] > "+str(e))
+                return e
 
 
 @srv.get("/")

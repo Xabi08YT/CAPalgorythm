@@ -1,17 +1,22 @@
 function addRel(clicked_btn) {
     clicked_btn = clicked_btn.split("_")
     let form = document.getElementById(clicked_btn[0]+"_"+clicked_btn[2]);
-    let values = [];
-    for(var i=1; i<form.getElementsByTagName("input").length;++i) {
-        values.push(form.getElementsByTagName("input")[i].value);
-    }
+    let tuteurid = form.getElementsByTagName("input")[1].value;
+    let tutoreid = form.getElementsByTagName("input")[4].value;
+    let subject = form.getElementsByTagName("input")[7].value;
+    let time = form.getElementsByTagName("input")[8].value;
 
     if(!window.confirm("Voulez-vous ajouter cette relation ?")) {
         window.alert("Operation annulee")
         return;
     }
 
-    let toSend = "Add&"+values.toString();
+    let saisie;
+    do {
+        saisie = window.prompt("Entrez le nombre de séances à effectuer. PS: le nombre par défaut correspond à un nombre de séances infini.","32768");
+    } while(saisie === null || saisie === "" || saisie === " ");
+
+    let toSend = "tuteurid="+tuteurid+"&tutoreid="+tutoreid+"&subject="+subject+"&time="+time+"&lessons="+saisie;
 
     xml = new XMLHttpRequest();
 

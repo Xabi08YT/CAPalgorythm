@@ -183,14 +183,7 @@ def resetDB():
 
 
 def getResults(filename):
-    with open(filename+".json", mode="r") as f:
+    with open("tmp/"+filename+".json", mode="r") as f:
         results = load(f)
         f.close()
     return results
-
-
-def cleanup():
-    for file in os.listdir(os.getcwd()):
-        if not file.endswith("cfg.json") and file.endswith(".json"):
-            os.remove(file)
-    return

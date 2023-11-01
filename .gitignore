@@ -2,6 +2,8 @@ pythonvenv
 .vscode
 __pycache__
 *.bin
-*.json
-*.txt
-*.db
+*.zip
+*db
+*json
+pythonvenv
+tmp
