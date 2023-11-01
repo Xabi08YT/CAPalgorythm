@@ -35,7 +35,7 @@ def show_results():
     else:
         tutore = ("NaN","NaN")
     if request.method == 'GET':
-        return render_template("results.html",tutoreID = filename["tutoreid"],tutoreName = tutore[0],tutoreSurame = tutore[0],creneaux = datas["creneaux"], creneauxTXT = datas["creneauxTXT"], matieres = datas["subjects"], data = datas["results"])
+        return render_template("results.html",tutoreID = filename["tutoreid"],tutoreName = tutore[0],tutoreSurname = tutore[1],creneaux = datas["creneaux"], creneauxTXT = datas["creneauxTXT"], matieres = datas["subjects"], data = datas["results"])
     else:
         pass
 
