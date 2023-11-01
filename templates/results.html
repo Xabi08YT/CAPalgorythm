@@ -37,24 +37,26 @@
                 {% for j in range(matieres|length) %}
                     <h2>Matiere: {{matieres[j]}}</h2>
                     {%  for item in data[k * matieres|length + j] %}
-                    <form id="6_{{k * matieres|length + j * matieres|length + item[0]}}">
-                        <div class="viewer-row">
-                            <p>id du résultat | id du tuteur trouvé | nom de celui-ci | prénom de celui-ci | id du groupe classe | id du tutore | nom de celui-ci | prénom de celui-ci | id de son groupe classe | matière | créneau horaire</p>
-                            <input id="6_resid_{{k * matieres|length + j * matieres|length + item[0]}}" value="{{k * matieres|length + j * matieres|length + item[0]}}" disabled>
-                            <input id="6_tuteurid_{{k * matieres|length + j * matieres|length + item[0]}}" value="{{item[0]}}" disabled>
-                            <input id="6_tuteurname_{{k * matieres|length + j * matieres|length + item[0]}}" value="{{item[1]}}" disabled>
-                            <input id="6_tuteursurname_{{k * matieres|length + j * matieres|length + item[0]}}" value="{{item[2]}}" disabled>
-                            <input id="6_tutoreid_{{k * matieres|length + j * matieres|length + item[0]}}" value="{{tutoreID}}" disabled>
-                            <input id="6_tutorename_{{k * matieres|length + j * matieres|length + item[0]}}" value="{{tutoreName}}" disabled>
-                            <input id="6_tutoresurname_{{k * matieres|length + j * matieres|length + item[0]}}" value="{{tutoreSurname}}" disabled>
-                            <input id="6_subject_{{k * matieres|length + j * matieres|length + item[0]}}" value="{{matieres[j]}}" disabled>
-                            <input id="6_time_{{k * matieres|length + j * matieres|length + item[0]}}" value="{{creneaux[k]}}" disabled>
-                            <button id="6_modify_{{k * matieres|length + j * matieres|length + item[0]}}" onclick="addRel(this.id)">Ajouter</button>
-                            <button id="6_modify_{{k * matieres|length + j * matieres|length + item[0]}}" onclick="moreOnRel(this.id)">Plus d'infos</button>
-                        </div>
-                    </form>
+                        <form id="6_{{k * matieres|length + j * matieres|length + item[0]}}">
+                            <div class="viewer-row">
+                                <p>id du résultat | id du tuteur trouvé | nom de celui-ci | prénom de celui-ci | id du groupe classe | id du tutore | nom de celui-ci | prénom de celui-ci | id de son groupe classe | matière | créneau horaire</p>
+                                <input id="6_resid_{{k * matieres|length + j * matieres|length + item[0]}}" value="{{k * matieres|length + j * matieres|length + item[0]}}" disabled>
+                                <input id="6_tuteurid_{{k * matieres|length + j * matieres|length + item[0]}}" value="{{item[0]}}" disabled>
+                                <input id="6_tuteurname_{{k * matieres|length + j * matieres|length + item[0]}}" value="{{item[1]}}" disabled>
+                                <input id="6_tuteursurname_{{k * matieres|length + j * matieres|length + item[0]}}" value="{{item[2]}}" disabled>
+                                <input id="6_tutoreid_{{k * matieres|length + j * matieres|length + item[0]}}" value="{{tutoreID}}" disabled>
+                                <input id="6_tutorename_{{k * matieres|length + j * matieres|length + item[0]}}" value="{{tutoreName}}" disabled>
+                                <input id="6_tutoresurname_{{k * matieres|length + j * matieres|length + item[0]}}" value="{{tutoreSurname}}" disabled>
+                                <input id="6_subject_{{k * matieres|length + j * matieres|length + item[0]}}" value="{{matieres[j]}}" disabled>
+                                <input id="6_time_{{k * matieres|length + j * matieres|length + item[0]}}" value="{{creneaux[k]}}" disabled>
+                                <button id="6_modify_{{k * matieres|length + j * matieres|length + item[0]}}" onclick="addRel(this.id)">Ajouter</button>
+                                <button id="6_modify_{{k * matieres|length + j * matieres|length + item[0]}}" onclick="moreOnRel(this.id)">Plus d'infos</button>
+                            </div>
+                        </form>
                     {% endfor %}
+                    </br>
                 {% endfor %}
+                </br>
             {% endfor %}
         </div>
     </main>

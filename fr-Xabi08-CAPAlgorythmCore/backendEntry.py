@@ -26,7 +26,7 @@ def modeSplit(data):
             tutoreid = CoreLibs.tutore.getTutoreID(data[1],data[2],groupid)
         else:
             tutoreid = None
-        with open(rdnb+".json", mode='w+') as f:
+        with open("tmp/"+rdnb+".json", mode='w+') as f:
             dump(res,f)
             f.close()
         return rdnb, tutoreid

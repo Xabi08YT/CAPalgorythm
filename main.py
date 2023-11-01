@@ -3,6 +3,8 @@ import server as srv
 from requests import get
 from threading import Thread
 from CoreProxy import *
+from shutil import rmtree
+from os import mkdir, path, getcwd
 
 
 def shutdown():
@@ -12,7 +14,10 @@ def shutdown():
         pass
     CoreLibs.utils.stop()
     get("http://127.0.0.1:5000/shutdown")
-    CoreLibs.utils.cleanup()
+    rmtree(path.join(getcwd(),"tmp"))
+
+
+mkdir(path.join(getcwd(),"tmp"))
 
 
 CoreLibs.utils.init()
