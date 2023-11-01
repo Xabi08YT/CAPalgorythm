@@ -11,6 +11,7 @@
         <nav>
             <ul>
                 <li><a href="../">Acceuil</a></li>
+                <li><a href="/results">Voir les résultats de la recherche</a></li>
                 <li><a href="editor/tuteur">Tuteurs</a></li>
                 <li><a href="editor/tutore">Tutores</a></li>
                 <li><a href="editor/group">Groupes classe</a></li>
@@ -34,10 +35,12 @@
             <input id="github-title" type="text">
             <label for="github-body">Détaillez votre ticket (quand c'est apparu, lors de quelle procédure etc...):</label>
             <textarea id="github-body"></textarea>
-            <ul>
+            <ul id="#github-labels">
                 {% for label in labels %}
-                    <li><input id="label-github-{{label}}" type="checkbox"></li>
-                    <li><label for="label-github-{{label}}">{{label}}</label></li>
+                    <li>
+                        <input id="label-github-{{label}}" type="checkbox">
+                        <label for="label-github-{{label}}">{{label}}</label>
+                    </li>
                 {% endfor %}
             </ul>
             <input type="reset" value="Réinitialiser">

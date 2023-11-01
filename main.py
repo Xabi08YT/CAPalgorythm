@@ -12,6 +12,7 @@ def shutdown():
         pass
     CoreLibs.utils.stop()
     get("http://127.0.0.1:5000/shutdown")
+    CoreLibs.utils.cleanup()
 
 
 CoreLibs.utils.init()

@@ -110,3 +110,7 @@ body {
     display: flex;
     flex-direction: column;
 }
+
+#github-labels {
+    list-style: none;
+}

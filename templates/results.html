@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static',filename='styles/main.css')}}">
+    <script src="url_for('static',filename='assets/Scripts/JS/results.js')"></script>
+    <title>Document</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="../">Acceuil</a></li>
+                <li><a href="editor/tuteur">Tuteurs</a></li>
+                <li><a href="editor/tutore">Tutores</a></li>
+                <li><a href="editor/group">Groupes classe</a></li>
+                <li><a href="editor/retour">Retours</a></li>
+                <li><a href="editor/relation">Relations</a></li>
+                <li class="deroulant">
+                    <a href="">Autres options</a>
+                    <ul class="hiddenMenu">
+                        <li><a href="/settings">Paramètres</a></li>
+                        <li><a href="/importFile">Importer...</a></li>
+                        <li><a href="/export">Exporter...</a></li>
+                        <li><a href="/help">Aide...</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>Visualisation des données des tuteurs</h1>
+        <div class="databaseview">
+            {% for k in range(creneaux|length) %}
+                <h1>Relations trouvée pour le {{creneauxTXT[k]}}</h1>
+                {% for j in range(matieres|length) %}
+                    <h2>Matiere: {{matieres[j]}}</h2>
+                    {%  for item in data[k * matieres|length + j] %}
+                    <form id="6_{{k * matieres|length + j * matieres|length + item[0]}}">
+                        <div class="viewer-row">
+                            <input id="6_resid_{{k * matieres|length + j * matieres|length + item[0]}}" value="{{k * matieres|length + j * matieres|length + item[0]}}" disabled>
+                            <input id="6_tuteurid_{{k * matieres|length + j * matieres|length + item[0]}}" value="{{item[0]}}" disabled>
+                            <input id="6_tuteurname_{{k * matieres|length + j * matieres|length + item[0]}}" value="{{item[1]}}" disabled>
+                            <input id="6_tuteursurname_{{k * matieres|length + j * matieres|length + item[0]}}" value="{{item[2]}}" disabled>
+                            <input id="6_tutoreid_{{k * matieres|length + j * matieres|length + item[0]}}" value="{{tutoreID}}" disabled>
+                            <input id="6_tutorename_{{k * matieres|length + j * matieres|length + item[0]}}" value="{{tutoreName}}" disabled>
+                            <input id="6_tutoresurname_{{k * matieres|length + j * matieres|length + item[0]}}" value="{{tutoreSurname}}" disabled>
+                            <input id="6_subject_{{k * matieres|length + j * matieres|length + item[0]}}" value="{{matieres[j]}}" disabled>
+                            <input id="6_time_{{k * matieres|length + j * matieres|length + item[0]}}" value="{{creneaux[k]}}" disabled>
+                            <button id="6_modify_{{k * matieres|length + j * matieres|length + item[0]}}" onclick="addRel(this.id)">Ajouter</button>
+                            <button id="6_modify_{{k * matieres|length + j * matieres|length + item[0]}}" onclick="moreOnRel(this.id)">Plus d'infos</button>
+                        </div>
+                    </form>
+                    {% endfor %}
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </main>
+</body>
+</html>
