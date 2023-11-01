@@ -1,6 +1,5 @@
-cd pythonvenv
-cd Scripts
-activate.bat
-cd ../../
-python updater.py
-python main.py
+cd Update
+..\pythonvenv\Scripts\python.exe -m pip install -r libs.txt
+cd ..\
+pythonvenv\Scripts\python.exe main.py
+pause
