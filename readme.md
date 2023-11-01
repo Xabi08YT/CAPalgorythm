@@ -3,22 +3,47 @@
 [![CodeQL](https://github.com/Xabi08YT/CAPalgorythm/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/Xabi08YT/CAPalgorythm/actions/workflows/codeql.yml)
 
 Ce programme a pour but d'aider a mettre en relation des élèves sur des créneaux horaires donné en fonctiobn des matières. Ce logiciel a été créé dans le
-but de faciliter la mise en place d'un AP entre élèves.
+but de faciliter la mise en place d'un AP entre élèves. Il fonctionne avec une interface customisable grace au CSS.
 
+<<<<<<< HEAD
 ## Fonctionnalités actuelles :
+=======
 
-- Une GUI simple
-- Un support des versions de windows antérieures a partir de Windows 7
-- Un système de mise a jour automatique complet
-- Des bases de données en CSV
-- Des options d'activation / désactivation de fonctionnalités
-- Un micro-environnement python Optimisé pour le logiciel permettant de l'utiliser sur une clé USB
-- Une gestion automatisée des relations avec management possible pour l'utilisateur.
+## La version 2 est arrivée !
+Dans la deuxième version:
+  - Une GUI totalement revue basée sur les langages HTML/CSS
+  - Une communication avec le backend faite avec JavaScript
+  - Un backend toujours en python pour une compatibilité accrue
+  - Un système de stockage en SQL avec SQLite
+  - Un updater 
+  - Une configuration dans un fichier JSON
+  - De nouvelles interface de visualisation et d'edition de certaines informations de la base de données
+  - Un mini serveur web permettant une bascule vers l'architecture client/serveur (NON RECOMMANDE)
+  - Un système d'ouverture de tickets
+  - Nouveau système de logs.
+>>>>>>> f5113bc5 (Updated readme for V2 + marked DEV doc as OUTDATED)
 
-## Installation
-- Il vous suffit d'extraire le `ZIP` dans un dossier et c'est parti ! Double-cliquez sur Executer `CAPS.bat` ou `.exe` suivant votre version de windows.
+A venir:
+  - Script d'installation
+  - Des procédures d'arrets automatisée pour Linux et MacOS
+  - L'édition plus poussée des relations
+  - Support des feedbacks
+  - Checks de feedbacks et de relations pour avertir l'utilisateur
+  - Interface de visualisation générale avec des graphiques
+  - Import / Export de la base de données en CSV
+  - Fusion de bases de données
+  - Import de bases de données Pronote
+  - Configuration de l'updater par le fichier cfg.json
 
-- Les supports MacOS et Linux sont prévus dans les version ultérieures.
+
+## Déploiement de la deuxième version
+
+La deuxième version sera progressivement déployée à partir du 13/11/2023 après des tests de déploiement et une préparation d'un nouvel updater.
+
+
+## Support de la deuxième version
+
+La V2 est une version LTS. Autrement dit elle sera supportée 5 ans, soit jusqu'au 13/11/2028 sauf imprévus.
 
 
 ## License

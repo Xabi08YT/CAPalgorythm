@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="{{url_for('static',filename='assets/Scripts/JS/index_send.js')}}"></script>
+    <link rel="stylesheet" href="{{url_for('static',filename='styles/main.css')}}">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="results">Voir les résultats de la recherche</a></li>
+                <li><a href="editor/tuteur">Tuteurs</a></li>
+                <li><a href="editor/tutore">Tutores</a></li>
+                <li><a href="editor/group">Groupes classe</a></li>
+                <li><a href="editor/retour">Retours</a></li>
+                <li><a href="editor/relation">Relations</a></li>
+                <li class="deroulant">
+                    <a href="">Autres options</a>
+                    <ul class="hiddenMenu">
+                        <li><a href="/settings">Paramètres</a></li>
+                        <li><a href="/importFile">Importer...</a></li>
+                        <li><a href="/export">Exporter...</a></li>
+                        <li><a href="/help">Aide...</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <form id="mainform">
+            <div id="mainInputTop">
+                <label for="name">Nom de l'élève:</label>
+                <input id="name" placeholder="Nom" required>
+                <label for="surname">Prénom de l'éleve:</label>
+                <input id="surname" placeholder="Prénom" required>
+                <label for="group">Classe:</label>
+                <select id="group" required>
+                    <option value="2E6">2nde 6</option>
+                    <option value="2E5">2nde 5</option>
+                    <option value="2E4">2nde 4</option>
+                    <option value="2E3">2nde 3</option>
+                    <option value="2E2">2nde 2</option>
+                    <option value="2E1">2nde 1</option>
+                    <option value="1TC5">1ere TC5</option>
+                    <option value="1TC4">1ere TC4</option>
+                    <option value="1TC3">1ere TC3</option>
+                    <option value="1TC2">1ere TC2</option>
+                    <option value="1TC1">1ere TC1</option>
+                    <option value="TE4">Terminale 4</option>
+                    <option value="TE3">Terminale 3</option>
+                    <option value="TE2">Terminale 2</option>
+                    <option value="TE1">Terminale 1</option>
+                </select>
+            </div>
+            <div id="mainInputBottom">
+                <div id="mainInputSubjects">
+                    <label for="subjects">Matières:</label>
+                    <ul id="subjects">
+                        <li class="subchoice">
+                            <input type="checkbox" id="Allemand">
+                            <label for="Allemand">Allemand</label>
+                        </li>
+
+                        <li class="subchoice">
+                            <input type="checkbox" id="Anglais">
+                            <label for="Anglais">Anglais</label>
+                        </li>
+
+                        <li class="subchoice">
+                            <input type="checkbox" id="EMC">
+                            <label for="EMC">EMC</label>
+                        </li>
+
+                        <li class="subchoice">
+                            <input type="checkbox" id="ESPC">
+                            <label for="ESPC">Enseignement Scientifique Physique Chimie</label>
+                        </li>
+
+                        <li class="subchoice">
+                            <input type="checkbox" id="ESSVT">
+                            <label for="ESSVT">Enseignement Scientifique SVT</label>
+                        </li>
+
+                        <li class="subchoice">
+                            <input type="checkbox" id="Espagnol">
+                            <label for="Espagnol">Espagnol</label>
+                        </li>
+
+                        <li class="subchoice">
+                            <input type="checkbox" id="Francais">
+                            <label for="Francais">Français</label>
+                        </li>
+
+                        <li class="subchoice">
+                            <input type="checkbox" id="HGGSP">
+                            <label for="HGGSP">HGGSP</label>
+                        </li>
+
+                        <li class="subchoice">
+                            <input type="checkbox" id="HLP">
+                            <label for="HLP">HLP</label>
+                        </li>
+
+                        <li class="subchoice">
+                            <input type="checkbox" id="Hist-Geo">
+                            <label for="Hist-Geo">Histoire-Géographie</label>
+                        </li>
+
+                        <li class="subchoice">
+                            <input type="checkbox" id="LittAng">
+                            <label for="LittAng">Litt. Anglaise</label>
+                        </li>
+
+                        <li class="subchoice">
+                            <input type="checkbox" id="Maths">
+                            <label for="Maths">Mathématiques</label>
+                        </li>
+
+                        <li class="subchoice">
+                            <input type="checkbox" id="MathsTC">
+                            <label for="MathsTC">Mathématiques Tronc Commun</label>
+                        </li>
+
+                        <li class="subchoice">
+                            <input type="checkbox" id="Musique">
+                            <label for="Musique">Musique</label>
+                        </li>
+
+                        <li class="subchoice">
+                            <input type="checkbox" id="NSI/SNT">
+                            <label for="NSI/SNT">NSISNT</label>
+                        </li>
+
+                        <li class="subchoice">
+                            <input type="checkbox" id="Philosophie">
+                            <label for="Philosophie">Philosophie</label>
+                        </li>
+
+                        <li class="subchoice">
+                            <input type="checkbox" id="PC-Spe">
+                            <label for="PC-Spe">Physique Spé</label>
+                        </li>
+
+                        <li class="subchoice">
+                            <input type="checkbox" id="SES">
+                            <label for="SES">SES</label>
+                        </li>
+
+                        <li class="subchoice">
+                            <input type="checkbox" id="SVT-Spe">
+                            <label for="SVT-Spe">SVT Spé</label>
+                        </li>
+                    </ul>
+                    <label for="dbmode">Mode de fonctionnement:</label>
+                    <select id="dbmode" required>
+                        <option value="Add">Ajouter un tuteur</option>
+                        <option value="Rem">Supprimer un tuteur</option>
+                        <option value="Sea">Rechercher un tuteur</option>
+                    </select>
+                </div>
+                <div id="mainInputEDT">
+                    <label for="edt">Disponibilités:</label>
+                    </br>
+                    <table class="edt">
+                        <thead>
+                            <th></th>
+                            <th>Lundi</th>
+                            <th>Mardi</th>
+                            <th>Mercredi</th>
+                            <th>Jeudi</th>
+                            <th>Vendredi</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>8h-9h</td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                            </tr>
+                            <tr>
+                                <td>9h-10h</td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                            </tr>
+                            <tr>
+                                <td>10h-11h</td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                            </tr>
+                            <tr>
+                                <td>11h-12h</td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                            </tr>
+                            <tr>
+                                <td>12h-13h</td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                            </tr>
+                            <tr>
+                                <td>13h-14h</td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                            </tr>
+                            <tr>
+                                <td>14h-15h</td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                            </tr>
+                            <tr>
+                                <td>15h-16h</td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                            </tr>
+                            <tr>
+                                <td>16h-17h</td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                            </tr>
+                            <tr>
+                                <td>17h-18h</td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td><input type="checkbox" class="edtTS"></td>
+                                <td></td>
+                                <td><input type="checkbox"  class="edtTS"></td>
+                                <td><input type="checkbox"  class="edtTS"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div id="mainInputCTRLBTN">
+                        <button onclick="sendToBackend()">Valider</button>
+                        <input type="reset" value="Réinitialiser les entrées">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </main>
+</body>
+</html>

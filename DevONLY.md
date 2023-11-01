@@ -1,3 +1,5 @@
+# OUTDATED DOCUMENTATION MADE FOR V1.
+
 ## Repo cloning:
 
 To clone the repo, just type this command:

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="{{url_for('static',filename='assets/Scripts/JS/ticket.js')}}"></script>
+    <link rel="stylesheet" href="{{url_for('static',filename='styles/main.css')}}">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="../">Acceuil</a></li>
+                <li><a href="/results">Voir les résultats de la recherche</a></li>
+                <li><a href="editor/tuteur">Tuteurs</a></li>
+                <li><a href="editor/tutore">Tutores</a></li>
+                <li><a href="editor/group">Groupes classe</a></li>
+                <li><a href="editor/retour">Retours</a></li>
+                <li><a href="editor/relation">Relations</a></li>
+                <li class="deroulant">
+                    <a href="">Autres options</a>
+                    <ul class="hiddenMenu">
+                        <li><a href="/settings">Paramètres</a></li>
+                        <li><a href="/importFile">Importer...</a></li>
+                        <li><a href="/export">Exporter...</a></li>
+                        <li><a href="/help">Aide...</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <form id="github">
+            <label for="github-title">Inscrivez le titre de votre ticket</label>
+            <input id="github-title" type="text">
+            <label for="github-body">Détaillez votre ticket (quand c'est apparu, lors de quelle procédure etc...):</label>
+            <textarea id="github-body"></textarea>
+            <ul id="#github-labels">
+                {% for label in labels %}
+                    <li>
+                        <input id="label-github-{{label}}" type="checkbox">
+                        <label for="label-github-{{label}}">{{label}}</label>
+                    </li>
+                {% endfor %}
+            </ul>
+            <input type="reset" value="Réinitialiser">
+            <button onclick="openTicket()">Envoyer le ticket</button>
+        </form>
+    </main>
+</body>

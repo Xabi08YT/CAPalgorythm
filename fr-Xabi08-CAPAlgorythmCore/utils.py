@@ -2,6 +2,24 @@ import os
 from datetime import datetime
 import unidecode
 import sqlite3
+import sys
+from json import load
+
+
+class Unbuffered(object):
+   def __init__(self, stream):
+       self.stream = stream
+   def write(self, data):
+       self.stream.write(data)
+       self.stream.flush()
+   def writelines(self, datas):
+       self.stream.writelines(datas)
+       self.stream.flush()
+   def __getattr__(self, attr):
+       return getattr(self.stream, attr)
+
+
+old_stdout = sys.stdout
 
 
 CoreLibs = __import__("fr-Xabi08-CAPAlgorythmCore", globals(), locals(), ["DBCreator","cfgHandler"],0)
@@ -14,25 +32,17 @@ creneaux = {"LU0": "Lundi de 8h à 9h","LU1": "Lundi de 9h à 10h","LU2": "Lundi
                 "VE0": "Vendredi de 8h à 9h","VE1": "Vendredi de 9h à 10h","VE2": "Vendredi de 10h à 11h","VE3": "Vendredi de 11h à 12h","VE4": "Vendredi de 12h à 13h","VE5": "Vendredi de 13h à 14h","VE6": "Vendredi de 14h à 15h","VE7": "Vendredi de 15h à 16h","VE8": "Vendredi de 16h à 17h","VE9":"Vendredi de 17h à 18h",}
 
 
-newLogs = False
-isConfigLoaded = False
-
-##Fonction d'Ecriture d'informations de debuggage
-def printInLogs(objet, categorie, forceshowing = False):
-    if config["enableLogs"] == True or forceshowing == True:
-        with open(file="latestlog.txt", mode="a+") as logs:
-            if categorie == 0:
-                logs.writelines(str(datetime.now())+"/[INFO] : "+str(objet)+"\n")
-            elif categorie == 1:
-                logs.writelines(str(datetime.now())+"/[WARN] : "+str(objet)+"\n")
-            elif categorie == 2:
-                logs.writelines(str(datetime.now())+"/[ERR] : "+str(objet)+"\n")
-            elif categorie == 3:
-                logs.writelines(str(datetime.now())+"/[FATAL] : "+str(objet)+"\n")
-            elif categorie == 4:
-                logs.writelines(str(datetime.now())+"/[CONSOLEOUT] : "+str(objet)+"\n")
-            logs.close()
-        return
+nomcreneaux = ["LU0","MA0","ME0","JE0","VE0",
+               "LU1","MA1","ME1","JE1","VE1",
+               "LU2","MA2","ME2","JE2","VE2",
+               "LU3","MA3","ME3","JE3","VE3",
+               "LU4","MA4",      "JE4","VE4",
+               "LU5","MA5",      "JE5","VE5",
+               "LU6","MA6",      "JE6","VE6",
+               "LU7","MA7",      "JE7","VE7",
+               "LU8","MA8",      "JE8","VE8",
+               "LU9","MA9",      "JE9","VE9"]
+matieres = ['Allemand', 'Anglais', 'Education Morale et Civique', 'Enseignement scientifique Physique', 'Enseignement-scientifique SVT', 'Espagnol', 'Francais', 'HGGSP', 'HLP', 'Histoire-Geographie', 'Litt. Anglaise', 'Mathematiques', 'Mathematiques tronc-commun (TC)', 'Musique', 'NSI/SNT', 'Philosophie', 'Physique Spe', 'SES', 'SVT Spe']
 
 
 def transformToText(strlist):
@@ -47,38 +57,42 @@ def transformToText(strlist):
 #####################################################
 
 def init():
-    global config
+    global config, log_file
     config = CoreLibs.cfgHandler.getCfg()
-    printInLogs("Configuration chargée et appliquée.",0)
+<<<<<<< HEAD
+    log_file = open("message.log","w")
+    sys.stdout = log_file
+=======
+    log_file = open("latest.log","w")
+    sys.stdout = Unbuffered(log_file)
+>>>>>>> 66c102df (Added issue maker and modified log handling)
+    print("Configuration chargée et appliquée.",0)
     try:
         os.remove("latestlog.txt")
     except FileNotFoundError:
         pass
-    printInLogs("Chargement des fichiers en cours...", 0)
+    print("Chargement des fichiers en cours...", 0)
     for i in range(3):
-        try:
+        if "data.db" in os.listdir():
             global MainDB
-            MainDB = sqlite3.connect("data.db")
+            MainDB = sqlite3.connect("data.db", check_same_thread=False)
             break
-        except FileNotFoundError:
+        else:
             try:
-                CoreLibs.DBCreator.createDB()
+                CoreLibs.DBCreator.createDB(config["enableRel"],config["enableFeedback"])
             except Exception as e:
-                printInLogs('Erreur lors de la création de la base de données : ' + str(e),3)
+                print('Erreur lors de la création de la base de données : ' + str(e),3)
                 exit(-1)
-        except Exception as e:
-            printInLogs('Erreur lors du chargement de la base de données : ' + str(e),3)
-            exit(-1)
     if i == 3:
-        printInLogs("Initialisation s'est terminée à cause d'une erreur: Echec du chargement des fichiers. Le programme va maintenant s'arrêter.", 3)
+        print("Initialisation s'est terminée à cause d'une erreur: Echec du chargement des fichiers. Le programme va maintenant s'arrêter.", 3)
         quit()
-    printInLogs("Chargement des fichiers terminé.",0)
-    printInLogs("Initialisation du programme terminée avec succès. Démarrage...",0)
+    print("Chargement des fichiers terminé.",0)
+    print("Initialisation du programme terminée avec succès. Démarrage...",0)
     return
 
 
 def getVars():
-    return (MainDB, config, isConfigLoaded, newLogs)
+    return (config, MainDB)
 
 
 def unloadDB():
@@ -86,25 +100,90 @@ def unloadDB():
     return
 
 
-def actualiserDB():
+def refreshDB():
     global MainDB
     MainDB.close()
     try:
-        MainDB = sqlite3.connect("data.db")
+        MainDB = sqlite3.connect("data.db", check_same_thread=False,)
     except FileNotFoundError:
         CoreLibs.DBCreator.createDB()
     return MainDB
 
 
-def actualiserConfig():
+def refreshConfig():
     global config
     config = CoreLibs.cfgHandler.getCfg()
-    printInLogs("Configuration actualisée.",0)
     return config
 
 
 def unicode_serialize(text):
     for i in range(len(text)):
         strOut = unidecode.unidecode(text[i])
-        text[i] = strOut
+        text[i] = strOut.lower()
     return text
+
+
+def parseSubjects(input,forGetRequest = False):
+    input = input.split(",")
+    if not forGetRequest:
+        finalTXT = ""
+        for i,e in enumerate(input):
+            if e.lower() == "true":
+                finalTXT += matieres[i]
+        return finalTXT
+    finalTXT = []
+    for i,e in enumerate(input):
+        if e.lower() == "true":
+            finalTXT += ["%"+matieres[i]+"%"]
+    return finalTXT
+
+
+def parseDispos(input,forGetRequest = False):
+    input = input.split(",")
+    if not forGetRequest:
+        finalTXT = ""
+        for i,e in enumerate(input):
+            if e.lower() == "true":
+                finalTXT += nomcreneaux[i]
+        return finalTXT
+    finalTXT = []
+    for i,e in enumerate(input):
+        if e.lower() == "true":
+            finalTXT += ["%"+nomcreneaux[i]+"%"]
+    return finalTXT
+
+
+def stop():
+    sys.stdout = old_stdout
+    log_file.close()
+    return
+
+
+def createModifyRequest(input):
+    input = input.decode('utf-8')
+    eid = input.split("+")[1][0]
+    input = input.replace("+"+eid,"")
+    input = input.split("&")
+    updateRq = "UPDATE '"+input[0].split("=")[1]+"' SET "
+    for e in input:
+        if not("table=" in e or ("id=" in e and not "groupid=" in e)):
+            updateRq+=e.split("=")[0]+"='"+e.split("=")[1]+"',"
+    updateRq = updateRq[:-1]
+    updateRq+=" WHERE "+input[1]
+    return updateRq
+
+
+def resetDB():
+    global MainDB
+    MainDB.close()
+    os.remove("data.db")
+    CoreLibs.DBCreator.createDB(config["enableRel"],config["enableFeedback"])
+    MainDB = sqlite3.connect("data.db", check_same_thread=False)
+    return
+
+
+def getResults(filename):
+    with open("tmp/"+filename+".json", mode="r") as f:
+        results = load(f)
+        f.close()
+    return results

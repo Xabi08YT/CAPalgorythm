@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static',filename='styles/main.css')}}">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="../">Acceuil</a></li>
+                <li><a href="/results">Voir les résultats de la recherche</a></li>
+                <li><a href="editor/tuteur">Tuteurs</a></li>
+                <li><a href="editor/tutore">Tutores</a></li>
+                <li><a href="editor/group">Groupes classe</a></li>
+                <li><a href="editor/retour">Retours</a></li>
+                <li><a href="editor/relation">Relations</a></li>
+                <li class="deroulant">
+                    <a href="">Autres options</a>
+                    <ul class="hiddenMenu">
+                        <li><a href="/settings">Paramètres</a></li>
+                        <li><a href="/importFile">Importer...</a></li>
+                        <li><a href="/export">Exporter...</a></li>
+                        <li><a href="/help">Aide...</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>Erreur 404</h1>
+        <p>La page recherchée n'a pu être trouvée. Cela peut être du: à une fonctionnalité non implémentée ou supprimée ou bien à un fichier manquant ou endommagé.</p>
+        <p>Error code: {{error}}</p>
+    </main>
+</body>

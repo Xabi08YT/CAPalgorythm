@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="{{url_for('static',filename='assets/Scripts/JS/cfg.js')}}"></script>
+    <link rel="stylesheet" href="{{url_for('static',filename='styles/main.css')}}">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="../">Acceuil</a></li>
+                <li><a href="results">Voir les résultats de la recherche</a></li>
+                <li><a href="editor/tuteur">Tuteurs</a></li>
+                <li><a href="editor/tutore">Tutores</a></li>
+                <li><a href="editor/group">Groupes classe</a></li>
+                <li><a href="editor/retour">Retours</a></li>
+                <li><a href="editor/relation">Relations</a></li>
+                <li class="deroulant">
+                    <a href="">Autres options</a>
+                    <ul class="hiddenMenu">
+                        <li><a href="/settings">Paramètres</a></li>
+                        <li><a href="/importFile">Importer...</a></li>
+                        <li><a href="/export">Exporter...</a></li>
+                        <li><a href="/help">Aide...</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <button onclick="refreshCfg()">Actualiser la configuration</button>
+        <form id="settings">
+            <label for="enableRel">Activer le stockage des relations</label>
+            <input id="enableRel" value={{Rel}} type="checkbox">
+            <label for="enableFeedback">Activer le stockage des retours</label>
+            <input id="enableFeedback" value={{Feedback}} type="checkbox">
+            <button onclick="sendCfg()">Appliquer</button>
+            <button onclick="resetCfg()">Restaurer la configuration par défaut</button>
+            <input type="reset" value="Annuler">
+        </form>
+        <p>Configuration actuelle: Stockage des relation : {{Rel}}, Stockage des retours : {{Feedback}}</p>
+        <button onclick="resetDB()">Vider la base de données</button>
+    </main>
+</body>

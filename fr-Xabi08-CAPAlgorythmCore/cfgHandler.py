@@ -2,7 +2,7 @@ import json
 from os import remove
 
 
-basicCfg = {"enableLogs": True, "enableFeedback": False, "enableRelDB": False}
+basicCfg = {"enableFeedback": False, "enableRel": False}
 
 
 def getCfg():
@@ -16,6 +16,13 @@ def getCfg():
             cfg = basicCfg
             cfgFile.close()
     return cfg
+
+
+def writeCfg(cfg):
+    with open('cfg.json', mode='w+') as cfgFile:
+        json.dump(cfg,cfgFile)
+        cfgFile.close()
+    return
 
 
 def resetCfg():

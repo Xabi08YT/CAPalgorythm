@@ -1,3 +1,5 @@
-PythonEnv\App\Python\python.exe updater.py
-PythonEnv\App\Python\python.exe main.py
+cd Update
+..\pythonvenv\Scripts\python.exe -m pip install -r libs.txt
+cd ..\
+pythonvenv\Scripts\python.exe main.py
 pause

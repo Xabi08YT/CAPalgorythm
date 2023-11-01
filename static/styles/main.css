@@ -1,0 +1,116 @@
+header {
+    background-color: #232323;
+    color: white;
+    width: 100vw;
+    height: 50px;
+    margin: 0;
+    position: absolute;
+    top:0;
+}
+
+
+header nav{
+    width: 100%;
+}
+
+
+header nav ul{
+    margin-top: 12px;
+    list-style: none;
+    display: inline-flex;
+}
+
+
+header nav ul li a{
+    text-decoration: none;
+    background-color: #232323;
+    color: white;
+    padding: 5px;
+    transition: 0.5s;
+    font-size: x-large;
+}
+
+
+header nav ul li a:hover{
+    text-decoration: none;
+    background-color: #323232;
+    color: white;
+    padding: 5px;
+    transition: 0.5s;
+}
+
+
+header nav ul li.deroulant ul {
+    display: none;
+}
+
+
+header nav ul li.deroulant:hover ul {
+    display: block;
+    background-color: #232323;
+    margin-top: 10px;
+    padding-top: 0px;
+    width: 150px;
+    list-style: none;
+    text-align: left;
+    height: 139px;
+}
+
+header nav ul li.deroulant ul li {
+    margin-bottom: 9px;
+    margin-right: 0;
+}
+
+body {
+    background-color: #323232;
+    color: white;
+    margin: 0;
+    margin-top: 75px;
+}
+
+
+#mainform {
+    display: block;
+    margin: 10px;
+}
+
+
+#mainInputBottom {
+    display: inline-flex;
+    margin-top: 10px;
+}
+
+
+#mainInputEDT {
+    margin-left: 50px;
+}
+
+
+#mainInputEDT table.edt {
+    margin-top: 13px;
+}
+
+
+#mainInputCTRLBTN {
+    margin-top: 134px;
+}
+
+
+#subjects {
+    list-style: none;
+}
+
+
+.viewer-row {
+    display: inline-block;
+}
+
+
+.database-view {
+    display: flex;
+    flex-direction: column;
+}
+
+#github-labels {
+    list-style: none;
+}

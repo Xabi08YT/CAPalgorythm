@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="{{url_for('static',filename='assets/Scripts/JS/modifyDB.js')}}"></script>
+    <link rel="stylesheet" href="{{url_for('static',filename='styles/main.css')}}">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="../">Acceuil</a></li>
+                <li><a href="/results">Voir les résultats de la recherche</a></li>
+                <li><a href="tutore">Tutores</a></li>
+                <li><a href="group">Groupes classe</a></li>
+                <li><a href="retour">Retours</a></li>
+                <li><a href="relation">Relations</a></li>
+                <li class="deroulant">
+                    <a href="">Autres options</a>
+                    <ul class="hiddenMenu">
+                        <li><a href="/settings">Paramètres</a></li>
+                        <li><a href="/importFile">Importer...</a></li>
+                        <li><a href="/export">Exporter...</a></li>
+                        <li><a href="/help">Aide...</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>Visualisation des données des tuteurs</h1>
+        <div class="databaseview">
+            {% for item in data %}
+                <form id="1_{{item[0]}}">
+                    <div class="viewer-row">
+                        <input id="1_id_{{item[0]}}" value="{{item[0]}}" disabled>
+                        <input id="1_name_{{item[0]}}" value="{{item[1]}}">
+                        <input id="1_surname_{{item[0]}}" value="{{item[2]}}">
+                        <input id="1_groupid_{{item[0]}}" value="{{item[3]}}">
+                        <a href="group#4_{{item[3]}}">Voir</a>
+                        <input id="1_freeon_{{item[0]}}" value="{{item[4]}}" disabled>
+                        <input id="1_subject_{{item[0]}}" value="{{item[5]}}" disabled>
+                        <button id="1_modify_{{item[0]}}" onclick="updateinfo(this.id)">Mettre à jour</button>
+                        <input id="1_reset_{{item[0]}}" type="reset" value="Annuler">
+                    </div>
+                </form>
+            {% endfor %}
+        </div>
+    </main>
+</body>
+</html>
