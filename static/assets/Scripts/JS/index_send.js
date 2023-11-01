@@ -44,4 +44,7 @@ let sendToBackend = function() {
     xml.open("POST","/");
     xml.setRequestHeader("Content-type","application/x-www-form-urlencoded");
     xml.send(toSend);
+    if(mode==="Sea") {
+        window.location = "/results";
+    }
 };

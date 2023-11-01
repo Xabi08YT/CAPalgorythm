@@ -1,4 +1,6 @@
-CoreLibs = __import__("fr-Xabi08-CAPAlgorythmCore", globals(), locals(), ["utils","DBCreator","tuteurs", "relations","feedback", "issueHandler","groupes","cfgHandler"],0)
+CoreLibs = __import__("fr-Xabi08-CAPAlgorythmCore", globals(), locals(), ["utils","DBCreator","tuteurs", "relations","feedback", "issueHandler","groupes","cfgHandler","tutore"],0)
+from random import randint
+from json import dump
 
 
 def modeSplit(data):
@@ -12,8 +14,19 @@ def modeSplit(data):
         CoreLibs.tuteurs.deleteTuteur(data[1],data[2],CoreLibs.groupes.getGroupByName(data[3])[0][0])
         return "Successfully removed tuteur."
     elif data[0] == "Sea":
+        config = CoreLibs.utils.config
         freetime = CoreLibs.utils.parseDispos(data[5],True)
         subjects = CoreLibs.utils.parseSubjects(data[4],True)
         groupLVL = CoreLibs.groupes.groupGetLVL(data[3])[0][0]
         res = CoreLibs.tuteurs.findTuteur(groupLVL,freetime,subjects)
-        return res
+        rdnb = str(randint(0,65265744984616286))
+        if config["enableRel"]:
+            groupid = CoreLibs.groupes.getGroupByName(data[3])[0][0]
+            CoreLibs.tutore.addTutore(data[1],data[2],groupid,CoreLibs.utils.transformToText(freetime).replace("%",""),CoreLibs.utils.transformToText(subjects).replace("%",""))
+            tutoreid = CoreLibs.tutore.getTutoreID(data[1],data[2],groupid)
+        else:
+            tutoreid = None
+        with open(rdnb+".json", mode='w+') as f:
+            dump(res,f)
+            f.close()
+        return rdnb, tutoreid

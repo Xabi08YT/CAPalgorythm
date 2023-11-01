@@ -26,12 +26,18 @@ def shutdown():
 
 @srv.route('/results', methods = ['GET','POST'])
 def show_results():
-    datas = request.cookies
-    print(datas)
-    if request.method == 'GET':
-        return render_template_string("<h1>Voici vos données {{data}}</h1>",data=datas)
+    if len(request.cookies) == 0:
+        return redirect("/")
+    filename = request.cookies
+    datas = CoreLibs.utils.getResults(filename['results'])
+    if filename["tutoreid"] != None:
+        tutore = CoreLibs.tutore.getTutoreNameByID(int(filename["tutoreid"]))[0]
     else:
-        return "Hello World !"
+        tutore = ("NaN","NaN")
+    if request.method == 'GET':
+        return render_template("results.html",tutoreID = filename["tutoreid"],tutoreName = tutore[0],tutoreSurame = tutore[0],creneaux = datas["creneaux"], creneauxTXT = datas["creneauxTXT"], matieres = datas["subjects"], data = datas["results"])
+    else:
+        pass
 
 
 @srv.get("/")
@@ -47,11 +53,12 @@ def index_post():
             datas = datas.replace(i,"")
         datas = datas.split("&")
         print(datas)
-        results = CoreLibs.backendEntry.modeSplit(datas)
+        results,id = CoreLibs.backendEntry.modeSplit(datas)
         print(results)
         redirectURL = "/results"
         response = make_response(redirect(redirectURL))
         response.set_cookie("results",str(results))
+        response.set_cookie("tutoreid",str(id[0][0]))
         return response, 301
     except Exception as e:
         print(datas)

@@ -26,9 +26,14 @@ def findTuteur(groupLVL,parsedFreetime,parsedSubjects):
     results = []
     MainDB = CoreLibs.utils.MainDB
     cursor = MainDB.cursor()
+    freetimes = [i.replace("_","").replace("%","") for i in parsedFreetime]
+    creneauxTXT = [CoreLibs.utils.creneaux[i.replace("_","").replace("%","")] for i in parsedFreetime]
+    subjects = [i.replace("_","").replace("%","") for i in parsedSubjects]
     for i in parsedFreetime:
         for j in parsedSubjects:
-            cursor.execute("""SELECT name, surname FROM 'tuteur' INNER JOIN 'group' ON tuteur.groupid = 'group'.id WHERE 'group'.level <= ? AND freeon LIKE ? AND subject LIKE ?""",(groupLVL,i,j))
-            results.append((i,j,cursor.fetchall()))
+            cursor.execute("""SELECT 'tuteur'.id,name, surname FROM 'tuteur' INNER JOIN 'group' ON 'tuteur'.groupid = 'group'.id WHERE 'group'.level <= ? AND freeon LIKE ? AND subject LIKE ?""",(groupLVL,i,j))
+            tmp = cursor.fetchall()
+            results.append(tmp)
+            print(i,j,tmp)
     cursor.close()
-    return results
+    return {"creneaux":freetimes,"subjects":subjects,"creneauxTXT":creneauxTXT,"results":results}

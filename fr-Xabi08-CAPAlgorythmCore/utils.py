@@ -3,6 +3,7 @@ from datetime import datetime
 import unidecode
 import sqlite3
 import sys
+from json import load
 
 
 class Unbuffered(object):
@@ -30,6 +31,17 @@ creneaux = {"LU0": "Lundi de 8h à 9h","LU1": "Lundi de 9h à 10h","LU2": "Lundi
                 "JE0": "Jeudi de 8h à 9h","JE1": "Jeudi de 9h à 10h","JE2": "Jeudi de 10h à 11h","JE3": "Jeudi de 11h à 12h","JE4": "Jeudi de 12h à 13h","JE5": "Jeudi de 13h à 14h","JE6": "Jeudi de 14h à 15h","JE7": "Jeudi de 15h à 16h","JE8": "Jeudi de 16h à 17h","JE9":"Jeudi de 17h à 18h",
                 "VE0": "Vendredi de 8h à 9h","VE1": "Vendredi de 9h à 10h","VE2": "Vendredi de 10h à 11h","VE3": "Vendredi de 11h à 12h","VE4": "Vendredi de 12h à 13h","VE5": "Vendredi de 13h à 14h","VE6": "Vendredi de 14h à 15h","VE7": "Vendredi de 15h à 16h","VE8": "Vendredi de 16h à 17h","VE9":"Vendredi de 17h à 18h",}
 
+
+nomcreneaux = ["LU0","MA0","ME0","JE0","VE0",
+               "LU1","MA1","ME1","JE1","VE1",
+               "LU2","MA2","ME2","JE2","VE2",
+               "LU3","MA3","ME3","JE3","VE3",
+               "LU4","MA4",      "JE4","VE4",
+               "LU5","MA5",      "JE5","VE5",
+               "LU6","MA6",      "JE6","VE6",
+               "LU7","MA7",      "JE7","VE7",
+               "LU8","MA8",      "JE8","VE8",
+               "LU9","MA9",      "JE9","VE9"]
 matieres = ['Allemand', 'Anglais', 'Education Morale et Civique', 'Enseignement scientifique Physique', 'Enseignement-scientifique SVT', 'Espagnol', 'Francais', 'HGGSP', 'HLP', 'Histoire-Geographie', 'Litt. Anglaise', 'Mathematiques', 'Mathematiques tronc-commun (TC)', 'Musique', 'NSI/SNT', 'Philosophie', 'Physique Spe', 'SES', 'SVT Spe']
 
 
@@ -114,12 +126,10 @@ def parseSubjects(input,forGetRequest = False):
             if e.lower() == "true":
                 finalTXT += matieres[i]
         return finalTXT
-    lengths = 0
     finalTXT = []
     for i,e in enumerate(input):
         if e.lower() == "true":
-            finalTXT += ["_"*lengths+matieres[i]+"%"]
-        lengths += len(matieres[i])
+            finalTXT += ["%"+matieres[i]+"%"]
     return finalTXT
 
 
@@ -129,14 +139,12 @@ def parseDispos(input,forGetRequest = False):
         finalTXT = ""
         for i,e in enumerate(input):
             if e.lower() == "true":
-                finalTXT += list(creneaux.keys())[i]
+                finalTXT += nomcreneaux[i]
         return finalTXT
-    lengths = 0
     finalTXT = []
     for i,e in enumerate(input):
         if e.lower() == "true":
-            finalTXT += ["_"*lengths+list(creneaux.keys())[i]+"%"]
-        lengths += len(list(creneaux.keys())[i])
+            finalTXT += ["%"+nomcreneaux[i]+"%"]
     return finalTXT
 
 
@@ -166,4 +174,18 @@ def resetDB():
     os.remove("data.db")
     CoreLibs.DBCreator.createDB(config["enableRel"],config["enableFeedback"])
     MainDB = sqlite3.connect("data.db", check_same_thread=False)
+    return
+
+
+def getResults(filename):
+    with open(filename+".json", mode="r") as f:
+        results = load(f)
+        f.close()
+    return results
+
+
+def cleanup():
+    for file in os.listdir(os.getcwd()):
+        if not file.endswith("cfg.json") and file.endswith(".json"):
+            os.remove(file)
     return
