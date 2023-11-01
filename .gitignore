@@ -7,3 +7,4 @@ __pycache__
 *json
 pythonvenv
 tmp
+*.log
