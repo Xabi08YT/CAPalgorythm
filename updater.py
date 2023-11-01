@@ -13,7 +13,7 @@ def trouverMAJ():
     with open(file=str(filepath)+"version.txt",mode='r') as versionActuelle:
         versioninstallee = versionActuelle.read()
         versionActuelle.close()
-    wget.download('https://jrucvl.github.io/CAPalgorythm/version.txt', str(filepath)+'server-version.txt')
+    wget.download('https://xabi08yt.github.io/CAPalgorythm/version.txt', str(filepath)+'server-version.txt')
     with open(file=str(filepath)+"server-version.txt", mode="r") as versionServer:
         derniereversion = versionServer.read()
         versionServer.close()
@@ -38,14 +38,17 @@ def trouverMAJ():
             rmdir(path = 'fr-Xabi08-CAPAlgorythmCore')
         except FileNotFoundError:
             pass
-        wget.download("https://jrucvl.github.io/CAPalgorythm/software-version.zip",'software.zip')
+        wget.download("https://xabi08yt.github.io/CAPalgorythm/software-version.zip",'software.zip')
         zipPath = str(getcwd())+"/software.zip"
         with zipfile.ZipFile(zipPath, 'r') as zip:
             zip.extractall(getcwd())
         system("PythonEnv\App\Python\python.exe -m pip install -r \"{0}\"".format(path.join(str(getcwd()),"Update/libs.txt")))
         rename(src="newupdater.py",dst="updater.py")
     print("\nCleaning up...")
-    remove("software.zip")
+    try:
+        remove("software.zip")
+    except FileNotFoundError:
+        pass
     """Fin du programme de mise a jour """
     print("Update done.")
     quit()

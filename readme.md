@@ -1,5 +1,7 @@
 # CAPalgorythm FR
 
+[![CodeQL](https://github.com/Xabi08YT/CAPalgorythm/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/Xabi08YT/CAPalgorythm/actions/workflows/codeql.yml)
+
 Ce programme a pour but d'aider a mettre en relation des élèves sur des créneaux horaires donné en fonctiobn des matières. Ce logiciel a été créé dans le
 but de faciliter la mise en place d'un AP entre élèves. Il fonctionne avec une interface customisable grace au CSS.
 
