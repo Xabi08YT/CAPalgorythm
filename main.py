@@ -17,7 +17,11 @@ def shutdown():
     get("http://127.0.0.1:5000/shutdown")
 
 
-mkdir(path.join(getcwd(),"tmp"))
+try:
+    mkdir(path.join(getcwd(),"tmp"))
+except Exception as e:
+    print(e)
+    print("[STDWARN] > The software seems to have crashed during the last running process.")
 
 
 CoreLibs.utils.init()
