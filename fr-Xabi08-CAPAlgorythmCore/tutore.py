@@ -31,7 +31,7 @@ def getTutoreID(name,surname,gid):
     return tmp
 
 
-def getTutoreNomByID(id):
+def getTutoreNameByID(id):
     MainDB = CoreLibs.utils.MainDB
     cursor = MainDB.cursor()
     cursor.execute("""SELECT name,surname FROM 'tutore' WHERE id = ?""",(id,))
