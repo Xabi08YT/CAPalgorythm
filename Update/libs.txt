@@ -4,3 +4,4 @@ tk
 unidecode
 pygithub
 psutil
+sqlite3

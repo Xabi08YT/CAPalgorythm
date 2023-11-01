@@ -5,3 +5,5 @@ PythonEnv/
 *.bin
 *.zip
 newupdater.py
+*db
+*json
