@@ -37,4 +37,4 @@ window.events.closed += shutdown
 
 t1 = Thread(target=srv.srv.run)
 t1.start()
-pwv.start(debug=True)
+pwv.start()

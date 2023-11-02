@@ -17,6 +17,11 @@ def shutdown_server():
 def pageNotFound(error):
     return render_template("404.html",error=error)
 
+
+@srv.errorhandler(500)
+def serverError(error):
+    return render_template("500.html", error=error)
+
     
 @srv.get('/shutdown')
 def shutdown():
