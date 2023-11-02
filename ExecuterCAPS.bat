@@ -1,6 +1,4 @@
-IF exist  "PythonEnv" install.bat
-cd Update
-..\pythonvenv\Scripts\python.exe -m pip install -r libs.txt
-cd ..\
+IF exist  "PythonEnv" call install.bat
+pythonvenv\Scripts\python.exe updater.py
 pythonvenv\Scripts\python.exe main.py
 pause
