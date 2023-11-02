@@ -5,6 +5,10 @@
 Ce programme a pour but d'aider a mettre en relation des élèves sur des créneaux horaires donné en fonctiobn des matières. Ce logiciel a été créé dans le
 but de faciliter la mise en place d'un AP entre élèves.
 
+# ATTENTION !
+
+Cette version arrive en fin de vie et ne sera plus supportée à partir du 13/11/2023 ! Il est recommandé d'opéré la bascule vers la version 2 !
+
 ## Fonctionnalités actuelles :
 
 - Une GUI simple
