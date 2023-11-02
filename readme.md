@@ -7,7 +7,7 @@ but de faciliter la mise en place d'un AP entre élèves.
 
 # ATTENTION !
 
-Cette version arrive en fin de vie et ne sera plus supportée à partir du 13/11/2023 ! Il est recommandé d'opéré la bascule vers la version 2 !
+Cette version arrive en fin de vie et ne sera plus supportée à partir du 13/11/2023 ! Il est recommandé d'opérer la bascule vers la version 2 !
 
 ## Fonctionnalités actuelles :
 
