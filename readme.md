@@ -5,9 +5,6 @@
 Ce programme a pour but d'aider a mettre en relation des élèves sur des créneaux horaires donné en fonctiobn des matières. Ce logiciel a été créé dans le
 but de faciliter la mise en place d'un AP entre élèves. Il fonctionne avec une interface customisable grace au CSS.
 
-<<<<<<< HEAD
-## Fonctionnalités actuelles :
-=======
 
 ## La version 2 est arrivée !
 Dans la deuxième version:
