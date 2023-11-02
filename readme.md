@@ -18,7 +18,6 @@ Dans la deuxième version:
   - Un mini serveur web permettant une bascule vers l'architecture client/serveur (NON RECOMMANDE)
   - Un système d'ouverture de tickets
   - Nouveau système de logs.
->>>>>>> f5113bc5 (Updated readme for V2 + marked DEV doc as OUTDATED)
 
 A venir:
   - Script d'installation
