@@ -1,3 +1,3 @@
-echo "Hello World"
-echo "Hello World (again)"
-ExecuterCAPSV2.bat
+PythonEnv\App\Python\python.exe updater.py
+PythonEnv\App\Python\python.exe main.py
+pause
