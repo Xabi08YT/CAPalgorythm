@@ -1,4 +1,3 @@
-pandas
 wget
 pywebview
 flask
@@ -6,5 +5,3 @@ requests
 unidecode
 pygithub
 psutil
-sqlite3
-flask_sqlalchemy

@@ -35,10 +35,5 @@ def getRelationship(id):
 def getAllRelationships():
     MainDB = CoreLibs.utils.MainDB
     cursor = MainDB.cursor()
-<<<<<<< HEAD
-    cursor.execute("""SELECT * FROM relation""")
-    return cursor.fetchall()
-=======
     cursor.execute("""SELECT * FROM 'relation'""")
     return cursor.fetchall()
->>>>>>> 651a463e (Added relationship storage and cleanup for search results)

@@ -20,15 +20,10 @@ def addGroup(gname,level):
 def getGroupByName(gname):
     MainDB = CoreLibs.utils.MainDB
     cursor = MainDB.cursor()
-<<<<<<< HEAD
-    cursor.execute("""SELECT * FROM group WHERE label = ?""",(gname,))
-    return cursor.fetchall()
-=======
     cursor.execute("""SELECT * FROM 'group' WHERE label = ?""",(gname,))
     results = cursor.fetchall()
     cursor.close()
     return results
->>>>>>> 42354f99 (Fixed database)
 
 
 def rmGroup(gid):
