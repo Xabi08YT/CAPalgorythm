@@ -59,13 +59,8 @@ def transformToText(strlist):
 def init():
     global config, log_file
     config = CoreLibs.cfgHandler.getCfg()
-<<<<<<< HEAD
-    log_file = open("message.log","w")
-    sys.stdout = log_file
-=======
     log_file = open("latest.log","w")
     sys.stdout = Unbuffered(log_file)
->>>>>>> 66c102df (Added issue maker and modified log handling)
     print("Configuration chargée et appliquée.",0)
     try:
         os.remove("latestlog.txt")
