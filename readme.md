@@ -32,11 +32,6 @@ A venir:
   - Configuration de l'updater par le fichier cfg.json
 
 
-## Déploiement de la deuxième version
-
-La deuxième version sera progressivement déployée à partir du 13/11/2023 après des tests de déploiement et une préparation d'un nouvel updater.
-
-
 ## Support de la deuxième version
 
 La V2 est une version LTS. Autrement dit elle sera supportée 5 ans, soit jusqu'au 03/11/2028 sauf imprévus.
