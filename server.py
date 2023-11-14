@@ -52,7 +52,7 @@ def show_results():
                 return "OK !",200
             except Exception as e:
                 print("[STDERR] > "+str(e))
-                return e
+                return "Internal server error",500
 
 
 @srv.get("/")
