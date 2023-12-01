@@ -28,7 +28,7 @@ A venir:
   - Interface de visualisation générale avec des graphiques
   - Import / Export de la base de données en CSV
   - Fusion de bases de données
-  - Import de bases de données Pronote
+  - Import de bases de données Siecle
   - Configuration de l'updater par le fichier cfg.json
 
 
