@@ -15,7 +15,7 @@ Dans la deuxième version:
   - Un updater 
   - Une configuration dans un fichier JSON
   - De nouvelles interface de visualisation et d'edition de certaines informations de la base de données
-  - Un mini serveur web permettant une bascule vers l'architecture client/serveur (NON RECOMMANDE)
+  - Un mini serveur web permettant une bascule vers l'architecture client/serveur (NON RECOMMANDE, AUCUN SUPPORT OFFICIEL)
   - Un système d'ouverture de tickets
   - Nouveau système de logs.
 
