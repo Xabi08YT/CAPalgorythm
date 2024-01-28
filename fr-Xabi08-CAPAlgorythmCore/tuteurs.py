@@ -17,7 +17,7 @@ def deleteTuteur(name, surname, groupid):
 def addTuteur(name, surname, groupid,parsedFreetime,parsedSubjects):
     MainDB = CoreLibs.utils.MainDB
     cursor = MainDB.cursor()
-    cursor.execute("""INSERT INTO tuteur (name,surname,group,freeon,subject) VALUES (?,?,?,?,?)""",(name,surname,groupid,parsedFreetime,parsedSubjects))
+    cursor.execute("""INSERT INTO tuteur (name,surname,groupid,freeon,subject) VALUES (?,?,?,?,?)""",(name,surname,groupid,parsedFreetime,parsedSubjects))
     MainDB.commit()
     return cursor.close()
 

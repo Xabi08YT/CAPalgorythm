@@ -1,4 +1,5 @@
 import sqlite3
+CoreLibs = __import__("fr-Xabi08-CAPAlgorythmCore", globals(), locals(), ["groupes"],0)
 
 
 def createDB(relEnabled = False, feedbackEnabled = False):
@@ -59,6 +60,7 @@ def createDB(relEnabled = False, feedbackEnabled = False):
             )
             """)
     connectDB.commit()
+    fillGroupTable(connectDB)
     connectDB.close()
     return
 
@@ -103,4 +105,12 @@ def createFeedbackTable():
     cursor.close()
     connectDB.commit()
     connectDB.close()
+    return
+
+
+def fillGroupTable(DB):
+    baseGroups = [["2E1","2E2","2E3","2E4","2E5","2E6"],["1TC1","1TC2","1TC3","1TC4","1TC5"],["TE1","TE2","TE3","TE4"]]
+    for i in range(len(baseGroups)):
+        for j in range(len(baseGroups[i])):
+            CoreLibs.groupes.addGroup(baseGroups[i][j], len(baseGroups)-i,DB)
     return
