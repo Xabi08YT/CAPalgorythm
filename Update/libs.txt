@@ -5,3 +5,6 @@ requests
 unidecode
 pygithub
 psutil
+pyqt5 
+pyqtwebengine
+pywebview[qt]
