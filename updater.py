@@ -1,7 +1,7 @@
 import wget
 from os import remove, getcwd, system, rename, rmdir, path, listdir
+from sys import platform
 import zipfile
-
 
 filepath = getcwd()+"\\Update\\"
 updatingUpdater = False
@@ -42,7 +42,11 @@ def trouverMAJ():
         zipPath = str(getcwd())+"/software.zip"
         with zipfile.ZipFile(zipPath, 'r') as zip:
             zip.extractall(getcwd())
-        system("PythonEnv\App\Python\python.exe -m pip install -r \"{0}\"".format(path.join(str(getcwd()),"Update/libs.txt")))
+        if platform.startswith("win32"):
+            system("PythonEnv\App\Python\python.exe -m pip install -r \"{0}\"".format(path.join(str(getcwd()),"Update/libs.txt")))
+        elif platform.startswith("linux"):
+            system("source ./pythonvenv/bin/activate && pip install -r \"{0}\"".format(path.join(str(getcwd()),"Update/libs.txt")))
+            system("source ./pythonvenv/bin/activate && pip install -r \"{0}\"".format(path.join(str(getcwd()),"Update/libs_linux.txt")))
         rename(src="newupdater.py",dst="updater.py")
     print("\nCleaning up...")
     try:
