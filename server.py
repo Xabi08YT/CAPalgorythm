@@ -2,6 +2,7 @@ from flask import *
 from os import getpid, system
 from CoreProxy import *
 from time import sleep
+from sys import platform
 
 
 toDelete = ["mode","surname","name","group","subjects","freetime","="]
@@ -10,7 +11,11 @@ srv = Flask("Serveur local CAPS")
 
 
 def shutdown_server():
-    system("taskkill /f /PID "+str(getpid()))
+    pid = getpid()
+    if platform.startswith("win32"):
+        system("taskkill /f /PID "+str(pid))
+    else:
+        system("kill -9 "+str(pid))
 
 
 @srv.errorhandler(404)
