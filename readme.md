@@ -1,3 +1,5 @@
+
+
 # CAPalgorythm FR
 
 [![CodeQL](https://github.com/Xabi08YT/CAPalgorythm/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/Xabi08YT/CAPalgorythm/actions/workflows/codeql.yml)
@@ -13,7 +15,7 @@ Dans la deuxième version:
   - Un backend toujours en python pour une compatibilité accrue
   - Un système de stockage en SQL avec SQLite
   - Un updater 
-  - Une configuration dans un fichier JSON
+  - Une configuration dans un fichier JSON (cfg.json)
   - De nouvelles interface de visualisation et d'edition de certaines informations de la base de données
   - Un mini serveur web permettant une bascule vers l'architecture client/serveur (NON RECOMMANDE, AUCUN SUPPORT OFFICIEL)
   - Un système d'ouverture de tickets
